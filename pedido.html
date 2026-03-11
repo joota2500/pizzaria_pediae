@@ -97,7 +97,6 @@ onclick="confirmarEnvio()">
 
 </section>
 
-
 <!-- RESUMO -->
 
 <section class="col-lg-5">
@@ -113,9 +112,7 @@ onclick="confirmarEnvio()">
 <hr>
 
 <p id="subtotalResumo"></p>
-
 <p id="cupomResumo"></p>
-
 <p id="taxaEntrega">Entrega: R$ 0,00</p>
 
 <hr>
@@ -133,7 +130,6 @@ onclick="confirmarEnvio()">
 
 </main>
 
-
 <footer class="text-center py-3">
 <p>
 ©️ 2026 PeçaPizzaOnline -
@@ -142,7 +138,6 @@ DevJoota2500
 </a>
 </p>
 </footer>
-
 
 
 <!-- MODAL CONFIRMAÇÃO -->
@@ -176,6 +171,7 @@ Deseja enviar seu pedido para a pizzaria?
 <script src="js/config.js"></script>
 <script src="js/entrega.js"></script>
 <script src="js/cupom.js"></script>
+<script src="js/horario.js"></script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -201,6 +197,7 @@ let taxaEntrega = 0
 
 let pizzasHTML=[]
 let bebidasHTML=[]
+
 
 pedido.forEach(item=>{
 
@@ -242,6 +239,7 @@ ${moeda(item.preco*qtd)}
 
 })
 
+
 document.getElementById("pizzaResumo").innerHTML=pizzasHTML.join("")
 document.getElementById("bebidaResumo").innerHTML=bebidasHTML.join("")
 
@@ -261,9 +259,7 @@ atualizarTotal()
 
 
 
-// ===============================
 // BAIRROS
-// ===============================
 
 const selectBairro=document.getElementById("bairro")
 
@@ -278,10 +274,7 @@ selectBairro.appendChild(opt)
 })
 
 
-
-// ===============================
 // FRETE
-// ===============================
 
 selectBairro.addEventListener("change",()=>{
 
@@ -295,26 +288,16 @@ taxaEntrega = Number(calcularEntrega(bairro)) || 0
 
 document.getElementById("taxaEntrega").innerText="Entrega: "+moeda(taxaEntrega)
 
-
-// ATUALIZA CUPOM + TOTAL
-
 if(typeof atualizarTotalComCupom === "function"){
-
 atualizarTotalComCupom()
-
 }else{
-
 atualizarTotal()
-
 }
 
 })
 
 
-
-// ===============================
 // TROCO
-// ===============================
 
 document.getElementById("pagamento").addEventListener("change",()=>{
 
@@ -328,10 +311,40 @@ forma==="dinheiro" ? "block" : "none"
 
 
 // ===============================
-// CONFIRMAR ENVIO
+// VALIDAR CAMPOS
 // ===============================
 
+function validarCampos(){
+
+const nome = document.getElementById("nome").value.trim()
+const telefone = document.getElementById("telefone").value.trim()
+const endereco = document.getElementById("endereco").value.trim()
+const bairro = document.getElementById("bairro").value
+const pagamento = document.getElementById("pagamento").value
+
+if(!nome || !telefone || !endereco || !bairro || !pagamento){
+
+alert("Preencha todos os campos obrigatórios.")
+
+return false
+
+}
+
+return true
+
+}
+
+
+
+// CONFIRMAR
+
 function confirmarEnvio(){
+
+if(!validarCampos()) return
+
+if(typeof verificarAntesDeEnviar === "function"){
+if(!verificarAntesDeEnviar()) return
+}
 
 const modal=new bootstrap.Modal(document.getElementById("modalConfirmar"))
 modal.show()
@@ -340,9 +353,7 @@ modal.show()
 
 
 
-// ===============================
 // ENVIAR PEDIDO
-// ===============================
 
 function enviarPedido(){
 
@@ -374,7 +385,6 @@ if(i.nome2) linha+=` / ${i.nome2}`
 if(i.tamanho) linha+=` (${i.tamanho})`
 
 linha+=`\nQtd: ${i.qtd}`
-
 linha+=`\nSubtotal: ${moeda(i.preco*i.qtd)}\n\n`
 
 itens+=linha
@@ -410,9 +420,17 @@ ${obs}
 
 const url=`https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(msg)}`
 
+
 setTimeout(()=>{
 
 window.open(url)
+
+
+// LIMPAR CARRINHO (ETAPA 5.6)
+
+localStorage.removeItem("carrinho")
+localStorage.removeItem("pedido")
+
 
 loader.style.display="none"
 texto.style.display="inline"
