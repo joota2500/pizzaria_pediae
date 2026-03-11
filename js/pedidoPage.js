@@ -159,7 +159,6 @@ modal.show()
 feedback.innerHTML=`
 <div class="spinner-border text-danger mb-3"
 style="width:3rem;height:3rem"></div>
-
 <h5 class="fw-bold">Enviando pedido...</h5>
 <p class="text-muted">Aguarde um instante</p>
 `
@@ -273,20 +272,37 @@ ${obs}
 
 
 // ==========================
-// FEEDBACK VISUAL
+// STATUS DO PEDIDO
 // ==========================
 
-setTimeout(()=>{
+const etapas = [
+"📥 Recebendo pedido",
+"👨‍🍳 Preparando pizza",
+"🔥 Pizza no forno",
+"🚚 Saindo para entrega"
+]
+
+let etapa = 0
+
+function mostrarEtapa(){
 
 feedback.innerHTML=`
-<div class="fs-1 mb-3">✅</div>
-
-<h5 class="fw-bold">Pedido enviado!</h5>
-
-<p class="text-muted">Abrindo WhatsApp...</p>
+<div class="fs-2 mb-3">${etapas[etapa]}</div>
+<p class="text-muted">A pizzaria já recebeu seu pedido</p>
 `
 
-},2000)
+etapa++
+
+if(etapa < etapas.length){
+setTimeout(mostrarEtapa,1500)
+}
+
+}
+
+
+
+// inicia status após 2s
+setTimeout(mostrarEtapa,2000)
 
 
 
@@ -300,12 +316,9 @@ const url=`https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(msg)}`
 
 window.location.href=url
 
-
-// limpar carrinho
-
 localStorage.removeItem("carrinho")
 localStorage.removeItem("pedido")
 
-},4000)
+},8000)
 
 }

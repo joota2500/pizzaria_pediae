@@ -87,6 +87,23 @@ box-shadow:0 0 0 3px rgba(255,107,0,0.15);
 
 
 /* =========================================
+ERRO NOS CAMPOS
+========================================= */
+
+.is-invalid{
+
+border-color:#e74c3c !important;
+
+}
+
+.is-invalid:focus{
+
+box-shadow:0 0 0 3px rgba(231,76,60,0.15);
+
+}
+
+
+/* =========================================
 CUPOM
 ========================================= */
 
@@ -106,6 +123,7 @@ BOTÃO FINALIZAR
 font-weight:600;
 letter-spacing:.4px;
 padding:14px;
+transition:.2s;
 
 }
 
@@ -204,6 +222,71 @@ LOADER
 
 width:18px;
 height:18px;
+
+}
+
+
+/* =========================================
+STATUS DO PEDIDO (NOVO)
+========================================= */
+
+#feedbackPedido{
+
+text-align:center;
+
+}
+
+.status-pedido{
+
+font-size:22px;
+font-weight:600;
+color:#8b0000;
+animation:statusFade .5s ease;
+
+}
+
+.status-pedido span{
+
+display:block;
+margin-top:6px;
+font-size:14px;
+color:#666;
+
+}
+
+
+/* animação suave */
+
+@keyframes statusFade{
+
+from{
+opacity:0;
+transform:translateY(8px);
+}
+
+to{
+opacity:1;
+transform:translateY(0);
+}
+
+}
+
+
+/* =========================================
+MODAL FEEDBACK
+========================================= */
+
+#modalFeedbackPedido .modal-content{
+
+border-radius:14px;
+border:none;
+box-shadow:0 15px 40px rgba(0,0,0,0.2);
+
+}
+
+#modalFeedbackPedido h5{
+
+font-weight:600;
 
 }
 
