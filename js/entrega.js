@@ -75,18 +75,22 @@ const totalElemento = document.getElementById("totalResumo")
 if(!bairroSelect || !totalElemento) return
 
 const bairro = bairroSelect.value
-
 const taxa = calcularEntrega(bairro)
 
-let totalBase = 0
+let subtotal = 0
 
-if(typeof pedido !== "undefined"){
+if(typeof pedido !== "undefined" && Array.isArray(pedido)){
 
-totalBase = pedido.total || 0
+pedido.forEach(item=>{
+
+const qtd = item.qtd || 1
+subtotal += Number(item.preco) * Number(qtd)
+
+})
 
 }
 
-const totalFinal = totalBase + taxa
+const totalFinal = subtotal + Number(taxa)
 
 if(typeof formatarMoeda === "function"){
 
