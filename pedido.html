@@ -113,7 +113,10 @@ onclick="confirmarEnvio()">
 <hr>
 
 <p id="subtotalResumo"></p>
-<p id="taxaEntrega">Entrega: R$ 0</p>
+
+<p id="cupomResumo"></p>
+
+<p id="taxaEntrega">Entrega: R$ 0,00</p>
 
 <hr>
 
@@ -181,33 +184,23 @@ Deseja enviar seu pedido para a pizzaria?
 const pedido = JSON.parse(localStorage.getItem("pedido")) || []
 
 if(pedido.length === 0){
-
 alert("Nenhum pedido encontrado")
 window.location.href="index.html"
-
 }
-
-
 
 function moeda(v){
 return Number(v).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})
 }
 
-
-
 function sanitizar(texto){
 return String(texto).replace(/</g,"&lt;").replace(/>/g,"&gt;")
 }
-
-
 
 let subtotal = 0
 let taxaEntrega = 0
 
 let pizzasHTML=[]
 let bebidasHTML=[]
-
-
 
 pedido.forEach(item=>{
 
@@ -224,7 +217,6 @@ nome = `${sanitizar(item.nome)} / ${sanitizar(item.nome2)}`
 }
 
 pizzasHTML.push(`
-
 <div class="border rounded p-2 mb-2">
 🍕 ${nome} (${item.tamanho})
 <br>
@@ -232,16 +224,12 @@ Qtd: ${qtd}
 <br>
 ${moeda(item.preco*qtd)}
 </div>
-
 `)
 }
-
-
 
 if(item.tipo==="bebida"){
 
 bebidasHTML.push(`
-
 <div class="border rounded p-2 mb-2">
 🥤 ${sanitizar(item.nome)}
 <br>
@@ -249,13 +237,10 @@ Qtd: ${qtd}
 <br>
 ${moeda(item.preco*qtd)}
 </div>
-
 `)
 }
 
 })
-
-
 
 document.getElementById("pizzaResumo").innerHTML=pizzasHTML.join("")
 document.getElementById("bebidaResumo").innerHTML=bebidasHTML.join("")
@@ -266,17 +251,19 @@ document.getElementById("subtotalResumo").innerText="Subtotal: "+moeda(subtotal)
 
 function atualizarTotal(){
 
-const total = Number(subtotal) + Number(taxaEntrega)
+const total = subtotal + taxaEntrega
 
 document.getElementById("totalResumo").innerText="Total: "+moeda(total)
 
 }
 
-
-
 atualizarTotal()
 
 
+
+// ===============================
+// BAIRROS
+// ===============================
 
 const selectBairro=document.getElementById("bairro")
 
@@ -292,6 +279,10 @@ selectBairro.appendChild(opt)
 
 
 
+// ===============================
+// FRETE
+// ===============================
+
 selectBairro.addEventListener("change",()=>{
 
 const bairro=selectBairro.value
@@ -304,11 +295,26 @@ taxaEntrega = Number(calcularEntrega(bairro)) || 0
 
 document.getElementById("taxaEntrega").innerText="Entrega: "+moeda(taxaEntrega)
 
+
+// ATUALIZA CUPOM + TOTAL
+
+if(typeof atualizarTotalComCupom === "function"){
+
+atualizarTotalComCupom()
+
+}else{
+
 atualizarTotal()
+
+}
 
 })
 
 
+
+// ===============================
+// TROCO
+// ===============================
 
 document.getElementById("pagamento").addEventListener("change",()=>{
 
@@ -321,6 +327,10 @@ forma==="dinheiro" ? "block" : "none"
 
 
 
+// ===============================
+// CONFIRMAR ENVIO
+// ===============================
+
 function confirmarEnvio(){
 
 const modal=new bootstrap.Modal(document.getElementById("modalConfirmar"))
@@ -329,6 +339,10 @@ modal.show()
 }
 
 
+
+// ===============================
+// ENVIAR PEDIDO
+// ===============================
 
 function enviarPedido(){
 
@@ -340,8 +354,6 @@ botao.disabled=true
 texto.style.display="none"
 loader.style.display="inline-block"
 
-
-
 const nome=document.getElementById("nome").value
 let tel=document.getElementById("telefone").value.replace(/\D/g,"")
 
@@ -351,11 +363,7 @@ const pagamento=document.getElementById("pagamento").value
 const troco=document.getElementById("troco").value
 const obs=document.getElementById("obsFinal").value
 
-
-
 let itens=""
-
-
 
 pedido.forEach(i=>{
 
@@ -373,11 +381,7 @@ itens+=linha
 
 })
 
-
-
 const total = subtotal + taxaEntrega
-
-
 
 let msg=`🍕 *NOVO PEDIDO*
 
@@ -394,7 +398,7 @@ ${itens}
 
 💳 Pagamento: ${pagamento}
 
-💰 Troco: ${troco||"Não precisa"}
+💰 Troco Para: ${troco||"Não precisa"}
 
 📝 Observação:
 ${obs}
@@ -404,11 +408,7 @@ ${obs}
 💰 Total: ${moeda(total)}
 `
 
-
-
 const url=`https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(msg)}`
-
-
 
 setTimeout(()=>{
 

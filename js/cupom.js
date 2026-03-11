@@ -216,7 +216,7 @@ total = parseFloat(total.toFixed(2))
 
 
 // ================================
-// ATUALIZAR INTERFACE
+// ATUALIZAR TOTAL
 // ================================
 
 const totalElemento = document.getElementById("totalResumo")
@@ -237,7 +237,9 @@ totalElemento.innerText = "Total: R$ " + total
 
 
 
-// mostrar desconto
+// ================================
+// MOSTRAR DESCONTO NO RESUMO
+// ================================
 
 const cupomResumo = document.getElementById("cupomResumo")
 
@@ -245,8 +247,23 @@ if(cupomResumo){
 
 if(cupomAplicado){
 
-cupomResumo.innerHTML =
-`Cupom ${cupomAplicado.codigo} aplicado`
+if(desconto > 0){
+
+cupomResumo.innerHTML = `
+<span class="text-success fw-semibold">
+Cupom ${cupomAplicado.codigo}: - ${moeda(desconto)}
+</span>
+`
+
+}else if(cupomAplicado.codigo === "FRETEGRATIS"){
+
+cupomResumo.innerHTML = `
+<span class="text-success fw-semibold">
+Cupom FRETEGRATIS aplicado 🚚
+</span>
+`
+
+}
 
 }else{
 
