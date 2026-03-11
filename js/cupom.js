@@ -24,7 +24,8 @@ minimo:90
 
 FRETEGRATIS:{
 desconto:100,
-minimo:70
+minimo:70,
+diasPermitidos:[1,2,3] // segunda terça quarta
 }
 
 }
@@ -106,10 +107,11 @@ const codigo = campo.value.trim().toUpperCase()
 
 
 
+// impedir duplicação
+
 if(cupomAplicado){
 
 toastCupom("Já existe um cupom aplicado","warning")
-
 return
 
 }
@@ -121,7 +123,6 @@ const regra = REGRAS_CUPOM[codigo]
 if(!regra){
 
 toastCupom("Cupom inválido","danger")
-
 return
 
 }
@@ -149,7 +150,32 @@ return
 
 
 
-// salvar cupom
+// ================================
+// VERIFICAR DIA DA SEMANA
+// ================================
+
+if(regra.diasPermitidos){
+
+const hoje = new Date().getDay()
+
+if(!regra.diasPermitidos.includes(hoje)){
+
+toastCupom(
+"Cupom de frete grátis disponível apenas segunda, terça e quarta",
+"warning"
+)
+
+return
+
+}
+
+}
+
+
+
+// ================================
+// SALVAR CUPOM
+// ================================
 
 cupomAplicado = {
 
@@ -161,7 +187,19 @@ valor: regra.desconto
 
 
 
+// mensagem específica
+
+if(codigo === "FRETEGRATIS"){
+
+toastCupom("Cupom de frete grátis aplicado 🚚")
+
+}else{
+
 toastCupom(`Cupom ${codigo} aplicado ✔`)
+
+}
+
+
 
 atualizarTotalComCupom()
 
@@ -199,7 +237,9 @@ let subtotal = calcularSubtotal()
 
 
 
-// frete
+// ================================
+// FRETE
+// ================================
 
 let taxa = 0
 
@@ -301,9 +341,7 @@ Cupom FRETEGRATIS aplicado 🚚
 
 }
 
-}
-
-else{
+}else{
 
 cupomResumo.innerHTML = ""
 
