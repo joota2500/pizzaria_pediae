@@ -42,11 +42,17 @@ height:60px;
 }
 
 /* MENU */
+/* =========================================
+MENU PRINCIPAL
+========================================= */
 
 nav ul{
 list-style:none;
 display:flex;
 gap:30px;
+margin:0;
+padding:0;
+align-items:center;
 }
 
 nav a{
@@ -56,6 +62,8 @@ font-weight:600;
 transition:all .3s ease;
 position:relative;
 }
+
+/* HOVER */
 
 nav a:hover{
 color:#ffd166;
@@ -69,25 +77,34 @@ bottom:-5px;
 width:0;
 height:2px;
 background:#ffd166;
-transition:.3s;
+transition:width .3s ease;
 }
 
 nav a:hover::after{
 width:100%;
 }
 
-/* =================================================
-MENU MOBILE
-================================================= */
+
+
+/* =========================================
+BOTÃO MENU MOBILE
+========================================= */
 
 .menu-mobile-btn{
 display:none;
 background:none;
 border:none;
-font-size:28px;
+font-size:30px;
 color:white;
 cursor:pointer;
+transition:.3s;
 }
+
+.menu-mobile-btn:hover{
+transform:scale(1.1);
+}
+
+
 
 /* =================================================
 STATUS DA PIZZARIA
@@ -708,23 +725,78 @@ RESPONSIVO
 
 @media(max-width:768px){
 
+/* =====================================
+MENU RESPONSIVO CORRIGIDO
+===================================== */
+
 .menu-mobile-btn{
 display:block;
+background:none;
+border:none;
+font-size:30px;
+color:white;
+cursor:pointer;
 }
 
-nav ul{
-flex-direction:column;
+/* CONTAINER MENU */
+
+.menu{
 position:absolute;
 top:70px;
-right:0;
+right:15px;
+
 background:#8b0000;
-width:200px;
+
+width:210px;
 padding:20px;
-display:none;
+
+border-radius:10px;
+
+box-shadow:0 10px 25px rgba(0,0,0,0.25);
+
+z-index:999;
+
+/* ESCONDIDO */
+
+opacity:0;
+transform:translateY(-10px);
+pointer-events:none;
+
+transition:all .3s ease;
 }
 
-.menu.ativo ul{
-display:flex;
+/* LISTA */
+
+.menu ul{
+flex-direction:column;
+gap:15px;
+}
+
+/* MENU ABERTO */
+
+.menu.ativo{
+opacity:1;
+transform:translateY(0);
+pointer-events:auto;
+}
+
+/* LINKS */
+
+.menu a{
+display:block;
+padding:10px 5px;
+width:100%;
+}
+
+/* LINKS */
+
+nav ul li{
+width:100%;
+}
+
+nav ul a{
+display:block;
+padding:8px 5px;
 }
 
 .hero h1{

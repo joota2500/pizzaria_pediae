@@ -1,15 +1,15 @@
-// ================================
+// =======================================
 // MENU MOBILE PROFISSIONAL
-// ================================
+// =======================================
 
-let menu
-let botaoMenu
+let menu = null
+let botaoMenu = null
 
 
 
-// -------------------------------
+// ---------------------------------------
 // ABRIR / FECHAR MENU
-// -------------------------------
+// ---------------------------------------
 
 function toggleMenu(){
 
@@ -17,34 +17,60 @@ if(!menu) return
 
 menu.classList.toggle("ativo")
 
+const aberto = menu.classList.contains("ativo")
+
+if(botaoMenu){
+
+botaoMenu.setAttribute("aria-expanded", aberto)
+
+}
+
 }
 
 
 
-// -------------------------------
+// ---------------------------------------
+// FECHAR MENU
+// ---------------------------------------
+
+function fecharMenu(){
+
+if(!menu) return
+
+menu.classList.remove("ativo")
+
+if(botaoMenu){
+
+botaoMenu.setAttribute("aria-expanded", false)
+
+}
+
+}
+
+
+
+// ---------------------------------------
 // INICIAR SISTEMA MOBILE
-// -------------------------------
+// ---------------------------------------
 
 document.addEventListener("DOMContentLoaded",()=>{
 
 menu = document.querySelector(".menu")
 botaoMenu = document.querySelector(".menu-mobile-btn")
 
-if(!menu) return
+if(!menu || !botaoMenu) return
 
 
 
-// -------------------------------
+// ---------------------------------------
 // FECHAR MENU AO CLICAR EM LINK
-// -------------------------------
+// ---------------------------------------
 
-const links = document.querySelectorAll(".menu a")
-
-links.forEach(link=>{
+menu.querySelectorAll("a").forEach(link=>{
 
 link.addEventListener("click",()=>{
 
-menu.classList.remove("ativo")
+fecharMenu()
 
 })
 
@@ -52,17 +78,18 @@ menu.classList.remove("ativo")
 
 
 
-// -------------------------------
+// ---------------------------------------
 // FECHAR MENU CLICANDO FORA
-// -------------------------------
+// ---------------------------------------
 
 document.addEventListener("click",(e)=>{
 
-if(!menu || !botaoMenu) return
+const clicouDentroMenu = menu.contains(e.target)
+const clicouBotao = botaoMenu.contains(e.target)
 
-if(!menu.contains(e.target) && !botaoMenu.contains(e.target)){
+if(!clicouDentroMenu && !clicouBotao){
 
-menu.classList.remove("ativo")
+fecharMenu()
 
 }
 
@@ -70,13 +97,27 @@ menu.classList.remove("ativo")
 
 
 
+// ---------------------------------------
+// FECHAR MENU COM ESC
+// ---------------------------------------
+
+document.addEventListener("keydown",(e)=>{
+
+if(e.key === "Escape"){
+
+fecharMenu()
+
+}
+
+})
+
 })
 
 
 
-// -------------------------------
+// ---------------------------------------
 // CORRIGIR AO REDIMENSIONAR TELA
-// -------------------------------
+// ---------------------------------------
 
 window.addEventListener("resize",()=>{
 
@@ -84,7 +125,7 @@ if(!menu) return
 
 if(window.innerWidth > 768){
 
-menu.classList.remove("ativo")
+fecharMenu()
 
 }
 
