@@ -51,6 +51,10 @@ localStorage.setItem("carrinhoHora", Date.now())
 // EXPIRAÇÃO DO CARRINHO
 // ================================
 
+// ================================
+// EXPIRAÇÃO DO CARRINHO
+// ================================
+
 function verificarExpiracao(){
 
 const hora = localStorage.getItem("carrinhoHora")
@@ -62,7 +66,18 @@ const agora = Date.now()
 if(agora - hora > EXPIRACAO_CARRINHO){
 
 localStorage.removeItem("carrinho")
-carrinho=[]
+
+carrinho = []
+
+// atualizar interface
+if(typeof atualizarCarrinhoLista === "function"){
+atualizarCarrinhoLista()
+}
+
+// aviso ao usuário
+if(typeof notificar === "function"){
+notificar("⏳ Seu carrinho expirou após 1 hora. Adicione os itens novamente.","warning")
+}
 
 }
 
