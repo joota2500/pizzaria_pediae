@@ -1,14 +1,75 @@
 // ================================
-// SISTEMA DE CUPONS
+// SISTEMA DE CUPONS PROFISSIONAL
 // ================================
 
 let cupomAplicado = null
 
 
 
-// -------------------------------
+// ================================
+// TOAST BOOTSTRAP
+// ================================
+
+function toastCupom(msg,tipo="success"){
+
+if(!window.bootstrap) return
+
+const toast = document.createElement("div")
+
+toast.className =
+`toast align-items-center text-bg-${tipo} border-0 position-fixed bottom-0 end-0 m-3`
+
+toast.innerHTML = `
+<div class="d-flex">
+<div class="toast-body">
+${msg}
+</div>
+<button type="button"
+class="btn-close btn-close-white me-2 m-auto"
+data-bs-dismiss="toast">
+</button>
+</div>
+`
+
+document.body.appendChild(toast)
+
+const t = new bootstrap.Toast(toast)
+
+t.show()
+
+setTimeout(()=>toast.remove(),4000)
+
+}
+
+
+
+// ================================
+// CALCULAR SUBTOTAL DO PEDIDO
+// ================================
+
+function calcularSubtotal(){
+
+if(typeof pedido === "undefined") return 0
+
+let subtotal = 0
+
+pedido.forEach(item=>{
+
+const qtd = item.qtd || 1
+
+subtotal += Number(item.preco) * Number(qtd)
+
+})
+
+return subtotal
+
+}
+
+
+
+// ================================
 // APLICAR CUPOM
-// -------------------------------
+// ================================
 
 function aplicarCupom(){
 
@@ -19,36 +80,46 @@ if(!campo) return
 const codigo = campo.value.trim().toUpperCase()
 
 
+
 // impedir duplicação
 
 if(cupomAplicado){
 
-alert("Já existe um cupom aplicado")
+toastCupom("Já existe um cupom aplicado","warning")
+
 return
 
 }
 
 
-// verificar cupom no CONFIG
+
+// verificar cupom
 
 const desconto = CONFIG.cupons[codigo]
 
 if(!desconto){
 
-alert("Cupom inválido")
+toastCupom("Cupom inválido","danger")
+
 return
 
 }
 
 
+
 // salvar cupom
 
 cupomAplicado = {
+
 codigo: codigo,
+
 valor: desconto
+
 }
 
-alert("Cupom aplicado: " + codigo)
+
+
+toastCupom(`Cupom ${codigo} aplicado ✔`)
 
 atualizarTotalComCupom()
 
@@ -56,15 +127,15 @@ atualizarTotalComCupom()
 
 
 
-// -------------------------------
+// ================================
 // REMOVER CUPOM
-// -------------------------------
+// ================================
 
 function removerCupom(){
 
 cupomAplicado = null
 
-alert("Cupom removido")
+toastCupom("Cupom removido","info")
 
 atualizarTotalComCupom()
 
@@ -72,68 +143,114 @@ atualizarTotalComCupom()
 
 
 
-// -------------------------------
+// ================================
 // ATUALIZAR TOTAL COM CUPOM
-// -------------------------------
+// ================================
 
 function atualizarTotalComCupom(){
 
 if(typeof pedido === "undefined") return
 
 
-// pegar total base
 
-let total = pedido.total || 0
+let subtotal = calcularSubtotal()
 
 
-// aplicar cupom
 
-if(cupomAplicado){
+// pegar frete atual
 
-// cupom de porcentagem
+let taxa = 0
 
-if(cupomAplicado.valor < 100){
+const bairro = document.getElementById("bairro")
 
-total = total * (1 - cupomAplicado.valor/100)
+if(bairro){
+
+taxa = calcularEntrega(bairro.value)
 
 }
 
 
-// cupom frete grátis
 
-if(cupomAplicado.codigo === "FRETEGRATIS"){
+// ================================
+// FRETE GRÁTIS
+// ================================
+
+if(cupomAplicado && cupomAplicado.codigo === "FRETEGRATIS"){
+
+taxa = 0
 
 const taxaElemento = document.getElementById("taxaEntrega")
 
 if(taxaElemento){
 
-taxaElemento.innerText = "Entrega: R$ 0"
+taxaElemento.innerText = "Entrega: R$ 0,00"
 
 }
 
 }
 
+
+
+// ================================
+// DESCONTO
+// ================================
+
+let desconto = 0
+
+if(cupomAplicado && cupomAplicado.valor < 100){
+
+desconto = subtotal * (cupomAplicado.valor/100)
+
 }
 
 
-// limitar casas decimais
+
+// ================================
+// TOTAL FINAL
+// ================================
+
+let total = subtotal - desconto + taxa
 
 total = parseFloat(total.toFixed(2))
 
 
-// atualizar interface
+
+// ================================
+// ATUALIZAR INTERFACE
+// ================================
 
 const totalElemento = document.getElementById("totalResumo")
 
 if(totalElemento){
 
-if(typeof formatarMoeda === "function"){
+if(typeof moeda === "function"){
 
-totalElemento.innerText = "Total: " + formatarMoeda(total)
+totalElemento.innerText = "Total: " + moeda(total)
 
 }else{
 
 totalElemento.innerText = "Total: R$ " + total
+
+}
+
+}
+
+
+
+// mostrar desconto
+
+const cupomResumo = document.getElementById("cupomResumo")
+
+if(cupomResumo){
+
+if(cupomAplicado){
+
+cupomResumo.innerHTML =
+`Cupom ${cupomAplicado.codigo} aplicado`
+
+}else{
+
+cupomResumo.innerHTML = ""
 
 }
 

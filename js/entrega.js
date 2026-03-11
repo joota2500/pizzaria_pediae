@@ -38,6 +38,21 @@ return taxa || 0
 
 
 // -------------------------------
+// FORMATAR MOEDA
+// -------------------------------
+
+function formatarDinheiro(valor){
+
+return Number(valor).toLocaleString("pt-BR",{
+style:"currency",
+currency:"BRL"
+})
+
+}
+
+
+
+// -------------------------------
 // MOSTRAR TAXA NA TELA
 // -------------------------------
 
@@ -49,15 +64,7 @@ if(!elemento) return
 
 const taxa = calcularEntrega(bairro)
 
-if(typeof formatarMoeda === "function"){
-
-elemento.innerText = "Entrega: " + formatarMoeda(taxa)
-
-}else{
-
-elemento.innerText = "Entrega: R$ " + taxa
-
-}
+elemento.innerText = "Entrega: " + formatarDinheiro(taxa)
 
 }
 
@@ -92,15 +99,7 @@ subtotal += Number(item.preco) * Number(qtd)
 
 const totalFinal = subtotal + Number(taxa)
 
-if(typeof formatarMoeda === "function"){
-
-totalElemento.innerText = "Total: " + formatarMoeda(totalFinal)
-
-}else{
-
-totalElemento.innerText = "Total: R$ " + totalFinal
-
-}
+totalElemento.innerText = "Total: " + formatarDinheiro(totalFinal)
 
 }
 
