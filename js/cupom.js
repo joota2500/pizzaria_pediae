@@ -7,6 +7,31 @@ let cupomAplicado = null
 
 
 // ================================
+// REGRAS DOS CUPONS
+// ================================
+
+const REGRAS_CUPOM = {
+
+PIZZA10:{
+desconto:10,
+minimo:70
+},
+
+PIZZA20:{
+desconto:20,
+minimo:90
+},
+
+FRETEGRATIS:{
+desconto:100,
+minimo:70
+}
+
+}
+
+
+
+// ================================
 // TOAST BOOTSTRAP
 // ================================
 
@@ -44,7 +69,7 @@ setTimeout(()=>toast.remove(),4000)
 
 
 // ================================
-// CALCULAR SUBTOTAL DO PEDIDO
+// CALCULAR SUBTOTAL
 // ================================
 
 function calcularSubtotal(){
@@ -81,8 +106,6 @@ const codigo = campo.value.trim().toUpperCase()
 
 
 
-// impedir duplicação
-
 if(cupomAplicado){
 
 toastCupom("Já existe um cupom aplicado","warning")
@@ -93,13 +116,32 @@ return
 
 
 
-// verificar cupom
+const regra = REGRAS_CUPOM[codigo]
 
-const desconto = CONFIG.cupons[codigo]
-
-if(!desconto){
+if(!regra){
 
 toastCupom("Cupom inválido","danger")
+
+return
+
+}
+
+
+
+const subtotal = calcularSubtotal()
+
+
+
+// ================================
+// VERIFICAR VALOR MÍNIMO
+// ================================
+
+if(subtotal < regra.minimo){
+
+toastCupom(
+`Cupom válido apenas para pedidos acima de ${moeda(regra.minimo)}`,
+"warning"
+)
 
 return
 
@@ -113,7 +155,7 @@ cupomAplicado = {
 
 codigo: codigo,
 
-valor: desconto
+valor: regra.desconto
 
 }
 
@@ -144,7 +186,7 @@ atualizarTotalComCupom()
 
 
 // ================================
-// ATUALIZAR TOTAL COM CUPOM
+// ATUALIZAR TOTAL
 // ================================
 
 function atualizarTotalComCupom(){
@@ -157,7 +199,7 @@ let subtotal = calcularSubtotal()
 
 
 
-// pegar frete atual
+// frete
 
 let taxa = 0
 
@@ -223,22 +265,14 @@ const totalElemento = document.getElementById("totalResumo")
 
 if(totalElemento){
 
-if(typeof moeda === "function"){
-
 totalElemento.innerText = "Total: " + moeda(total)
-
-}else{
-
-totalElemento.innerText = "Total: R$ " + total
-
-}
 
 }
 
 
 
 // ================================
-// MOSTRAR DESCONTO NO RESUMO
+// MOSTRAR DESCONTO
 // ================================
 
 const cupomResumo = document.getElementById("cupomResumo")
@@ -255,7 +289,9 @@ Cupom ${cupomAplicado.codigo}: - ${moeda(desconto)}
 </span>
 `
 
-}else if(cupomAplicado.codigo === "FRETEGRATIS"){
+}
+
+else if(cupomAplicado.codigo === "FRETEGRATIS"){
 
 cupomResumo.innerHTML = `
 <span class="text-success fw-semibold">
@@ -265,7 +301,9 @@ Cupom FRETEGRATIS aplicado 🚚
 
 }
 
-}else{
+}
+
+else{
 
 cupomResumo.innerHTML = ""
 
