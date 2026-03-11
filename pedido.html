@@ -140,6 +140,8 @@ DevJoota2500
 </footer>
 
 
+<!-- MODAL CONFIRMAR -->
+
 <div class="modal fade" id="modalConfirmar">
 
 <div class="modal-dialog modal-dialog-centered">
@@ -162,6 +164,27 @@ Deseja enviar seu pedido para a pizzaria?
 
 </div>
 </div>
+</div>
+
+
+<!-- MODAL FEEDBACK PEDIDO -->
+
+<div class="modal fade"
+id="modalFeedbackPedido"
+data-bs-backdrop="static"
+data-bs-keyboard="false"
+tabindex="-1">
+
+<div class="modal-dialog modal-dialog-centered">
+
+<div class="modal-content text-center p-4">
+
+<div id="feedbackPedido"></div>
+
+</div>
+
+</div>
+
 </div>
 
 
@@ -299,26 +322,51 @@ modal.show()
 
 }
 
+
 function enviarPedido(){
 
-const botao=document.getElementById("btnEnviar")
-const loader=document.getElementById("loader")
-const texto=document.getElementById("textoBotao")
+const feedback = document.getElementById("feedbackPedido")
 
-botao.disabled=true
-texto.style.display="none"
-loader.style.display="inline-block"
+const modal = new bootstrap.Modal(
+document.getElementById("modalFeedbackPedido")
+)
+
+modal.show()
+
+feedback.innerHTML = `
+<div class="spinner-border text-danger mb-3"
+style="width:3rem;height:3rem"></div>
+
+<h5 class="fw-bold">Enviando pedido...</h5>
+
+<p class="text-muted">Aguarde um instante</p>
+`
 
 setTimeout(()=>{
+
+feedback.innerHTML = `
+<div class="fs-1 mb-3">✅</div>
+
+<h5 class="fw-bold">Pedido enviado!</h5>
+
+<p class="text-muted">Abrindo WhatsApp...</p>
+`
+
+},2000)
+
+
+setTimeout(()=>{
+
+const url="https://wa.me/"+CONFIG.whatsapp
+
+window.open(url,"_blank")
 
 localStorage.removeItem("carrinho")
 localStorage.removeItem("pedido")
 
-loader.style.display="none"
-texto.style.display="inline"
-botao.disabled=false
+modal.hide()
 
-},800)
+},4000)
 
 }
 
