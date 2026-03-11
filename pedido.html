@@ -342,6 +342,86 @@ style="width:3rem;height:3rem"></div>
 <p class="text-muted">Aguarde um instante</p>
 `
 
+
+// =========================
+// DADOS DO CLIENTE
+// =========================
+
+const nome = document.getElementById("nome").value
+let tel = document.getElementById("telefone").value.replace(/\D/g,"")
+const endereco = document.getElementById("endereco").value
+const bairro = document.getElementById("bairro").value
+const pagamento = document.getElementById("pagamento").value
+const troco = document.getElementById("troco").value
+const obs = document.getElementById("obsFinal").value
+
+
+
+// =========================
+// ITENS DO PEDIDO
+// =========================
+
+let itens=""
+
+pedido.forEach(i=>{
+
+let linha=`🍕 ${i.nome}`
+
+if(i.nome2) linha+=` / ${i.nome2}`
+
+if(i.tamanho) linha+=` (${i.tamanho})`
+
+linha+=`\nQtd: ${i.qtd}`
+
+linha+=`\nSubtotal: ${moeda(i.preco*i.qtd)}\n\n`
+
+itens+=linha
+
+})
+
+
+// =========================
+// TOTAL
+// =========================
+
+const total = subtotal + taxaEntrega
+
+
+
+// =========================
+// MENSAGEM WHATSAPP
+// =========================
+
+let msg=`🍕 *NOVO PEDIDO*
+
+👤 Cliente: ${nome}
+
+📞 Telefone: ${tel}
+
+📍 Endereço:
+${endereco}
+Bairro: ${CONFIG.bairros[bairro]}
+
+🧾 Pedido:
+${itens}
+
+💳 Pagamento: ${pagamento}
+
+💰 Troco: ${troco||"Não precisa"}
+
+📝 Observação:
+${obs}
+
+🚚 Entrega: ${moeda(taxaEntrega)}
+
+💰 Total: ${moeda(total)}
+`
+
+
+// =========================
+// FEEDBACK VISUAL
+// =========================
+
 setTimeout(()=>{
 
 feedback.innerHTML = `
@@ -355,11 +435,19 @@ feedback.innerHTML = `
 },2000)
 
 
+
+// =========================
+// ABRIR WHATSAPP
+// =========================
+
 setTimeout(()=>{
 
-const url="https://wa.me/"+CONFIG.whatsapp
+const url=`https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(msg)}`
 
-window.open(url,"_blank")
+window.location.href=url
+
+
+// limpar carrinho
 
 localStorage.removeItem("carrinho")
 localStorage.removeItem("pedido")
