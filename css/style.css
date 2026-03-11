@@ -1,0 +1,779 @@
+/* =================================================
+RESET
+================================================= */
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Poppins',sans-serif;
+}
+
+html{
+scroll-behavior:smooth;
+}
+
+body{
+background:linear-gradient(180deg,#fff7f2,#ffe9da);
+color:#333;
+overflow-x:hidden;
+min-height:100vh;
+display:flex;
+flex-direction:column;
+}
+
+
+
+/* =================================================
+HEADER
+================================================= */
+
+.container-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:15px 30px;
+background:linear-gradient(90deg,#8b0000,#b22222,#ff6b00);
+box-shadow:0 6px 18px rgba(0,0,0,0.25);
+}
+
+.logo{
+height:60px;
+}
+
+/* MENU */
+
+nav ul{
+list-style:none;
+display:flex;
+gap:30px;
+}
+
+nav a{
+color:white;
+text-decoration:none;
+font-weight:600;
+transition:all .3s ease;
+position:relative;
+}
+
+nav a:hover{
+color:#ffd166;
+}
+
+nav a::after{
+content:"";
+position:absolute;
+left:0;
+bottom:-5px;
+width:0;
+height:2px;
+background:#ffd166;
+transition:.3s;
+}
+
+nav a:hover::after{
+width:100%;
+}
+
+/* =================================================
+MENU MOBILE
+================================================= */
+
+.menu-mobile-btn{
+display:none;
+background:none;
+border:none;
+font-size:28px;
+color:white;
+cursor:pointer;
+}
+
+/* =================================================
+STATUS DA PIZZARIA
+================================================= */
+
+.status-pizzaria{
+background:#ffe5d0;
+color:#8b0000;
+text-align:center;
+padding:8px;
+font-weight:600;
+border-bottom:2px solid #ff6b00;
+}
+
+/* =================================================
+BOTÕES GERAIS
+================================================= */
+
+.botao,
+.botao-enviar,
+.botao-expandir{
+display:inline-block;
+background:linear-gradient(135deg,#ff6b00,#ff8c00);
+padding:14px 30px;
+border-radius:10px;
+color:white;
+text-decoration:none;
+font-weight:600;
+border:none;
+cursor:pointer;
+transition:all .3s ease;
+}
+
+.botao:hover,
+.botao-enviar:hover,
+.botao-expandir:hover{
+transform:scale(1.05);
+box-shadow:0 8px 18px rgba(0,0,0,0.25);
+}
+
+/* =================================================
+CARRINHO FLUTUANTE
+================================================= */
+
+.carrinho-flutuante{
+position:fixed;
+right:25px;
+bottom:25px;
+width:60px;
+height:60px;
+background:linear-gradient(135deg,#ff6b00,#ff8c00);
+color:white;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:24px;
+border-radius:50%;
+cursor:pointer;
+box-shadow:0 8px 25px rgba(0,0,0,0.3);
+z-index:999;
+transition:.3s;
+}
+
+.carrinho-flutuante:hover{
+transform:scale(1.12);
+}
+
+#contadorCarrinho{
+position:absolute;
+top:-5px;
+right:-5px;
+background:#28a745;
+color:white;
+font-size:12px;
+padding:4px 7px;
+border-radius:50%;
+font-weight:bold;
+}
+
+/* =================================================
+WHATSAPP
+================================================= */
+
+.whatsapp-flutuante{
+position:fixed;
+left:25px;
+bottom:25px;
+width:60px;
+height:60px;
+background:#25D366;
+color:white;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:28px;
+border-radius:50%;
+box-shadow:0 6px 20px rgba(0,0,0,0.25);
+z-index:999;
+transition:.3s;
+}
+
+.whatsapp-flutuante:hover{
+transform:scale(1.12);
+}
+
+/* =================================================
+PAINEL DO CARRINHO
+================================================= */
+
+.painel-pedido{
+position:fixed;
+right:-360px;
+top:0;
+width:340px;
+height:100vh;
+background:white;
+box-shadow:-5px 0 20px rgba(0,0,0,0.25);
+transition:.4s;
+z-index:1000;
+display:flex;
+flex-direction:column;
+}
+
+.painel-pedido.ativo{
+right:0;
+}
+
+.painel-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:15px;
+background:linear-gradient(90deg,#ff6b00,#ff8c00);
+color:white;
+}
+
+.painel-header button{
+background:none;
+border:none;
+color:white;
+font-size:20px;
+cursor:pointer;
+}
+
+.painel-conteudo{
+padding:20px;
+display:flex;
+flex-direction:column;
+gap:12px;
+overflow-y:auto;
+}
+
+/* =================================================
+ITENS DO CARRINHO
+================================================= */
+
+#listaCarrinho{
+display:flex;
+flex-direction:column;
+gap:12px;
+}
+
+.item-carrinho{
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:#fff;
+padding:12px;
+border-radius:10px;
+font-size:14px;
+box-shadow:0 5px 15px rgba(0,0,0,0.08);
+transition:.2s;
+}
+
+.item-carrinho:hover{
+transform:translateY(-3px);
+}
+
+.item-carrinho .info{
+display:flex;
+flex-direction:column;
+gap:2px;
+}
+
+.item-carrinho .controles{
+display:flex;
+align-items:center;
+gap:5px;
+}
+
+.item-carrinho button{
+background:#ff6b00;
+border:none;
+color:white;
+padding:4px 8px;
+border-radius:6px;
+cursor:pointer;
+}
+
+.total-carrinho{
+font-size:18px;
+font-weight:600;
+margin-top:10px;
+}
+
+/* =================================================
+HERO
+================================================= */
+
+.hero{
+background-image:url("../img/banner/imgBannerPizza.jpg");
+background-size:cover;
+background-position:center;
+height:70vh;
+display:flex;
+align-items:center;
+justify-content:center;
+position:relative;
+}
+
+.hero::before{
+content:"";
+position:absolute;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.55);
+}
+
+.hero-texto{
+position:relative;
+z-index:2;
+text-align:center;
+color:white;
+max-width:600px;
+padding:20px;
+}
+
+.hero h1{
+font-size:42px;
+margin-bottom:10px;
+}
+
+.hero-texto p{
+margin-bottom:25px;
+font-size:18px;
+}
+
+/* =================================================
+SEÇÕES
+================================================= */
+
+section{
+padding:80px 20px;
+max-width:1200px;
+margin:auto;
+}
+
+section h2{
+text-align:center;
+margin-bottom:40px;
+color:#8b0000;
+}
+
+/* =================================================
+CARROSSEL
+================================================= */
+
+.carrossel{
+max-width:900px;
+height:420px;
+margin:auto;
+overflow:hidden;
+border-radius:14px;
+box-shadow:0 10px 25px rgba(0,0,0,0.25);
+}
+
+.slides{
+display:flex;
+transition:transform .6s ease;
+}
+
+.slides img{
+width:100%;
+height:420px;
+object-fit:cover;
+}
+
+/* =================================================
+GRID DE PIZZAS
+================================================= */
+
+.grid-pizzas{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:30px;
+}
+
+/* =================================================
+CARD PIZZA
+================================================= */
+
+.pizza-card{
+background:white;
+border-radius:16px;
+box-shadow:0 10px 25px rgba(0,0,0,0.15);
+padding:20px;
+text-align:center;
+transition:.3s;
+}
+
+.pizza-card:hover{
+transform:translateY(-8px);
+box-shadow:0 15px 35px rgba(0,0,0,0.2);
+}
+
+.pizza-card img{
+width:140px;
+height:140px;
+border-radius:50%;
+object-fit:cover;
+margin:auto;
+display:block;
+}
+
+.ingredientes{
+font-size:14px;
+color:#666;
+margin:10px 0;
+}
+
+.preco{
+font-weight:600;
+color:#ff6b00;
+}
+
+/* =================================================
+COMBOS
+================================================= */
+
+.combo-card{
+background:white;
+border-radius:16px;
+padding:20px;
+box-shadow:0 10px 25px rgba(0,0,0,0.15);
+text-align:center;
+transition:.3s;
+}
+
+.combo-card:hover{
+transform:translateY(-8px);
+box-shadow:0 15px 35px rgba(0,0,0,0.25);
+}
+
+.combo-card img{
+width:100%;
+height:200px;
+object-fit:contain;
+border-radius:12px;
+margin-bottom:10px;
+background:#fff7f2;
+padding:10px;
+}
+
+/* =================================================
+TAMANHOS
+================================================= */
+
+.tamanhos{
+display:flex;
+justify-content:center;
+gap:10px;
+margin:15px 0;
+}
+
+.tamanhos button{
+padding:12px 16px;
+font-size:16px;
+font-weight:bold;
+border:none;
+background:#eee;
+border-radius:8px;
+cursor:pointer;
+transition:.3s;
+}
+
+.tamanhos button:hover{
+background:#ff6b00;
+color:white;
+}
+
+.tamanhoSelecionado{
+background:#ff6b00!important;
+color:white;
+}
+
+
+/* =================================================
+CONFIGURAÇÕES PIZZA
+================================================= */
+
+
+.config-pizza{
+display:flex;
+justify-content:center;   /* centraliza horizontal */
+align-items:center;
+gap:20px;                 /* espaço entre os dois */
+margin:20px auto;
+width:100%;
+padding: 10px 0;
+}
+
+
+/* =================================================
+CONFIGURAÇÕES PIZZA
+================================================= */
+
+.area-meia,
+.area-borda{
+display:inline-flex;
+justify-content:center;
+align-items:center;
+margin:20px 10px;
+}
+
+.area-meia label,
+.area-borda label{
+background:white;
+padding:15px 22px;
+border-radius:30px;
+box-shadow:0 6px 18px rgba(0,0,0,0.12);
+display:flex;
+align-items:center;
+gap:12px;
+cursor:pointer;
+transition:.3s;
+font-weight:600;
+}
+
+.area-meia label:hover,
+.area-borda label:hover{
+transform:scale(1.05);
+box-shadow:0 10px 25px rgba(0,0,0,0.18);
+}
+
+/* =========================
+CONFIGURAÇÃO DA PIZZA
+========================= */
+
+.config-pizza{
+
+max-width:900px;
+
+margin:auto;
+
+}
+
+.config-card{
+
+background:#fff;
+
+padding:18px 20px;
+
+border-radius:14px;
+
+box-shadow:0 6px 20px rgba(0,0,0,0.08);
+
+display:flex;
+
+flex-direction:column;
+
+justify-content:center;
+
+min-height:70px;
+
+}
+
+.config-card label{
+
+margin:0;
+
+font-size:15px;
+
+}
+
+.config-card select{
+
+margin-top:4px;
+
+}
+
+
+
+
+/* =================================================
+BUSCA PIZZA
+================================================= */
+
+.busca-pizza{
+display:flex;
+justify-content:center;
+margin-bottom:30px;
+}
+
+.busca-pizza input{
+width:100%;
+max-width:500px;
+padding:14px 18px;
+border-radius:30px;
+border:none;
+box-shadow:0 6px 18px rgba(0,0,0,0.15);
+font-size:16px;
+outline:none;
+}
+
+/* =================================================
+FILTROS
+================================================= */
+
+.filtros{
+display:flex;
+justify-content:center;
+gap:12px;
+flex-wrap:wrap;
+margin-bottom:30px;
+}
+
+.filtros button{
+background:#eee;
+border:none;
+padding:10px 18px;
+border-radius:20px;
+cursor:pointer;
+font-weight:600;
+transition:.3s;
+}
+
+.filtros button:hover{
+background:#ff6b00;
+color:white;
+}
+
+/* =================================================
+BOTÃO BEBIDAS
+================================================= */
+
+.botao-bebida{
+background:#ff6b00;
+color:white;
+border:none;
+padding:10px 18px;
+border-radius:8px;
+font-weight:600;
+cursor:pointer;
+transition:.3s;
+}
+
+.botao-bebida:hover{
+background:#ff8c00;
+transform:scale(1.05);
+}
+
+/* =================================================
+SOBRE
+================================================= */
+
+.sobre-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:25px;
+}
+
+.sobre-item{
+background:white;
+padding:25px;
+border-radius:14px;
+box-shadow:0 8px 20px rgba(0,0,0,0.1);
+text-align:center;
+transition:.3s;
+}
+
+.sobre-item:hover{
+transform:translateY(-5px) scale(1.02);
+box-shadow:0 15px 30px rgba(0,0,0,0.2);
+}
+
+/* =================================================
+BOTÃO EXPANDIR CARDÁPIO
+================================================= */
+
+.botao-expandir{
+display:block;
+margin:40px auto;
+padding:14px 28px;
+font-size:16px;
+}
+
+/* =================================================
+FOOTER
+================================================= */
+
+footer{
+background:#111;
+color:white;
+text-align:center;
+padding:25px;
+margin-top:0;
+}
+
+footer a{
+color:#ff6b00;
+text-decoration:none;
+font-weight:600;
+}
+
+/* =================================================
+RESPONSIVO
+================================================= */
+
+@media(max-width:768px){
+
+.menu-mobile-btn{
+display:block;
+}
+
+nav ul{
+flex-direction:column;
+position:absolute;
+top:70px;
+right:0;
+background:#8b0000;
+width:200px;
+padding:20px;
+display:none;
+}
+
+.menu.ativo ul{
+display:flex;
+}
+
+.hero h1{
+font-size:28px;
+}
+
+.grid-pizzas{
+grid-template-columns:repeat(2,1fr);
+}
+
+.carrossel{
+height:220px;
+}
+
+.slides img{
+height:220px;
+}
+
+.tamanhos button{
+padding:10px 12px;
+font-size:14px;
+}
+
+.area-meia,
+.area-borda{
+display:flex;
+justify-content:center;
+margin:8px auto;
+width:100%;
+}
+.config-pizza{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+}
+.config-card{
+
+padding:16px;
+
+}
+
+.area-meia label,
+.area-borda label{
+padding:12px 18px;
+font-size:14px;
+}
+
+}
+
+
+

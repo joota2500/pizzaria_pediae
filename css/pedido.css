@@ -1,0 +1,423 @@
+/* =================================================
+PÁGINA FINALIZAR PEDIDO
+================================================= */
+
+main.container{
+
+max-width:1100px;
+background:#fff;
+
+padding:40px;
+
+border-radius:16px;
+
+box-shadow:0 15px 40px rgba(0,0,0,0.12);
+
+}
+
+
+
+/* =================================================
+HEADER
+================================================= */
+
+h2{
+
+color:#8b0000;
+font-weight:700;
+margin-bottom:6px;
+
+}
+
+.voltarCardapio{
+
+display:inline-block;
+
+margin-bottom:8px;
+
+font-size:14px;
+
+text-decoration:none;
+
+color:#ff6b00;
+
+font-weight:500;
+
+transition:.2s;
+
+}
+
+.voltarCardapio:hover{
+
+color:#ff8c00;
+text-decoration:underline;
+
+}
+
+.tempoEntrega{
+
+font-size:14px;
+color:#555;
+
+}
+
+.avisoEntrega{
+
+font-size:13px;
+color:#888;
+
+}
+
+
+
+/* =================================================
+CARDS
+================================================= */
+
+.card{
+
+border:none;
+
+border-radius:14px;
+
+box-shadow:0 8px 25px rgba(0,0,0,0.08);
+
+transition:.25s;
+
+}
+
+.card:hover{
+
+transform:translateY(-2px);
+
+box-shadow:0 12px 30px rgba(0,0,0,0.12);
+
+}
+
+
+
+/* =================================================
+FORMULÁRIO
+================================================= */
+
+.form-control,
+.form-select,
+textarea{
+
+border-radius:10px;
+
+font-size:15px;
+
+padding:12px 14px;
+
+border:1px solid #ddd;
+
+transition:.2s;
+
+}
+
+.form-control:focus,
+.form-select:focus,
+textarea:focus{
+
+border-color:#ff6b00;
+
+box-shadow:0 0 0 3px rgba(255,107,0,0.15);
+
+outline:none;
+
+}
+
+
+
+/* =================================================
+RESUMO DO PEDIDO
+================================================= */
+
+.resumoPedido{
+
+background:#fff4ea;
+
+padding:22px;
+
+border-radius:14px;
+
+font-size:15px;
+
+border:1px solid #ffe0c7;
+
+position:sticky;
+
+top:30px;
+
+}
+
+.resumoPedido h5{
+
+margin-bottom:14px;
+
+color:#8b0000;
+
+font-weight:600;
+
+}
+
+.resumoPedido p{
+
+margin:6px 0;
+
+color:#444;
+
+}
+
+
+
+/* =================================================
+DIVISÃO DO RESUMO
+================================================= */
+
+.resumoPedido hr{
+
+margin:12px 0;
+
+border-color:#ffd9bd;
+
+}
+
+
+
+/* =================================================
+ITENS DO PEDIDO
+================================================= */
+
+.resumoPedido .border{
+
+border:1px solid #ffd9bd !important;
+
+border-radius:10px;
+
+background:#fff;
+
+}
+
+
+
+/* =================================================
+TOTAL
+================================================= */
+
+#totalResumo{
+
+font-size:24px;
+
+font-weight:700;
+
+margin-top:10px;
+
+color:#ff6b00;
+
+background:#fff;
+
+padding:10px;
+
+border-radius:8px;
+
+border:1px dashed #ffc79a;
+
+text-align:center;
+
+}
+
+
+
+/* =================================================
+CUPOM
+================================================= */
+
+.areaCupom{
+
+display:flex;
+
+gap:10px;
+
+margin-bottom:15px;
+
+}
+
+.areaCupom input{
+
+flex:1;
+
+}
+
+.areaCupom button{
+
+background:#ff6b00;
+
+border:none;
+
+color:white;
+
+border-radius:10px;
+
+padding:9px 18px;
+
+font-size:14px;
+
+cursor:pointer;
+
+transition:.2s;
+
+font-weight:600;
+
+}
+
+.areaCupom button:hover{
+
+background:#ff8c00;
+
+transform:scale(1.03);
+
+}
+
+
+
+/* =================================================
+TROCO
+================================================= */
+
+#areaTroco{
+
+margin-bottom:15px;
+
+animation:fade .25s ease;
+
+}
+
+@keyframes fade{
+
+from{
+
+opacity:0;
+transform:translateY(-5px);
+
+}
+
+to{
+
+opacity:1;
+transform:translateY(0);
+
+}
+
+}
+
+
+
+/* =================================================
+BOTÃO FINALIZAR
+================================================= */
+
+.botaoEnviar{
+
+background:linear-gradient(135deg,#28a745,#2ecc71);
+
+color:white;
+
+border:none;
+
+padding:16px;
+
+width:100%;
+
+border-radius:12px;
+
+font-size:16px;
+
+font-weight:600;
+
+cursor:pointer;
+
+display:flex;
+
+align-items:center;
+
+justify-content:center;
+
+gap:10px;
+
+transition:.25s;
+
+letter-spacing:.4px;
+
+}
+
+.botaoEnviar:hover{
+
+transform:scale(1.02);
+
+background:linear-gradient(135deg,#1f8b38,#28a745);
+
+box-shadow:0 8px 18px rgba(0,0,0,0.2);
+
+}
+
+
+
+/* =================================================
+LOADER
+================================================= */
+
+.spinner-border{
+
+width:18px;
+
+height:18px;
+
+}
+
+
+
+/* =================================================
+RESPONSIVO
+================================================= */
+
+@media(max-width:992px){
+
+.resumoPedido{
+
+position:relative;
+
+margin-top:20px;
+
+}
+
+}
+
+@media(max-width:600px){
+
+main.container{
+
+padding:25px;
+
+}
+
+.areaCupom{
+
+flex-direction:column;
+
+}
+
+.areaCupom button{
+
+width:100%;
+
+}
+
+#totalResumo{
+
+font-size:20px;
+
+}
+
+}
