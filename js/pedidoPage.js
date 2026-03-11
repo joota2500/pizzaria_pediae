@@ -48,9 +48,7 @@ let desconto = 0
 if(typeof cupomAplicado !== "undefined" && cupomAplicado){
 
 if(cupomAplicado.valor < 100){
-
 desconto = subtotal * (cupomAplicado.valor/100)
-
 }
 
 }
@@ -182,16 +180,6 @@ modal.show()
 
 
 
-feedback.innerHTML=`
-<div class="spinner-border text-danger mb-3"
-style="width:3rem;height:3rem"></div>
-
-<h5 class="fw-bold">Enviando pedido...</h5>
-<p class="text-muted">Aguarde um instante</p>
-`
-
-
-
 // ==========================
 // DADOS CLIENTE
 // ==========================
@@ -308,30 +296,43 @@ ${obs}
 
 
 // ==========================
-// FEEDBACK VISUAL
+// MENSAGENS ANIMADAS
 // ==========================
 
-setTimeout(()=>{
+const mensagens = [
+
+"🍕 Preparando seu pedido...",
+"📡 Conectando com a pizzaria...",
+"🧾 Organizando os detalhes...",
+"❤️ Obrigado pela preferência!",
+"📲 Abrindo WhatsApp da pizzaria...",
+"😊 Nos vemos em breve!"
+
+]
+
+let indice = 0
+
+function mostrarMensagem(){
 
 feedback.innerHTML=`
-<div class="fs-1 mb-3">🍕</div>
+<div class="spinner-border text-danger mb-3"></div>
 
-<h5 class="fw-bold">Pedido enviado!</h5>
+<h5 class="fw-bold">${mensagens[indice]}</h5>
 
-<p class="text-muted mb-2">
-Tempo médio de entrega: <strong>30 a 50 minutos</strong>
-</p>
-
-<p class="text-muted">
-A pizzaria irá confirmar seu pedido no WhatsApp.
-</p>
-
-<p class="small text-muted mt-2">
-Abrindo WhatsApp...
-</p>
+<p class="text-muted">Aguarde um instante</p>
 `
 
-},2000)
+indice++
+
+if(indice < mensagens.length){
+
+setTimeout(mostrarMensagem,1000)
+
+}
+
+}
+
+mostrarMensagem()
 
 
 
@@ -345,11 +346,9 @@ const url=`https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(msg)}`
 
 window.location.href=url
 
-// limpar carrinho
-
 localStorage.removeItem("carrinho")
 localStorage.removeItem("pedido")
 
-},5000)
+},6000)
 
 }
