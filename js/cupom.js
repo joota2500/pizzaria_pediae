@@ -24,7 +24,7 @@ minimo:90
 
 FRETEGRATIS:{
 desconto:100,
-minimo:70,
+minimo:50,
 diasPermitidos:[1,2,3] // segunda terça quarta
 }
 
@@ -82,7 +82,6 @@ let subtotal = 0
 pedido.forEach(item=>{
 
 const qtd = item.qtd || 1
-
 subtotal += Number(item.preco) * Number(qtd)
 
 })
@@ -134,6 +133,29 @@ const subtotal = calcularSubtotal()
 
 
 // ================================
+// VERIFICAR DIA DA SEMANA (frete)
+// ================================
+
+if(codigo === "FRETEGRATIS"){
+
+const hoje = new Date().getDay()
+
+if(!regra.diasPermitidos.includes(hoje)){
+
+toastCupom(
+"Frete grátis disponível apenas segunda, terça e quarta",
+"warning"
+)
+
+return
+
+}
+
+}
+
+
+
+// ================================
 // VERIFICAR VALOR MÍNIMO
 // ================================
 
@@ -151,36 +173,12 @@ return
 
 
 // ================================
-// VERIFICAR DIA DA SEMANA
-// ================================
-
-if(regra.diasPermitidos){
-
-const hoje = new Date().getDay()
-
-if(!regra.diasPermitidos.includes(hoje)){
-
-toastCupom(
-"Cupom de frete grátis disponível apenas segunda, terça e quarta",
-"warning"
-)
-
-return
-
-}
-
-}
-
-
-
-// ================================
 // SALVAR CUPOM
 // ================================
 
 cupomAplicado = {
 
 codigo: codigo,
-
 valor: regra.desconto
 
 }
