@@ -42,7 +42,6 @@ maxSabores:2
 // =================================================
 // TAXA DE ENTREGA POR BAIRRO
 // =================================================
-// Valores de exemplo (1 a 8)
 
 taxaEntrega:{
 
@@ -64,7 +63,7 @@ conjuntoesperanca:7
 
 
 // =================================================
-// NOMES DOS BAIRROS (EXIBIÇÃO NO SITE)
+// NOMES DOS BAIRROS
 // =================================================
 
 bairros:{
@@ -103,21 +102,23 @@ fecha:"22:00"
 // =================================================
 // CUPONS PROMOCIONAIS
 // =================================================
-//
-// Valores funcionam assim:
-//
-// número menor que 100 = desconto em %
-//
-// número igual ou maior que 100 = regra especial
-//
-// FRETEGRATIS = remove frete
-//
 
 cupons:{
 
-PIZZA10:10,      // 10% desconto
-PIZZA20:20,      // 20% desconto
-FRETEGRATIS:100  // frete grátis
+PIZZA10:{
+desconto:10,
+minimo:70
+},
+
+PIZZA20:{
+desconto:20,
+minimo:90
+},
+
+FRETEGRATIS:{
+freteGratis:true,
+diasPermitidos:[1,2,3] // segunda terça quarta
+}
 
 }
 
@@ -127,7 +128,6 @@ FRETEGRATIS:100  // frete grátis
 
 // =================================================
 // SEGURANÇA
-// Impede alteração acidental das configurações
 // =================================================
 
 Object.freeze(CONFIG)
