@@ -5,7 +5,7 @@
 let carrinho = JSON.parse(localStorage.getItem("carrinho")) || []
 
 const LIMITE_ITENS = 30
-const EXPIRACAO_CARRINHO = 1000 * 60 * 60 * 6 // 6h
+const EXPIRACAO_CARRINHO = 1000 * 60 * 60 * 1 // 1 horas
 
 
 
@@ -14,11 +14,9 @@ const EXPIRACAO_CARRINHO = 1000 * 60 * 60 * 6 // 6h
 // ================================
 
 function sanitizar(texto){
-
 return String(texto)
 .replace(/</g,"&lt;")
 .replace(/>/g,"&gt;")
-
 }
 
 
@@ -28,12 +26,10 @@ return String(texto)
 // ================================
 
 function formatarMoeda(valor){
-
 return valor.toLocaleString("pt-BR",{
 style:"currency",
 currency:"BRL"
 })
-
 }
 
 
@@ -66,7 +62,7 @@ const agora = Date.now()
 if(agora - hora > EXPIRACAO_CARRINHO){
 
 localStorage.removeItem("carrinho")
-carrinho = []
+carrinho=[]
 
 }
 
@@ -87,7 +83,7 @@ const toast = document.createElement("div")
 toast.className=
 `toast align-items-center text-bg-${tipo} border-0 position-fixed bottom-0 end-0 m-3`
 
-toast.innerHTML = `
+toast.innerHTML=`
 <div class="d-flex">
 <div class="toast-body">
 ${msg}
@@ -129,7 +125,7 @@ return
 
 
 
-// animação visual
+// animação
 
 if(botao && typeof animarProdutoCarrinho === "function"){
 animarProdutoCarrinho(botao)
@@ -137,17 +133,17 @@ animarProdutoCarrinho(botao)
 
 
 
-// criar item seguro
+// criar item
 
 const novoItem = {
 
-tipo: item.tipo || "pizza",
-nome: sanitizar(item.nome || ""),
-nome2: sanitizar(item.nome2 || ""),
-tamanho: item.tamanho || "",
-borda: item.borda || "nenhuma",
-preco: item.preco,
-qtd: 1
+tipo:item.tipo || "pizza",
+nome:sanitizar(item.nome || ""),
+nome2:sanitizar(item.nome2 || ""),
+tamanho:item.tamanho || "",
+borda:item.borda || "nenhuma",
+preco:item.preco,
+qtd:1
 
 }
 
@@ -155,12 +151,12 @@ qtd: 1
 
 // verificar duplicação
 
-const existente = carrinho.find(p =>
+const existente = carrinho.find(p=>
 
-p.nome === novoItem.nome &&
-p.nome2 === novoItem.nome2 &&
-p.tamanho === novoItem.tamanho &&
-p.borda === novoItem.borda
+p.nome===novoItem.nome &&
+p.nome2===novoItem.nome2 &&
+p.tamanho===novoItem.tamanho &&
+p.borda===novoItem.borda
 
 )
 
@@ -184,7 +180,7 @@ notificar(`✔ ${novoItem.nome} adicionada`)
 
 
 
-if(typeof abrirCarrinho === "function"){
+if(typeof abrirCarrinho==="function"){
 abrirCarrinho()
 }
 
@@ -252,23 +248,54 @@ atualizarCarrinhoLista()
 
 
 // ================================
-// LIMPAR CARRINHO
+// LIMPAR CARRINHO (MANUAL)
 // ================================
 
 function limparCarrinho(){
 
 if(!confirm("Deseja limpar todo o carrinho?")) return
 
-carrinho = []
+carrinho=[]
 
 salvarCarrinho()
 atualizarCarrinhoLista()
 
+resetarConfiguracoesPizza()
+
+}
+
+
+
+// ================================
+// LIMPAR CARRINHO AUTOMÁTICO
+// ================================
+
+function limparCarrinhoAutomatico(){
+
+carrinho=[]
+
+localStorage.removeItem("carrinho")
+localStorage.removeItem("pedido")
+
+atualizarCarrinhoLista()
+
+resetarConfiguracoesPizza()
+
+}
+
+
+
+// ================================
+// RESETAR CONFIGURAÇÕES PIZZA
+// ================================
+
+function resetarConfiguracoesPizza(){
+
 const meia = document.getElementById("meiaPizza")
-if(meia) meia.checked = false
+if(meia) meia.checked=false
 
 const borda = document.getElementById("bordaPizza")
-if(borda) borda.value = "nenhuma"
+if(borda) borda.value="nenhuma"
 
 }
 
@@ -280,9 +307,9 @@ if(borda) borda.value = "nenhuma"
 
 function atualizarCarrinhoLista(){
 
-const lista = document.getElementById("listaCarrinho")
-const contador = document.getElementById("contadorCarrinho")
-const totalElemento = document.getElementById("totalCarrinho")
+const lista=document.getElementById("listaCarrinho")
+const contador=document.getElementById("contadorCarrinho")
+const totalElemento=document.getElementById("totalCarrinho")
 
 if(!lista) return
 
@@ -295,38 +322,38 @@ let quantidadeTotal=0
 
 carrinho.forEach((item,index)=>{
 
-const subtotal = item.preco * item.qtd
+const subtotal=item.preco*item.qtd
 
-total += subtotal
-quantidadeTotal += item.qtd
+total+=subtotal
+quantidadeTotal+=item.qtd
 
 
 
-let nomePizza = item.nome
+let nomePizza=item.nome
 
 if(item.nome2){
 
-nomePizza = `${item.nome} / ${item.nome2}`
+nomePizza=`${item.nome} / ${item.nome2}`
 
 }
 
 
 
-let bordaTexto = ""
+let bordaTexto=""
 
-if(item.borda && item.borda !== "nenhuma"){
+if(item.borda && item.borda!=="nenhuma"){
 
-bordaTexto = `<small class="text-muted">Borda: ${item.borda}</small>`
+bordaTexto=`<small class="text-muted">Borda: ${item.borda}</small>`
 
 }
 
 
 
-const div = document.createElement("div")
+const div=document.createElement("div")
 
 div.className="item-carrinho"
 
-div.innerHTML = `
+div.innerHTML=`
 
 <div class="info">
 
@@ -375,9 +402,9 @@ lista.appendChild(div)
 
 // botão limpar
 
-if(carrinho.length > 0){
+if(carrinho.length>0){
 
-const btn = document.createElement("button")
+const btn=document.createElement("button")
 
 btn.className="botao-limpar-carrinho"
 
@@ -395,12 +422,14 @@ lista.appendChild(btn)
 
 if(contador){
 
-contador.innerText = quantidadeTotal
+contador.innerText=quantidadeTotal
 
 contador.style.transform="scale(1.3)"
 
 setTimeout(()=>{
+
 contador.style.transform="scale(1)"
+
 },200)
 
 }
@@ -411,62 +440,10 @@ contador.style.transform="scale(1)"
 
 if(totalElemento){
 
-totalElemento.innerText =
-"Total: " + formatarMoeda(total)
+totalElemento.innerText=
+"Total: "+formatarMoeda(total)
 
 }
-
-}
-
-
-
-// ================================
-// ANIMAÇÃO PRODUTO
-// ================================
-
-function animarProdutoCarrinho(botao){
-
-const card = botao.closest(".pizza-card")
-
-if(!card) return
-
-const img = card.querySelector("img")
-const carrinhoIcone = document.getElementById("iconeCarrinho")
-
-if(!img || !carrinhoIcone) return
-
-const imgRect = img.getBoundingClientRect()
-const cartRect = carrinhoIcone.getBoundingClientRect()
-
-const startX = imgRect.left + imgRect.width/2
-const startY = imgRect.top + imgRect.height/2
-
-const endX = cartRect.left + cartRect.width/2
-const endY = cartRect.top + cartRect.height/2
-
-const clone = img.cloneNode(true)
-
-clone.style.position="fixed"
-clone.style.left=startX+"px"
-clone.style.top=startY+"px"
-clone.style.width="80px"
-clone.style.height="80px"
-clone.style.borderRadius="50%"
-clone.style.pointerEvents="none"
-clone.style.zIndex="99999"
-
-document.body.appendChild(clone)
-
-requestAnimationFrame(()=>{
-
-clone.style.transform=
-`translate(${endX-startX}px,${endY-startY}px) scale(.2)`
-
-clone.style.opacity="0"
-
-})
-
-setTimeout(()=>clone.remove(),700)
 
 }
 
@@ -478,17 +455,18 @@ setTimeout(()=>clone.remove(),700)
 
 function irParaPedido(){
 
-if(carrinho.length === 0){
+if(carrinho.length===0){
 
 notificar("Seu carrinho está vazio","danger")
-
 return
 
 }
 
 
 
-let total = carrinho.reduce((t,i)=>t+(i.preco*i.qtd),0)
+let total=carrinho.reduce((t,i)=>t+(i.preco*i.qtd),0)
+
+
 
 if(window.CONFIG && CONFIG.pedido && total < CONFIG.pedido.valorMinimo){
 
@@ -503,7 +481,7 @@ return
 
 
 
-localStorage.setItem("pedido", JSON.stringify(carrinho))
+localStorage.setItem("pedido",JSON.stringify(carrinho))
 
 window.location.href="pedido.html"
 
@@ -529,6 +507,7 @@ atualizarCarrinhoLista()
 // FUNÇÕES GLOBAIS
 // ================================
 
-window.adicionarCarrinho = adicionarCarrinho
-window.limparCarrinho = limparCarrinho
-window.irParaPedido = irParaPedido
+window.adicionarCarrinho=adicionarCarrinho
+window.limparCarrinho=limparCarrinho
+window.limparCarrinhoAutomatico=limparCarrinhoAutomatico
+window.irParaPedido=irParaPedido
