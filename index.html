@@ -9,19 +9,21 @@
 <title>PeçaPizzaOnline</title>
 
 <meta name="description" content="Peça pizza online de forma rápida. Pizzaria com entrega rápida e combos especiais.">
+<meta name="theme-color" content="#c62828">
 
 <!-- BOOTSTRAP -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-<!-- CSS DO PROJETO -->
-<link rel="stylesheet" href="css/style.css">
-
 <!-- FONT -->
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+
+<!-- CSS -->
+<link rel="stylesheet" href="css/style.css">
 
 </head>
 
 <body>
+
 
 <!-- ================= HEADER ================= -->
 
@@ -29,18 +31,31 @@
 
 <div class="container-header">
 
-<img src="img/logo/imgLogoPizzaria.png" class="logo" alt="Logo da pizzaria">
+<img src="img/logo/imgLogoPizzaria.png"
+class="logo"
+alt="Logo PeçaPizzaOnline"
+loading="lazy">
 
-<button class="menu-mobile-btn" onclick="toggleMenu()">☰</button>
+<button class="menu-mobile-btn"
+onclick="toggleMenu()"
+aria-label="Abrir menu">
 
-<nav class="menu" id="menu" aria-label="Menu principal">
+☰
+
+</button>
+
+<nav class="menu"
+id="menu"
+aria-label="Menu principal">
 
 <ul>
+
 <li><a href="#inicio">Início</a></li>
 <li><a href="#promocoes">Promoções</a></li>
 <li><a href="#combos">Combos</a></li>
 <li><a href="#cardapio">Cardápio</a></li>
 <li><a href="#contato">Contato</a></li>
+
 </ul>
 
 </nav>
@@ -52,12 +67,20 @@
 </header>
 
 
-<!-- ================= CARRINHO ================= -->
 
-<div class="carrinho-flutuante" id="iconeCarrinho" onclick="abrirCarrinho()" aria-label="Abrir carrinho">
+<!-- ================= CARRINHO FLUTUANTE ================= -->
+
+<div class="carrinho-flutuante"
+id="iconeCarrinho"
+onclick="abrirCarrinho()"
+aria-label="Abrir carrinho">
+
 🛒
+
 <span id="contadorCarrinho">0</span>
+
 </div>
+
 
 
 <!-- ================= WHATSAPP ================= -->
@@ -65,9 +88,12 @@
 <a href="https://wa.me/5585989214864"
 class="whatsapp-flutuante"
 target="_blank"
-aria-label="WhatsApp da pizzaria">
+aria-label="Abrir WhatsApp da pizzaria">
+
 💬
+
 </a>
+
 
 
 <!-- ================= PAINEL PEDIDO ================= -->
@@ -75,8 +101,13 @@ aria-label="WhatsApp da pizzaria">
 <aside class="painel-pedido" id="painelPedido">
 
 <div class="painel-header">
+
 <h3>Seu Pedido</h3>
-<button onclick="fecharCarrinho()">✕</button>
+
+<button onclick="fecharCarrinho()" aria-label="Fechar carrinho">
+✕
+</button>
+
 </div>
 
 <div class="painel-conteudo">
@@ -96,9 +127,11 @@ Finalizar Pedido
 </aside>
 
 
+
 <!-- ================= MAIN ================= -->
 
 <main>
+
 
 
 <!-- HERO -->
@@ -120,7 +153,8 @@ Ver Cardápio
 </section>
 
 
-<!-- PROMOÇÕES -->
+
+<!-- ================= PROMOÇÕES ================= -->
 
 <section id="promocoes">
 
@@ -130,10 +164,10 @@ Ver Cardápio
 
 <div class="slides">
 
-<img src="img/carrossel/imgCarrossel1.jpg" alt="Promoção pizza">
-<img src="img/carrossel/imgCarrossel2.jpg" alt="Promoção pizza">
-<img src="img/carrossel/imgCarrossel3.jpg" alt="Promoção pizza">
-<img src="img/carrossel/imgCarrossel4.jpg" alt="Promoção pizza">
+<img src="img/carrossel/imgCarrossel1.jpg" alt="Promoção pizza 1" loading="lazy">
+<img src="img/carrossel/imgCarrossel2.jpg" alt="Promoção pizza 2" loading="lazy">
+<img src="img/carrossel/imgCarrossel3.jpg" alt="Promoção pizza 3" loading="lazy">
+<img src="img/carrossel/imgCarrossel4.jpg" alt="Promoção pizza 4" loading="lazy">
 
 </div>
 
@@ -142,7 +176,8 @@ Ver Cardápio
 </section>
 
 
-<!-- COMBOS -->
+
+<!-- ================= COMBOS ================= -->
 
 <section id="combos">
 
@@ -152,7 +187,7 @@ Ver Cardápio
 
 <article class="combo-card">
 
-<img src="img/combos/comboCalabresa.jpg" alt="Combo Calabresa">
+<img src="img/combos/comboCalabresa.jpg" alt="Combo Calabresa" loading="lazy">
 
 <h3>Combo Calabresa</h3>
 
@@ -166,9 +201,10 @@ Adicionar Combo
 </article>
 
 
+
 <article class="combo-card">
 
-<img src="img/combos/comboPortuguesa.jpg" alt="Combo Portuguesa">
+<img src="img/combos/comboPortuguesa.jpg" alt="Combo Portuguesa" loading="lazy">
 
 <h3>Combo Portuguesa</h3>
 
@@ -182,14 +218,14 @@ Adicionar Combo
 </article>
 
 
+
 <article class="combo-card">
 
-<img src="img/combos/comboFrango.jpg" alt="Combo Frango">
+<img src="img/combos/comboFrango.jpg" alt="Combo Frango" loading="lazy">
 
 <h3>Combo Frango</h3>
 
 <p>Pizza média frango + Refrigerante 1L</p>
-<br>    
 
 <button class="btn btn-warning"
 onclick="adicionarCarrinho({nome:'Combo Frango',preco:47},this)">
@@ -199,15 +235,14 @@ Adicionar Combo
 </article>
 
 
+
 <article class="combo-card">
 
-<img src="img/combos/comboFamilia.jpg" alt="Combo Família">
+<img src="img/combos/comboFamilia.jpg" alt="Combo Família" loading="lazy">
 
 <h3>Combo Família</h3>
 
-<p>Pizza grande <br>+ Coca Cola 2L</p>
-<br>
-
+<p>Pizza grande + Coca Cola 2L</p>
 
 <button class="btn btn-warning"
 onclick="adicionarCarrinho({nome:'Combo Família',preco:65},this)">
@@ -221,7 +256,8 @@ Adicionar Combo
 </section>
 
 
-<!-- MAIS PEDIDAS -->
+
+<!-- ================= MAIS PEDIDAS ================= -->
 
 <section id="destaques">
 
@@ -231,7 +267,7 @@ Adicionar Combo
 
 <article class="pizza-card">
 
-<img src="img/pizzas/imgPizzaMaisPedidas1.jpg" alt="Pizza Calabresa">
+<img src="img/pizzas/imgPizzaMaisPedidas1.jpg" alt="Pizza Calabresa" loading="lazy">
 
 <h3>Calabresa</h3>
 
@@ -250,14 +286,15 @@ Molho de tomate, mussarela, calabresa e cebola
 </article>
 
 
+
 <article class="pizza-card">
 
-<img src="img/pizzas/imgPizzaMaisPedidas2.jpg" alt="Pizza Portuguesa">
+<img src="img/pizzas/imgPizzaMaisPedidas2.jpg" alt="Pizza Portuguesa" loading="lazy">
 
 <h3>Portuguesa</h3>
 
 <p class="ingredientes">
-Presunto, ovos, cebola, azeitona
+Presunto, ovos, cebola e azeitona
 </p>
 
 <div class="tamanhos">
@@ -271,9 +308,10 @@ Presunto, ovos, cebola, azeitona
 </article>
 
 
+
 <article class="pizza-card">
 
-<img src="img/pizzas/imgPizzaMaisPedidas3.jpg" alt="Pizza quatro queijos">
+<img src="img/pizzas/imgPizzaMaisPedidas3.jpg" alt="Pizza 4 Queijos" loading="lazy">
 
 <h3>4 Queijos</h3>
 
@@ -296,75 +334,8 @@ Mussarela, provolone, parmesão e gorgonzola
 </section>
 
 
-<!-- CONFIGURAÇÕES PIZZA -->
 
-<section class="config-pizza container mt-5">
-
-<div class="row g-4 justify-content-center">
-
-<!-- METADE / METADE -->
-
-<div class="col-lg-5 col-md-6">
-
-<div class="config-card">
-
-<div class="form-check form-switch">
-
-<input class="form-check-input"
-type="checkbox"
-id="meiaPizza">
-
-<label class="form-check-label fw-semibold" for="meiaPizza">
-
-🍕 Pizza metade / <br>metade (2 sabores)
-
-</label>
-
-</div>
-
-</div>
-
-</div>
-
-
-<!-- BORDA RECHEADA -->
-
-<div class="col-lg-5 col-md-6">
-
-<div class="config-card">
-
-<label for="bordaPizza" class="form-label fw-semibold mb-1">
-
-🧀 Borda recheada
-
-</label>
-
-<select id="bordaPizza" class="form-select">
-
-<option value="nenhuma">
-Sem borda
-</option>
-
-<option value="cheddar">
-Cheddar +R$5
-</option>
-
-<option value="catupiry">
-Catupiry +R$6
-</option>
-
-</select>
-
-</div>
-
-</div>
-
-</div>
-
-</section>
-
-
-<!-- CARDÁPIO -->
+<!-- ================= CARDÁPIO ================= -->
 
 <section id="cardapio">
 
@@ -397,7 +368,8 @@ Ver cardápio completo
 </section>
 
 
-<!-- BEBIDAS -->
+
+<!-- ================= BEBIDAS ================= -->
 
 <section id="bebidas">
 
@@ -412,7 +384,73 @@ Ver todas bebidas
 </section>
 
 
-<!-- SOBRE -->
+
+<!-- ================= CLIENTES INSTAGRAM (ETAPA 6.0) ================= -->
+
+<!-- ================= CLIENTES INSTAGRAM ================= -->
+
+<section id="clientes" class="clientes-instagram">
+
+<div class="container">
+
+<h2 class="text-center mb-4">
+📸 Clientes Satisfeitos
+</h2>
+
+<p class="text-center text-muted mb-5">
+Veja nossos clientes aproveitando nossas pizzas 🍕
+</p>
+
+<div class="row justify-content-center g-4">
+
+<!-- POST 1 -->
+
+<div class="col-md-4">
+
+<blockquote
+class="instagram-media"
+data-instgrm-permalink="https://www.instagram.com/p/DRp_4uIEq1L/"
+data-instgrm-version="14">
+
+</blockquote>
+
+</div>
+
+<!-- POST 2 -->
+
+<div class="col-md-4">
+
+<blockquote
+class="instagram-media"
+data-instgrm-permalink="https://www.instagram.com/p/DRDs36CDvHq/"
+data-instgrm-version="14">
+
+</blockquote>
+
+</div>
+
+<!-- POST 3 -->
+
+<div class="col-md-4">
+
+<blockquote
+class="instagram-media"
+data-instgrm-permalink="https://www.instagram.com/p/DRkR4hXjRGZ/"
+data-instgrm-version="14">
+
+</blockquote>
+
+</div>
+
+</div>
+
+</div>
+
+</section>
+
+
+
+<!-- ================= SOBRE ================= -->
 
 <section id="sobre">
 
@@ -444,7 +482,10 @@ Ver todas bebidas
 
 </section>
 
+
+
 </main>
+
 
 
 <footer id="contato">
@@ -459,7 +500,8 @@ DevJoota2500
 </footer>
 
 
-<!-- JS BOOTSTRAP -->
+
+<!-- ================= JS ================= -->
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -477,6 +519,7 @@ DevJoota2500
 <script src="js/horario.js" defer></script>
 <script src="js/entrega.js" defer></script>
 <script src="js/cupom.js" defer></script>
+<script async src="https://www.instagram.com/embed.js"></script>
 
 </body>
 </html>

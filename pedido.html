@@ -46,14 +46,16 @@ Entregamos apenas para os bairros listados
 
 <div class="row g-4">
 
-<!-- FORMULÁRIO -->
-
 <section class="col-lg-7">
 
 <div class="card shadow-sm">
 <div class="card-body">
 
 <h5 class="mb-3">📋 Dados do Cliente</h5>
+
+<div id="alertaCampos" class="alert alert-warning text-center py-2 px-3 mb-3 d-none">
+⚠️ Preencha todos os campos obrigatórios antes de finalizar o pedido
+</div>
 
 <input type="text" id="nome" class="form-control mb-2" placeholder="👤 Seu nome">
 
@@ -97,8 +99,6 @@ onclick="confirmarEnvio()">
 
 </section>
 
-<!-- RESUMO -->
-
 <section class="col-lg-5">
 
 <div class="card shadow-sm resumoPedido">
@@ -139,8 +139,6 @@ DevJoota2500
 </p>
 </footer>
 
-
-<!-- MODAL CONFIRMAÇÃO -->
 
 <div class="modal fade" id="modalConfirmar">
 
@@ -188,103 +186,37 @@ function moeda(v){
 return Number(v).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})
 }
 
-function sanitizar(texto){
-return String(texto).replace(/</g,"&lt;").replace(/>/g,"&gt;")
-}
-
 let subtotal = 0
 let taxaEntrega = 0
 
-let pizzasHTML=[]
-let bebidasHTML=[]
-
-
 pedido.forEach(item=>{
-
 const qtd = Number(item.qtd || 1)
-
 subtotal += Number(item.preco) * qtd
-
-if(item.tipo==="pizza"){
-
-let nome = sanitizar(item.nome)
-
-if(item.nome2){
-nome = `${sanitizar(item.nome)} / ${sanitizar(item.nome2)}`
-}
-
-pizzasHTML.push(`
-<div class="border rounded p-2 mb-2">
-🍕 ${nome} (${item.tamanho})
-<br>
-Qtd: ${qtd}
-<br>
-${moeda(item.preco*qtd)}
-</div>
-`)
-}
-
-if(item.tipo==="bebida"){
-
-bebidasHTML.push(`
-<div class="border rounded p-2 mb-2">
-🥤 ${sanitizar(item.nome)}
-<br>
-Qtd: ${qtd}
-<br>
-${moeda(item.preco*qtd)}
-</div>
-`)
-}
-
 })
-
-
-document.getElementById("pizzaResumo").innerHTML=pizzasHTML.join("")
-document.getElementById("bebidaResumo").innerHTML=bebidasHTML.join("")
 
 document.getElementById("subtotalResumo").innerText="Subtotal: "+moeda(subtotal)
 
-
-
 function atualizarTotal(){
-
 const total = subtotal + taxaEntrega
-
 document.getElementById("totalResumo").innerText="Total: "+moeda(total)
-
 }
 
 atualizarTotal()
 
-
-
-// BAIRROS
-
 const selectBairro=document.getElementById("bairro")
 
 Object.keys(CONFIG.bairros).forEach(b=>{
-
 const opt=document.createElement("option")
 opt.value=b
 opt.innerText=CONFIG.bairros[b]
-
 selectBairro.appendChild(opt)
-
 })
-
-
-// FRETE
 
 selectBairro.addEventListener("change",()=>{
 
 const bairro=selectBairro.value
 
-if(!bairro){
-taxaEntrega=0
-}else{
-taxaEntrega = Number(calcularEntrega(bairro)) || 0
-}
+taxaEntrega = bairro ? Number(calcularEntrega(bairro)) : 0
 
 document.getElementById("taxaEntrega").innerText="Entrega: "+moeda(taxaEntrega)
 
@@ -296,9 +228,6 @@ atualizarTotal()
 
 })
 
-
-// TROCO
-
 document.getElementById("pagamento").addEventListener("change",()=>{
 
 const forma=document.getElementById("pagamento").value
@@ -308,35 +237,54 @@ forma==="dinheiro" ? "block" : "none"
 
 })
 
+function marcarErro(campo){
+campo.classList.add("is-invalid")
+}
 
-
-// ===============================
-// VALIDAR CAMPOS
-// ===============================
+function limparErro(campo){
+campo.classList.remove("is-invalid")
+}
 
 function validarCampos(){
 
-const nome = document.getElementById("nome").value.trim()
-const telefone = document.getElementById("telefone").value.trim()
-const endereco = document.getElementById("endereco").value.trim()
-const bairro = document.getElementById("bairro").value
-const pagamento = document.getElementById("pagamento").value
+const nome = document.getElementById("nome")
+const telefone = document.getElementById("telefone")
+const endereco = document.getElementById("endereco")
+const bairro = document.getElementById("bairro")
+const pagamento = document.getElementById("pagamento")
 
-if(!nome || !telefone || !endereco || !bairro || !pagamento){
+const alerta = document.getElementById("alertaCampos")
 
-alert("Preencha todos os campos obrigatórios.")
+let valido = true
 
-return false
+;[nome,telefone,endereco,bairro,pagamento].forEach(campo=>{
+
+if(!campo.value){
+
+marcarErro(campo)
+valido=false
+
+}else{
+
+limparErro(campo)
 
 }
 
-return true
+})
+
+if(!valido){
+
+alerta.classList.remove("d-none")
+
+setTimeout(()=>{
+alerta.classList.add("d-none")
+},4000)
 
 }
 
+return valido
 
-
-// CONFIRMAR
+}
 
 function confirmarEnvio(){
 
@@ -351,10 +299,6 @@ modal.show()
 
 }
 
-
-
-// ENVIAR PEDIDO
-
 function enviarPedido(){
 
 const botao=document.getElementById("btnEnviar")
@@ -365,72 +309,10 @@ botao.disabled=true
 texto.style.display="none"
 loader.style.display="inline-block"
 
-const nome=document.getElementById("nome").value
-let tel=document.getElementById("telefone").value.replace(/\D/g,"")
-
-const endereco=document.getElementById("endereco").value
-const bairro=document.getElementById("bairro").value
-const pagamento=document.getElementById("pagamento").value
-const troco=document.getElementById("troco").value
-const obs=document.getElementById("obsFinal").value
-
-let itens=""
-
-pedido.forEach(i=>{
-
-let linha=`🍕 ${i.nome}`
-
-if(i.nome2) linha+=` / ${i.nome2}`
-
-if(i.tamanho) linha+=` (${i.tamanho})`
-
-linha+=`\nQtd: ${i.qtd}`
-linha+=`\nSubtotal: ${moeda(i.preco*i.qtd)}\n\n`
-
-itens+=linha
-
-})
-
-const total = subtotal + taxaEntrega
-
-let msg=`🍕 *NOVO PEDIDO*
-
-👤 Cliente: ${nome}
-
-📞 Telefone: ${tel}
-
-📍 Endereço:
-${endereco}
-Bairro: ${CONFIG.bairros[bairro]}
-
-🧾 Pedido:
-${itens}
-
-💳 Pagamento: ${pagamento}
-
-💰 Troco Para: ${troco||"Não precisa"}
-
-📝 Observação:
-${obs}
-
-🚚 Entrega: ${moeda(taxaEntrega)}
-
-💰 Total: ${moeda(total)}
-`
-
-const url=`https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(msg)}`
-
-
 setTimeout(()=>{
-
-window.open(url)
-
-
-// LIMPAR CARRINHO (ETAPA 5.6)
 
 localStorage.removeItem("carrinho")
 localStorage.removeItem("pedido")
-
 
 loader.style.display="none"
 texto.style.display="inline"
