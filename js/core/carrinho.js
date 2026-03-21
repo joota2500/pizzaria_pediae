@@ -66,10 +66,13 @@ notificar("⏳ Carrinho expirado","warning")
 
 
 // ================================
-// TOAST (🔥 CORRIGIDO)
+// TOAST (TOPO)
 // ================================
 
 function notificar(msg,tipo="success"){
+
+// 🔥 remove QUALQUER toast existente
+document.querySelectorAll(".toast").forEach(t=>t.remove())
 
 if(!window.bootstrap) return
 
@@ -95,7 +98,6 @@ t.show()
 setTimeout(()=>toast.remove(),4000)
 
 }
-
 
 
 // ================================
@@ -137,8 +139,8 @@ const bola = document.createElement("div")
 bola.style.position="fixed"
 bola.style.left = rectBtn.left + "px"
 bola.style.top = rectBtn.top + "px"
-bola.style.width="14px"
-bola.style.height="14px"
+bola.style.width="12px"
+bola.style.height="12px"
 bola.style.background="#ff6b00"
 bola.style.borderRadius="50%"
 bola.style.zIndex="99999"
@@ -208,8 +210,8 @@ salvarCarrinho()
 atualizarCarrinhoLista()
 
 notificar(`✔ ${novoItem.nome} adicionada`)
-abrirCarrinho()
 
+// ❌ NÃO abre automático
 }
 
 
@@ -259,7 +261,7 @@ atualizarCarrinhoLista()
 
 
 // ================================
-// RENDER
+// RENDER (MELHORADO)
 // ================================
 
 function atualizarCarrinhoLista(){
@@ -309,21 +311,18 @@ lista.appendChild(div)
 if(contador) contador.innerText=qtdTotal
 if(totalElemento) totalElemento.innerText="Total: "+formatarMoeda(total)
 
-// 🔥 AÇÕES FIXAS
 if(carrinho.length > 0){
 
 const acoes = document.createElement("div")
 acoes.className="acoes-carrinho"
 
 acoes.innerHTML=`
-<button class="botao-limpar-carrinho" onclick="limparCarrinho()">
-🗑 Limpar carrinho
-</button>
-
-<button class="botao-enviar" onclick="irParaPedido()">
-Finalizar pedido
-</button>
+<button class="botao-limpar-carrinho">🗑 Limpar carrinho</button>
+<button class="botao-enviar">Finalizar pedido</button>
 `
+
+acoes.querySelector(".botao-limpar-carrinho").onclick=limparCarrinho
+acoes.querySelector(".botao-enviar").onclick=irParaPedido
 
 lista.appendChild(acoes)
 
@@ -358,6 +357,20 @@ window.location.href="pedido.html"
 document.addEventListener("DOMContentLoaded",()=>{
 verificarExpiracao()
 atualizarCarrinhoLista()
+})
+
+document.addEventListener("click",(e)=>{
+const painel = document.getElementById("painelPedido")
+const botao = document.getElementById("iconeCarrinho")
+if(!painel || !botao) return
+if(
+painel.classList.contains("ativo") &&
+!painel.contains(e.target) &&
+!botao.contains(e.target)
+){
+fecharCarrinho()
+}
+
 })
 
 

@@ -1,3 +1,7 @@
+/* ================================
+BOTÃO FLUTUANTE
+================================ */
+
 .carrinho-flutuante{
 position:fixed;
 right:20px;
@@ -33,6 +37,8 @@ border-radius:50%;
 font-weight:bold;
 }
 
+
+
 /* ================================
 PAINEL
 ================================ */
@@ -55,7 +61,11 @@ flex-direction:column;
 right:0;
 }
 
-/* HEADER */
+
+
+/* ================================
+HEADER
+================================ */
 
 .painel-header{
 display:flex;
@@ -76,7 +86,11 @@ font-size:20px;
 cursor:pointer;
 }
 
-/* CONTEÚDO */
+
+
+/* ================================
+CONTEÚDO
+================================ */
 
 .painel-conteudo{
 padding:15px;
@@ -85,22 +99,25 @@ flex:1;
 display:flex;
 flex-direction:column;
 gap:12px;
-
-/* 🔥 espaço pro menu-bottom */
-padding-bottom:90px;
+padding-bottom:100px; /* espaço pro menu */
 }
 
-/* ITEM DO CARRINHO */
+
+
+/* ================================
+ITEM DO CARRINHO (🔥 CORRIGIDO)
+================================ */
 
 .item-carrinho{
 display:grid;
-grid-template-columns:1fr auto;
+grid-template-columns:1fr auto auto;
 gap:10px;
 background:#fff;
 padding:12px;
 border-radius:10px;
 box-shadow:0 5px 12px rgba(0,0,0,0.08);
 font-size:14px;
+align-items:center;
 }
 
 .item-carrinho .info{
@@ -108,6 +125,19 @@ display:flex;
 flex-direction:column;
 gap:4px;
 }
+
+.item-carrinho .info strong{
+font-size:14px;
+}
+
+.item-carrinho .info span{
+color:#ff6b00;
+font-weight:600;
+}
+
+
+
+/* CONTROLES */
 
 .item-carrinho .controles{
 display:flex;
@@ -123,7 +153,25 @@ padding:4px 8px;
 border-radius:6px;
 cursor:pointer;
 font-weight:bold;
+transition:.2s;
 }
+
+.item-carrinho .controles button:hover{
+transform:scale(1.1);
+}
+
+
+
+/* SUBTOTAL */
+
+.item-carrinho .subtotal{
+font-weight:700;
+color:#ff6b00;
+}
+
+
+
+/* REMOVER */
 
 .item-carrinho .remover{
 background:#dc3545;
@@ -132,9 +180,18 @@ color:white;
 padding:4px 6px;
 border-radius:6px;
 cursor:pointer;
+transition:.2s;
 }
 
-/* TOTAL */
+.item-carrinho .remover:hover{
+transform:scale(1.1);
+}
+
+
+
+/* ================================
+TOTAL
+================================ */
 
 .total-carrinho{
 font-size:20px;
@@ -143,22 +200,48 @@ margin-top:10px;
 text-align:center;
 }
 
+
+
 /* ================================
-AÇÕES (FIXO NO FINAL)
+AÇÕES (🔥 FIXO E VISÍVEL)
 ================================ */
 
 .acoes-carrinho{
 position:sticky;
 bottom:0;
 background:white;
-padding:10px;
+padding:12px;
 display:flex;
 flex-direction:column;
-gap:8px;
+gap:10px;
 box-shadow:0 -5px 15px rgba(0,0,0,0.1);
+border-top:1px solid #eee;
 }
 
-/* RESPONSIVO */
+.botao-limpar-carrinho{
+background:#dc3545;
+color:white;
+border:none;
+padding:10px;
+border-radius:8px;
+cursor:pointer;
+font-weight:600;
+transition:.3s;
+}
+
+.botao-limpar-carrinho:hover{
+background:#b02a37;
+}
+
+.botao-enviar{
+width:100%;
+}
+
+
+
+/* ================================
+RESPONSIVO
+================================ */
 
 @media(max-width:768px){
 
@@ -169,6 +252,15 @@ right:-100%;
 
 .painel-pedido.ativo{
 right:0;
+}
+
+/* itens mais compactos */
+.item-carrinho{
+grid-template-columns:1fr;
+}
+
+.item-carrinho .controles{
+justify-content:space-between;
 }
 
 }

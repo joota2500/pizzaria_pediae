@@ -4,10 +4,6 @@
 
 
 
-// ================================
-// CONTROLE METADE / METADE
-// ================================
-
 let metadeSelecionada = {
 pizza1:null,
 pizza2:null,
@@ -19,60 +15,13 @@ preco2:0
 
 
 // ================================
-// SANITIZAR TEXTO
+// SANITIZAR
 // ================================
 
 function sanitizar(texto){
-
 return String(texto)
 .replace(/</g,"&lt;")
 .replace(/>/g,"&gt;")
-
-}
-
-
-
-// ================================
-// TOAST BOOTSTRAP
-// ================================
-
-function toast(msg,tipo="success"){
-
-if(!window.bootstrap) return
-
-let container = document.querySelector(".toast-container")
-
-if(!container){
-
-container = document.createElement("div")
-container.className="toast-container position-fixed bottom-0 end-0 p-3"
-document.body.appendChild(container)
-
-}
-
-const toast = document.createElement("div")
-
-toast.className=`toast align-items-center text-bg-${tipo} border-0`
-
-toast.innerHTML=`
-<div class="d-flex">
-<div class="toast-body">
-${msg}
-</div>
-<button type="button"
-class="btn-close btn-close-white me-2 m-auto"
-data-bs-dismiss="toast"></button>
-</div>
-`
-
-container.appendChild(toast)
-
-const t = new bootstrap.Toast(toast)
-
-t.show()
-
-setTimeout(()=>toast.remove(),4000)
-
 }
 
 
@@ -82,129 +31,74 @@ setTimeout(()=>toast.remove(),4000)
 // ================================
 
 function metadeAtiva(){
-
 const check = document.getElementById("meiaPizza")
-
 return check && check.checked
-
 }
 
 
 
 // ================================
-// BORDA SELECIONADA
+// BORDA
 // ================================
 
 function bordaSelecionada(){
-
 const select = document.getElementById("bordaPizza")
-
-if(!select) return "nenhuma"
-
-return select.value
-
+return select ? select.value : "nenhuma"
 }
-
-
-
-// ================================
-// VALOR DA BORDA
-// ================================
 
 function valorBorda(){
-
-const borda = bordaSelecionada()
-
-if(borda === "cheddar") return 5
-if(borda === "catupiry") return 6
-
+const b = bordaSelecionada()
+if(b==="cheddar") return 5
+if(b==="catupiry") return 6
 return 0
-
 }
-
-
-
-// ================================
-// TEXTO BORDA
-// ================================
 
 function textoBorda(){
-
-const borda = bordaSelecionada()
-
-if(borda === "cheddar") return "Cheddar"
-if(borda === "catupiry") return "Catupiry"
-
+const b = bordaSelecionada()
+if(b==="cheddar") return "Cheddar"
+if(b==="catupiry") return "Catupiry"
 return "Sem borda"
-
 }
-
-
-
-// ================================
-// RESETAR BORDA
-// ================================
 
 function resetarBorda(){
-
 const select = document.getElementById("bordaPizza")
-
-if(select){
-
-select.value = "nenhuma"
-
-}
-
+if(select) select.value="nenhuma"
 }
 
 
 
 // ================================
-// LIMPAR SELEÇÃO VISUAL
+// UI
 // ================================
 
 function limparSelecaoPizzas(){
-
 document.querySelectorAll(".tamanhos button")
 .forEach(btn=>btn.classList.remove("tamanhoSelecionado"))
-
 }
-
-
-
-// ================================
-// CALCULAR PREÇO COM BORDA
-// ================================
 
 function calcularPreco(preco){
-
 return preco + valorBorda()
-
 }
 
 
 
 // ================================
-// SELECIONAR PIZZA
+// SELECIONAR PIZZA (🔥 CORRIGIDO)
 // ================================
 
 function selecionarPizza(botao,nome,tamanho,preco){
 
-if(!botao) return
-if(typeof preco !== "number") return
+if(!botao || typeof preco !== "number") return
 
 nome = sanitizar(nome)
 
 
 
 // ================================
-// MODO METADE / METADE
+// METADE
 // ================================
 
 if(metadeAtiva()){
-
-
-// PRIMEIRA METADE
 
 if(!metadeSelecionada.pizza1){
 
@@ -214,23 +108,25 @@ metadeSelecionada.preco1 = preco
 
 botao.classList.add("tamanhoSelecionado")
 
-toast("Escolha a segunda metade da pizza","warning")
+// ✔ MANTÉM aviso (não é duplicação)
+if(typeof notificar==="function"){
+notificar("Escolha a segunda metade","warning")
+}
 
 return
-
 }
 
 
-
-// SEGUNDA METADE
 
 if(!metadeSelecionada.pizza2){
 
 if(metadeSelecionada.tamanho !== tamanho){
 
-toast("As duas pizzas devem ter o mesmo tamanho","danger")
-return
+if(typeof notificar==="function"){
+notificar("Mesma tamanho obrigatório","danger")
+}
 
+return
 }
 
 metadeSelecionada.pizza2 = nome
@@ -238,44 +134,25 @@ metadeSelecionada.preco2 = preco
 
 botao.classList.add("tamanhoSelecionado")
 
-
-
 let precoFinal =
 (metadeSelecionada.preco1 + metadeSelecionada.preco2) / 2
 
 precoFinal = calcularPreco(precoFinal)
 
-
-
 const item = {
-
 tipo:"pizza",
-
 nome:metadeSelecionada.pizza1,
 nome2:metadeSelecionada.pizza2,
-
 tamanho:tamanho,
-
 borda:textoBorda(),
-
 preco:precoFinal
-
 }
-
-
 
 if(typeof adicionarCarrinho === "function"){
-
 adicionarCarrinho(item,botao)
-
-toast(`Pizza metade adicionada | Borda: ${textoBorda()} 🍕`)
-
 }
 
-
-
-// RESETAR CONTROLE
-
+// RESET
 metadeSelecionada = {
 pizza1:null,
 pizza2:null,
@@ -285,11 +162,9 @@ preco2:0
 }
 
 limparSelecaoPizzas()
-
 resetarBorda()
 
 return
-
 }
 
 }
@@ -297,53 +172,34 @@ return
 
 
 // ================================
-// PIZZA NORMAL
+// NORMAL
 // ================================
 
 let precoFinal = calcularPreco(preco)
 
-
-
 const item = {
-
 tipo:"pizza",
-
 nome:nome,
-
 tamanho:tamanho,
-
 borda:textoBorda(),
-
 preco:precoFinal
-
 }
-
-
 
 if(typeof adicionarCarrinho === "function"){
-
 adicionarCarrinho(item,botao)
-
-toast(`Pizza adicionada | Borda: ${textoBorda()} 🍕`)
-
 }
 
 
 
-// ANIMAÇÃO VISUAL
+// UI
 
 limparSelecaoPizzas()
 
 botao.classList.add("tamanhoSelecionado")
 
 setTimeout(()=>{
-
 botao.classList.remove("tamanhoSelecionado")
-
 },600)
-
-
-// RESETAR BORDA
 
 resetarBorda()
 
@@ -352,7 +208,7 @@ resetarBorda()
 
 
 // ================================
-// SELECIONAR BEBIDA
+// BEBIDA (🔥 CORRIGIDO)
 // ================================
 
 function selecionarBebida(botao,nome,preco){
@@ -364,26 +220,14 @@ document.querySelectorAll(".botao-bebida")
 
 botao.classList.add("bebidaSelecionada")
 
-
-
 const item = {
-
 tipo:"bebida",
-
 nome:sanitizar(nome),
-
 preco:preco
-
 }
-
-
 
 if(typeof adicionarCarrinho === "function"){
-
 adicionarCarrinho(item,botao)
-
-toast("Bebida adicionada 🥤")
-
 }
 
 }
@@ -391,43 +235,7 @@ toast("Bebida adicionada 🥤")
 
 
 // ================================
-// ABRIR CARRINHO
-// ================================
-
-function abrirCarrinho(){
-
-const painel = document.getElementById("painelPedido")
-
-if(painel){
-
-painel.classList.add("ativo")
-
-}
-
-}
-
-
-
-// ================================
-// FECHAR CARRINHO
-// ================================
-
-function fecharCarrinho(){
-
-const painel = document.getElementById("painelPedido")
-
-if(painel){
-
-painel.classList.remove("ativo")
-
-}
-
-}
-
-
-
-// ================================
-// FINALIZAR PEDIDO
+// FINALIZAR
 // ================================
 
 function irParaPedido(){
@@ -437,16 +245,14 @@ JSON.parse(localStorage.getItem("carrinho")) || []
 
 if(carrinho.length === 0){
 
-toast("Seu carrinho está vazio","danger")
-
-return
-
+if(typeof notificar==="function"){
+notificar("Carrinho vazio","danger")
 }
 
-
+return
+}
 
 localStorage.setItem("pedido", JSON.stringify(carrinho))
-
 window.location.href = "pedido.html"
 
 }
@@ -454,11 +260,9 @@ window.location.href = "pedido.html"
 
 
 // ================================
-// FUNÇÕES GLOBAIS
+// GLOBAL
 // ================================
 
 window.selecionarPizza = selecionarPizza
 window.selecionarBebida = selecionarBebida
-window.abrirCarrinho = abrirCarrinho
-window.fecharCarrinho = fecharCarrinho
 window.irParaPedido = irParaPedido
