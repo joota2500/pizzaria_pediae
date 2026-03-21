@@ -5,24 +5,24 @@
 let carrinho = JSON.parse(localStorage.getItem("carrinho")) || []
 
 const LIMITE_ITENS = 30
-const EXPIRACAO_CARRINHO = 1000 * 60 * 60 * 1 // 1 hora
+const EXPIRACAO_CARRINHO = 1000 * 60 * 60 * 1
 
 
 
 // ================================
-// SANITIZAR TEXTO
+// SANITIZAR
 // ================================
 
 function sanitizar(texto){
 return String(texto)
 .replace(/</g,"&lt;")
-.replace(/>/g,"&gt;") 
+.replace(/>/g,"&gt;")
 }
 
 
 
 // ================================
-// FORMATAR MOEDA
+// MOEDA
 // ================================
 
 function formatarMoeda(valor){
@@ -35,7 +35,7 @@ currency:"BRL"
 
 
 // ================================
-// SALVAR CARRINHO
+// SALVAR
 // ================================
 
 function salvarCarrinho(){
@@ -54,16 +54,11 @@ function verificarExpiracao(){
 const hora = localStorage.getItem("carrinhoHora")
 if(!hora) return
 
-const agora = Date.now()
-
-if(agora - hora > EXPIRACAO_CARRINHO){
-
+if(Date.now() - hora > EXPIRACAO_CARRINHO){
 localStorage.removeItem("carrinho")
 carrinho = []
-
 atualizarCarrinhoLista()
-
-notificar("⏳ Carrinho expirado após 1 hora","warning")
+notificar("⏳ Carrinho expirado","warning")
 }
 
 }
@@ -71,7 +66,7 @@ notificar("⏳ Carrinho expirado após 1 hora","warning")
 
 
 // ================================
-// TOAST
+// TOAST (🔥 CORRIGIDO)
 // ================================
 
 function notificar(msg,tipo="success"){
@@ -81,7 +76,9 @@ if(!window.bootstrap) return
 const toast = document.createElement("div")
 
 toast.className =
-`toast align-items-center text-bg-${tipo} border-0 position-fixed bottom-0 end-0 m-3`
+`toast align-items-center text-bg-${tipo} border-0 position-fixed top-0 end-0 m-3`
+
+toast.style.zIndex = "99999"
 
 toast.innerHTML = `
 <div class="d-flex">
@@ -102,52 +99,73 @@ setTimeout(()=>toast.remove(),4000)
 
 
 // ================================
-// ABRIR / FECHAR CARRINHO 🔥
+// ABRIR / FECHAR
 // ================================
 
 function abrirCarrinho(){
-
 const painel = document.getElementById("painelPedido")
 if(!painel) return
 
 painel.classList.add("ativo")
 document.body.style.overflow="hidden"
-
 }
 
 function fecharCarrinho(){
-
 const painel = document.getElementById("painelPedido")
 if(!painel) return
 
 painel.classList.remove("ativo")
 document.body.style.overflow="auto"
-
 }
-
-
-// fechar clicando fora (UX PRO)
-document.addEventListener("click",(e)=>{
-
-const painel = document.getElementById("painelPedido")
-const botao = document.getElementById("iconeCarrinho")
-
-if(!painel || !botao) return
-
-if(
-painel.classList.contains("ativo") &&
-!painel.contains(e.target) &&
-!botao.contains(e.target)
-){
-fecharCarrinho()
-}
-
-})
 
 
 
 // ================================
-// ADICIONAR ITEM
+// ANIMAÇÃO PRODUTO → CARRINHO
+// ================================
+
+function animarProdutoCarrinho(botao){
+
+const carrinhoIcon = document.querySelector(".carrinho-flutuante")
+if(!carrinhoIcon) return
+
+const rectBtn = botao.getBoundingClientRect()
+const rectCarrinho = carrinhoIcon.getBoundingClientRect()
+
+const bola = document.createElement("div")
+
+bola.style.position="fixed"
+bola.style.left = rectBtn.left + "px"
+bola.style.top = rectBtn.top + "px"
+bola.style.width="14px"
+bola.style.height="14px"
+bola.style.background="#ff6b00"
+bola.style.borderRadius="50%"
+bola.style.zIndex="99999"
+bola.style.transition="all 0.6s ease"
+
+document.body.appendChild(bola)
+
+setTimeout(()=>{
+bola.style.left = rectCarrinho.left + "px"
+bola.style.top = rectCarrinho.top + "px"
+bola.style.opacity="0.3"
+bola.style.transform="scale(0.5)"
+},50)
+
+setTimeout(()=>{
+bola.remove()
+if(window.animarCarrinho){
+animarCarrinho()
+}
+},650)
+
+}
+
+
+
+// ================================
+// ADICIONAR
 // ================================
 
 function adicionarCarrinho(item,botao){
@@ -159,7 +177,7 @@ notificar("Limite de itens atingido","danger")
 return
 }
 
-if(botao && typeof animarProdutoCarrinho === "function"){
+if(botao){
 animarProdutoCarrinho(botao)
 }
 
@@ -190,33 +208,33 @@ salvarCarrinho()
 atualizarCarrinhoLista()
 
 notificar(`✔ ${novoItem.nome} adicionada`)
-
 abrirCarrinho()
+
 }
 
 
 
 // ================================
-// REMOVER / QTD
+// CONTROLES
 // ================================
 
-function removerCarrinho(index){
-carrinho.splice(index,1)
+function removerCarrinho(i){
+carrinho.splice(i,1)
 salvarCarrinho()
 atualizarCarrinhoLista()
 }
 
-function aumentarQtd(index){
-carrinho[index].qtd++
+function aumentarQtd(i){
+carrinho[i].qtd++
 salvarCarrinho()
 atualizarCarrinhoLista()
 }
 
-function diminuirQtd(index){
-if(carrinho[index].qtd > 1){
-carrinho[index].qtd--
+function diminuirQtd(i){
+if(carrinho[i].qtd > 1){
+carrinho[i].qtd--
 }else{
-carrinho.splice(index,1)
+carrinho.splice(i,1)
 }
 salvarCarrinho()
 atualizarCarrinhoLista()
@@ -241,7 +259,7 @@ atualizarCarrinhoLista()
 
 
 // ================================
-// ATUALIZAR LISTA
+// RENDER
 // ================================
 
 function atualizarCarrinhoLista(){
@@ -257,7 +275,7 @@ lista.innerHTML=""
 let total=0
 let qtdTotal=0
 
-carrinho.forEach((item,index)=>{
+carrinho.forEach((item,i)=>{
 
 const subtotal=item.preco*item.qtd
 total+=subtotal
@@ -274,14 +292,14 @@ div.innerHTML=`
 </div>
 
 <div class="controles">
-<button onclick="diminuirQtd(${index})">−</button>
+<button onclick="diminuirQtd(${i})">−</button>
 <span>${item.qtd}</span>
-<button onclick="aumentarQtd(${index})">+</button>
+<button onclick="aumentarQtd(${i})">+</button>
 </div>
 
 <div class="subtotal">${formatarMoeda(subtotal)}</div>
 
-<button onclick="removerCarrinho(${index})">❌</button>
+<button class="remover" onclick="removerCarrinho(${i})">✕</button>
 `
 
 lista.appendChild(div)
@@ -290,6 +308,26 @@ lista.appendChild(div)
 
 if(contador) contador.innerText=qtdTotal
 if(totalElemento) totalElemento.innerText="Total: "+formatarMoeda(total)
+
+// 🔥 AÇÕES FIXAS
+if(carrinho.length > 0){
+
+const acoes = document.createElement("div")
+acoes.className="acoes-carrinho"
+
+acoes.innerHTML=`
+<button class="botao-limpar-carrinho" onclick="limparCarrinho()">
+🗑 Limpar carrinho
+</button>
+
+<button class="botao-enviar" onclick="irParaPedido()">
+Finalizar pedido
+</button>
+`
+
+lista.appendChild(acoes)
+
+}
 
 }
 
@@ -314,7 +352,7 @@ window.location.href="pedido.html"
 
 
 // ================================
-// INIT 
+// INIT
 // ================================
 
 document.addEventListener("DOMContentLoaded",()=>{

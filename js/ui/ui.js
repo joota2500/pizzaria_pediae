@@ -17,53 +17,32 @@ btnTopo.style.display = "none"
 document.body.appendChild(btnTopo)
 
 btnTopo.addEventListener("click",()=>{
-
 window.scrollTo({
 top:0,
 behavior:"smooth"
 })
-
 })
 
 window.addEventListener("scroll",()=>{
-
-if(window.scrollY > 500){
-
-btnTopo.style.display = "flex"
-
-}else{
-
-btnTopo.style.display = "none"
-
-}
-
+btnTopo.style.display = window.scrollY > 500 ? "flex" : "none"
 })
 
 
 
 // ================================
-// ANIMAÇÃO SUAVE NOS CARDS
+// HOVER CARDS
 // ================================
 
 document.addEventListener("mouseover",(e)=>{
-
 const card = e.target.closest(".pizza-card")
-
 if(!card) return
-
-card.style.transition = "transform 0.2s ease"
 card.style.transform = "translateY(-6px)"
-
 })
 
 document.addEventListener("mouseout",(e)=>{
-
 const card = e.target.closest(".pizza-card")
-
 if(!card) return
-
 card.style.transform = "translateY(0)"
-
 })
 
 })
@@ -77,17 +56,12 @@ card.style.transform = "translateY(0)"
 function animarCarrinho(){
 
 const carrinho = document.querySelector(".carrinho-flutuante")
-
 if(!carrinho) return
-
-carrinho.style.transition = "transform 0.2s"
 
 carrinho.style.transform = "scale(1.2)"
 
 setTimeout(()=>{
-
 carrinho.style.transform = "scale(1)"
-
 },200)
 
 }
@@ -95,30 +69,7 @@ carrinho.style.transform = "scale(1)"
 
 
 // ================================
-// FECHAR CARRINHO CLICANDO FORA
-// ================================
-
-document.addEventListener("click",(e)=>{
-
-const painel = document.getElementById("painelPedido")
-
-if(!painel) return
-
-const clicouDentroPainel = painel.contains(e.target)
-const clicouCarrinho = e.target.closest(".carrinho-flutuante")
-
-if(!clicouDentroPainel && !clicouCarrinho){
-
-painel.classList.remove("ativo")
-
-}
-
-})
-
-
-
-// ================================
-// FUNÇÕES GLOBAIS
+// GLOBAL
 // ================================
 
 window.animarCarrinho = animarCarrinho
