@@ -95,11 +95,9 @@ card.innerHTML = `
 
 <div class="tamanhos">
 
-<button onclick="selecionarPizza(this,'${p.nome}','P',${p.preco})">P</button>
-
-<button onclick="selecionarPizza(this,'${p.nome}','M',${p.preco+5})">M</button>
-
-<button onclick="selecionarPizza(this,'${p.nome}','G',${p.preco+10})">G</button>
+<button onclick="selecionarPizzaLocal(this,'${p.nome}','P',${p.preco})">P</button>
+<button onclick="selecionarPizzaLocal(this,'${p.nome}','M',${p.preco+5})">M</button>
+<button onclick="selecionarPizzaLocal(this,'${p.nome}','G',${p.preco+10})">G</button>
 
 </div>
 

@@ -249,7 +249,7 @@ if(typeof notificar==="function"){
 notificar("Carrinho vazio","danger")
 }
 
-return
+return 
 }
 
 localStorage.setItem("pedido", JSON.stringify(carrinho))
