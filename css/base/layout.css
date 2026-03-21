@@ -1,0 +1,49 @@
+html, body{
+    height: 100%;
+}
+
+body{
+background:linear-gradient(180deg,#fff7f2,#ffe9da);
+color:#333;
+overflow-x:hidden;
+min-height:100vh;
+display:flex;
+flex-direction:column;
+
+/* 🔥 IMPORTANTE */
+padding-bottom:70px;
+}
+
+main{
+flex:1;
+}
+main section:last-of-type{
+    padding-bottom: 10px;
+}
+
+section{
+padding:60px 20px;
+max-width:1200px;
+margin:auto;
+}
+
+section h2{
+text-align:center;
+margin-bottom:30px;
+color:#8b0000;
+font-size:26px;
+}
+
+/* RESPONSIVO */
+
+@media(max-width:768px){
+
+section{
+padding:50px 15px;
+}
+
+section h2{
+font-size:22px;
+}
+
+}

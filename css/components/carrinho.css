@@ -1,0 +1,174 @@
+.carrinho-flutuante{
+position:fixed;
+right:20px;
+bottom:90px;
+width:65px;
+height:65px;
+background:linear-gradient(135deg,#ff6b00,#ff8c00);
+color:white;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:24px;
+border-radius:50%;
+box-shadow:0 8px 20px rgba(0,0,0,0.3);
+cursor:pointer;
+z-index:999;
+transition:.3s;
+}
+
+.carrinho-flutuante:hover{
+transform:scale(1.1);
+}
+
+#contadorCarrinho{
+position:absolute;
+top:-5px;
+right:-5px;
+background:#28a745;
+color:white;
+font-size:12px;
+padding:4px 6px;
+border-radius:50%;
+font-weight:bold;
+}
+
+/* ================================
+PAINEL
+================================ */
+
+.painel-pedido{
+position:fixed;
+right:-380px;
+top:0;
+width:360px;
+height:100vh;
+background:white;
+box-shadow:-5px 0 25px rgba(0,0,0,0.25);
+transition:.35s ease;
+z-index:1000;
+display:flex;
+flex-direction:column;
+}
+
+.painel-pedido.ativo{
+right:0;
+}
+
+/* HEADER */
+
+.painel-header{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:18px;
+background:#ff6b00;
+color:white;
+font-size:18px;
+font-weight:600;
+}
+
+.painel-header button{
+background:none;
+border:none;
+color:white;
+font-size:20px;
+cursor:pointer;
+}
+
+/* CONTEÚDO */
+
+.painel-conteudo{
+padding:15px;
+overflow-y:auto;
+flex:1;
+display:flex;
+flex-direction:column;
+gap:12px;
+
+/* 🔥 espaço pro menu-bottom */
+padding-bottom:90px;
+}
+
+/* ITEM DO CARRINHO */
+
+.item-carrinho{
+display:grid;
+grid-template-columns:1fr auto;
+gap:10px;
+background:#fff;
+padding:12px;
+border-radius:10px;
+box-shadow:0 5px 12px rgba(0,0,0,0.08);
+font-size:14px;
+}
+
+.item-carrinho .info{
+display:flex;
+flex-direction:column;
+gap:4px;
+}
+
+.item-carrinho .controles{
+display:flex;
+align-items:center;
+gap:6px;
+}
+
+.item-carrinho .controles button{
+background:#ff6b00;
+color:white;
+border:none;
+padding:4px 8px;
+border-radius:6px;
+cursor:pointer;
+font-weight:bold;
+}
+
+.item-carrinho .remover{
+background:#dc3545;
+border:none;
+color:white;
+padding:4px 6px;
+border-radius:6px;
+cursor:pointer;
+}
+
+/* TOTAL */
+
+.total-carrinho{
+font-size:20px;
+font-weight:700;
+margin-top:10px;
+text-align:center;
+}
+
+/* ================================
+AÇÕES (FIXO NO FINAL)
+================================ */
+
+.acoes-carrinho{
+position:sticky;
+bottom:0;
+background:white;
+padding:10px;
+display:flex;
+flex-direction:column;
+gap:8px;
+box-shadow:0 -5px 15px rgba(0,0,0,0.1);
+}
+
+/* RESPONSIVO */
+
+@media(max-width:768px){
+
+.painel-pedido{
+width:100%;
+right:-100%;
+}
+
+.painel-pedido.ativo{
+right:0;
+}
+
+}

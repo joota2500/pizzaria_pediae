@@ -1,0 +1,86 @@
+.grid-pizzas{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
+gap:20px;
+}
+
+.pizza-card,
+.combo-card{
+background:white;
+border-radius:16px;
+box-shadow:0 10px 25px rgba(0,0,0,0.12);
+padding:20px;
+text-align:center;
+transition:.3s;
+position:relative;
+}
+
+.pizza-card:hover,
+.combo-card:hover{
+transform:translateY(-6px);
+box-shadow:0 15px 35px rgba(0,0,0,0.2);
+}
+
+/* IMAGENS */
+
+.pizza-card img{
+width:120px;
+height:120px;
+border-radius:50%;
+object-fit:cover;
+margin:auto;
+display:block;
+}
+
+.combo-card img{
+width:100%;
+height:180px;
+object-fit:contain;
+background:#fff7f2;
+padding:10px;
+border-radius:12px;
+}
+
+/* PREÇO */
+
+.ingredientes{
+font-size:14px;
+color:#666;
+margin:8px 0;
+}
+
+/* CARD BEBIDA (🔥 MELHORADO) */
+
+.bebida-card{
+padding:18px;
+}
+
+.bebida-card img{
+width:90px;
+height:90px;
+border-radius:12px;
+object-fit:contain;
+background:#fff7f2;
+padding:8px;
+}
+
+/* RESPONSIVO */
+
+@media(max-width:768px){
+
+.grid-pizzas{
+grid-template-columns:repeat(2,1fr);
+gap:15px;
+}
+
+.pizza-card,
+.combo-card{
+padding:15px;
+}
+
+.bebida-card img{
+width:70px;
+height:70px;
+}
+
+}

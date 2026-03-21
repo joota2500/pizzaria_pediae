@@ -1,12 +1,12 @@
 // ================================
-// LISTA DE BEBIDAS
+// LISTA DE BEBIDAS (COMPLETA)
 // ================================
 
 const bebidas=[
 
 {nome:"Coca Cola Lata",preco:6},
 {nome:"Coca Cola 1L",preco:8},
-{nome:"Coca Cola 2L",preco:12},
+{nome:"Coca Cola 2L",preco:12}, 
 {nome:"Refrigerante Laranja",preco:7},
 {nome:"Guaraná Lata",preco:6},
 {nome:"Guaraná 1L",preco:8},
@@ -36,13 +36,12 @@ const bebidas=[
 
 ]
 
-
 let bebidasAberto=false
 
 
 
 // ================================
-// LIMPAR NOME DA IMAGEM
+// LIMPAR NOME IMAGEM
 // ================================
 
 function limparNomeImagem(nome){
@@ -62,13 +61,12 @@ return nome
 
 
 // ================================
-// RENDERIZAR BEBIDAS
+// RENDER
 // ================================
 
 function renderBebidas(qtd){
 
 const listaB = document.getElementById("lista-bebidas")
-
 if(!listaB) return
 
 listaB.innerHTML=""
@@ -77,25 +75,51 @@ bebidas.slice(0,qtd).forEach(b=>{
 
 let nomeImagem = limparNomeImagem(b.nome)
 
-const card = document.createElement("div")
-card.className="pizza-card"
-card.dataset.categoria="bebida"
-card.dataset.nome=b.nome.toLowerCase()
+const card = document.createElement("article")
+card.className="pizza-card bebida-card"
 
 card.innerHTML=`
 
-<img src="img/bebidas/imgBebida${nomeImagem}.jpg">
+<img src="img/bebidas/imgBebida${nomeImagem}.jpg"
+onerror="this.src='img/bebidas/imgBebidaCocaColaLata.jpg'">
 
 <h3>${b.nome}</h3>
 
 <p class="ingredientes">${formatarMoeda(b.preco)}</p>
 
-<button class="botao-bebida"
-onclick="selecionarBebida(this,'${b.nome}',${b.preco})">
-Adicionar
-</button>
+<button class="botao-bebida">Adicionar</button>
 
 `
+
+// EVENTO
+const botao = card.querySelector("button")
+
+botao.onclick = (e)=>{
+
+if(typeof adicionarCarrinho === "function"){
+
+adicionarCarrinho({
+tipo:"bebida",
+nome:b.nome,
+preco:b.preco
+}, e.target)
+
+}
+
+// feedback
+botao.classList.add("bebidaSelecionada")
+botao.innerText="✔ Adicionado"
+
+// animação
+card.style.transform="scale(1.05)"
+
+setTimeout(()=>{
+botao.classList.remove("bebidaSelecionada")
+botao.innerText="Adicionar"
+card.style.transform=""
+},1200)
+
+}
 
 listaB.appendChild(card)
 
@@ -106,25 +130,22 @@ listaB.appendChild(card)
 
 
 // ================================
-// MOSTRAR INICIAL
+// INICIAL
 // ================================
 
 document.addEventListener("DOMContentLoaded",()=>{
-
-renderBebidas(3)
-
+renderBebidas(4)
 })
 
 
 
 // ================================
-// EXPANDIR LISTA
+// BOTÃO VER MAIS (🔥 MELHORADO)
 // ================================
 
 document.addEventListener("DOMContentLoaded",()=>{
 
 const btn = document.getElementById("mostrarBebidas")
-
 if(!btn) return
 
 btn.onclick=()=>{
@@ -134,56 +155,14 @@ bebidasAberto=!bebidasAberto
 if(bebidasAberto){
 
 renderBebidas(bebidas.length)
-btn.innerText="Fechar bebidas"
+btn.innerText="Mostrar menos"
 
 }else{
 
-renderBebidas(3)
-btn.innerText="Ver todas bebidas"
+renderBebidas(4)
+btn.innerText="Ver mais bebidas"
 
 }
-
-}
-
-})
-
-
-
-// ================================
-// INTERAÇÃO VISUAL
-// ================================
-
-document.addEventListener("click",function(e){
-
-const botao = e.target.closest(".botao-bebida")
-
-if(!botao) return
-
-
-// remover seleção anterior
-document.querySelectorAll(".botao-bebida").forEach(btn=>{
-
-btn.classList.remove("bebidaSelecionada")
-btn.innerText="Adicionar"
-
-})
-
-
-// aplicar seleção
-botao.classList.add("bebidaSelecionada")
-botao.innerText="Selecionado"
-
-
-// animação
-const card = botao.closest(".pizza-card")
-
-if(card){
-
-card.style.transform="scale(1.05)"
-
-setTimeout(()=>{
-card.style.transform=""
-},200)
 
 }
 

@@ -1,0 +1,12 @@
+.sobre-grid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+gap:25px;
+}
+
+.sobre-item{
+background:white;
+padding:25px;
+border-radius:14px;
+text-align:center;
+}

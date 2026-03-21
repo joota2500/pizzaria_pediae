@@ -1,0 +1,23 @@
+.ingredientes{
+font-size:14px;
+color:#666;
+margin:10px 0;
+}
+
+.tamanhos{
+display:flex;
+justify-content:center;
+gap:10px;
+}
+
+.tamanhos button{
+background:#eee;
+border:none;
+padding:10px;
+border-radius:8px;
+}
+
+.tamanhoSelecionado{
+background:#ff6b00;
+color:white;
+}
