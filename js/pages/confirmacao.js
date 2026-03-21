@@ -85,7 +85,7 @@ pedido.observacao = obs
 
 localStorage.setItem("pedidoAtual", JSON.stringify(pedido))
 
-window.location.href = "endereco.html"
+window.location.href = "pedido.html"
 
 }
 

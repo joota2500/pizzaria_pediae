@@ -6,7 +6,7 @@ const pedido = JSON.parse(localStorage.getItem("pedido")) || []
 
 if(pedido.length === 0){
 alert("Nenhum pedido encontrado")
-window.location.href="index.html"
+window.location.href="../index.html"
 }
 
 
@@ -18,6 +18,69 @@ window.location.href="index.html"
 function moeda(v){
 return Number(v).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})
 }
+
+
+
+// ==========================
+// AUTO PREENCHER CLIENTE 🔥
+// ==========================
+
+const clienteSalvo = JSON.parse(localStorage.getItem("cliente"))
+
+if(clienteSalvo){
+document.getElementById("nome").value = clienteSalvo.nome || ""
+document.getElementById("telefone").value = clienteSalvo.telefone || ""
+}
+
+
+
+// ==========================
+// MÁSCARA TELEFONE 🔥
+// ==========================
+
+const telefoneInput = document.getElementById("telefone")
+
+telefoneInput.addEventListener("input",()=>{
+
+let v = telefoneInput.value.replace(/\D/g,"")
+
+if(v.length > 11) v = v.slice(0,11)
+
+v = v.replace(/^(\d{2})(\d)/g,"($1) $2")
+v = v.replace(/(\d{5})(\d)/,"$1-$2")
+
+telefoneInput.value = v
+
+})
+
+
+
+// ==========================
+// TIPO ENTREGA
+// ==========================
+
+let tipoEntrega = null
+
+document.querySelectorAll('input[name="tipoEntrega"]').forEach(r=>{
+
+r.addEventListener("change",()=>{
+
+tipoEntrega = r.value
+
+document.getElementById("formEntrega")
+.classList.toggle("hidden", tipoEntrega !== "casa")
+
+document.getElementById("retiradaBox")
+.classList.toggle("hidden", tipoEntrega !== "retirada")
+
+taxaEntrega = 0
+document.getElementById("taxaEntrega").innerText="Entrega: R$ 0,00"
+
+atualizarTotal()
+
+})
+
+})
 
 
 
@@ -79,8 +142,6 @@ selectBairro.appendChild(opt)
 
 })
 
-
-
 selectBairro.addEventListener("change",()=>{
 
 const bairro=selectBairro.value
@@ -103,8 +164,8 @@ document.getElementById("pagamento").addEventListener("change",()=>{
 
 const forma=document.getElementById("pagamento").value
 
-document.getElementById("areaTroco").style.display =
-forma==="dinheiro" ? "block" : "none"
+document.getElementById("areaTroco")
+.classList.toggle("hidden", forma !== "dinheiro")
 
 })
 
@@ -116,13 +177,14 @@ forma==="dinheiro" ? "block" : "none"
 
 function validarCampos(){
 
-const campos=[
-"nome",
-"telefone",
-"endereco",
-"bairro",
-"pagamento"
-]
+if(!tipoEntrega){
+alert("Selecione entrega ou retirada")
+return false
+}
+
+if(tipoEntrega === "casa"){
+
+const campos=["nome","telefone","endereco","bairro","pagamento"]
 
 let valido=true
 
@@ -131,19 +193,44 @@ campos.forEach(id=>{
 const campo=document.getElementById(id)
 
 if(!campo.value){
-
 campo.classList.add("is-invalid")
 valido=false
-
 }else{
-
 campo.classList.remove("is-invalid")
-
 }
 
 })
 
 return valido
+
+}
+
+if(tipoEntrega === "retirada"){
+
+const nome=document.getElementById("nome").value
+const pagamento=document.getElementById("pagamento").value
+
+if(!nome || !pagamento){
+alert("Preencha nome e pagamento")
+return false
+}
+
+}
+
+return true
+
+}
+
+
+
+// ==========================
+// BOTÃO LOADING 🔥
+// ==========================
+
+function ativarLoading(){
+
+document.getElementById("textoBotao").innerText="Enviando..."
+document.getElementById("loader").style.display="inline-block"
 
 }
 
@@ -170,6 +257,8 @@ modal.show()
 
 function enviarPedido(){
 
+ativarLoading()
+
 const feedback=document.getElementById("feedbackPedido")
 
 const modal=new bootstrap.Modal(
@@ -184,8 +273,8 @@ modal.show()
 // DADOS CLIENTE
 // ==========================
 
-const nome=document.getElementById("nome").value
-let tel=document.getElementById("telefone").value.replace(/\D/g,"")
+const nome=document.getElementById("nome").value || "Não informado"
+let tel=(document.getElementById("telefone").value || "").replace(/\D/g,"")
 
 const endereco=document.getElementById("endereco").value
 const bairro=document.getElementById("bairro").value
@@ -197,8 +286,16 @@ const obs=document.getElementById("obsFinal").value
 
 
 
+// 🔥 SALVAR CLIENTE
+localStorage.setItem("cliente", JSON.stringify({
+nome,
+telefone: document.getElementById("telefone").value
+}))
+
+
+
 // ==========================
-// ITENS DO PEDIDO
+// ITENS
 // ==========================
 
 let itens=""
@@ -208,11 +305,9 @@ pedido.forEach(i=>{
 let linha=`🍕 ${i.nome}`
 
 if(i.nome2) linha+=` / ${i.nome2}`
-
 if(i.tamanho) linha+=` (${i.tamanho})`
 
 linha+=`\nQtd: ${i.qtd}`
-
 linha+=`\nSubtotal: ${moeda(i.preco*i.qtd)}\n\n`
 
 itens+=linha
@@ -222,122 +317,93 @@ itens+=linha
 
 
 // ==========================
-// CUPOM
+// TOTAL
 // ==========================
 
 let desconto = 0
-let cupomTexto = ""
 
 if(typeof cupomAplicado !== "undefined" && cupomAplicado){
 
-if(cupomAplicado.codigo === "FRETEGRATIS"){
-
-cupomTexto = `
-🎟 Cupom: FRETEGRATIS
-🚚 Frete grátis aplicado
-`
-
-}
-
-else if(cupomAplicado.valor < 100){
-
+if(cupomAplicado.valor < 100){
 desconto = subtotal * (cupomAplicado.valor/100)
-
-cupomTexto = `
-🎟 Cupom: ${cupomAplicado.codigo}
-💸 Desconto: ${moeda(desconto)}
-`
-
 }
 
 }
-
-
-
-// ==========================
-// TOTAL FINAL
-// ==========================
 
 const total = subtotal - desconto + taxaEntrega
 
 
 
 // ==========================
-// MENSAGEM WHATSAPP
+// MENSAGEM
 // ==========================
 
 let msg=`🍕 *NOVO PEDIDO*
 
 👤 Cliente: ${nome}
+📞 Telefone: ${tel || "Não informado"}
 
-📞 Telefone: ${tel}
+`
 
-📍 Endereço:
+if(tipoEntrega === "casa"){
+msg+=`📍 Entrega:
 ${endereco}
 Bairro: ${CONFIG.bairros[bairro]}
 
-🧾 Pedido:
+`
+}else{
+msg+=`🏪 Retirada no local
+
+`
+}
+
+msg+=`🧾 Pedido:
 ${itens}
 
-${cupomTexto}
-
 💳 Pagamento: ${pagamento}
-
-💰 Troco: ${troco||"Não precisa"}
+💰 Troco: ${troco || "Não precisa"}
 
 📝 Observação:
-${obs}
+${obs || "Nenhuma"}
 
 🚚 Entrega: ${moeda(taxaEntrega)}
-
 💰 Total: ${moeda(total)}
 `
 
 
 
 // ==========================
-// MENSAGENS ANIMADAS
+// ANIMAÇÃO
 // ==========================
 
 const mensagens = [
-
 "🍕 Preparando seu pedido...",
 "📡 Conectando com a pizzaria...",
-"🧾 Organizando os detalhes...",
-"❤️ Obrigado pela preferência!",
-"📲 Abrindo WhatsApp da pizzaria...",
-"😊 Nos vemos em breve!"
-
+"🧾 Organizando tudo...",
+"❤️ Obrigado!",
+"📲 Abrindo WhatsApp..."
 ]
 
-let indice = 0
+let i=0
 
-function mostrarMensagem(){
-
+function animar(){
 feedback.innerHTML=`
 <div class="spinner-border text-danger mb-3"></div>
-
-<h5 class="fw-bold">${mensagens[indice]}</h5>
-
-<p class="text-muted">Aguarde um instante</p>
+<h5>${mensagens[i]}</h5>
 `
 
-indice++
-
-if(indice < mensagens.length){
-
-setTimeout(mostrarMensagem,1000)
-
+i++
+if(i<mensagens.length){
+setTimeout(animar,900)
+}
 }
 
-}
-
-mostrarMensagem()
+animar()
 
 
 
 // ==========================
-// ABRIR WHATSAPP
+// WHATSAPP
 // ==========================
 
 setTimeout(()=>{
@@ -346,9 +412,8 @@ const url=`https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(msg)}`
 
 window.location.href=url
 
-localStorage.removeItem("carrinho")
 localStorage.removeItem("pedido")
 
-},6000)
+},4500)
 
 }

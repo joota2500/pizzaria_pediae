@@ -1,322 +1,267 @@
-/* =========================================
-PÁGINA FINALIZAR PEDIDO
-========================================= */
+/* =========================
+HEADER (PADRÃO CONFIRMAÇÃO MELHORADO)
+========================= */
 
-main.container{
+.header-confirmacao{
+display:flex;
+align-items:center;
+gap:14px;
+padding:20px 18px;
+background:linear-gradient(135deg,#ff6b00,#ff8c00);
+color:white;
+box-shadow:0 4px 14px rgba(0,0,0,0.18);
+}
 
-max-width:1100px;
+.header-confirmacao h2{
+margin:0;
+font-size:24px;
+font-weight:700;
+letter-spacing:.3px;
+}
+
+/* botão voltar */
+
+.btn-voltar{
+background:white;
+border:none;
+border-radius:50%;
+width:42px;
+height:42px;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:18px;
+font-weight:bold;
+cursor:pointer;
+transition:.25s;
+box-shadow:0 4px 10px rgba(0,0,0,0.15);
+}
+
+.btn-voltar:hover{
+transform:scale(1.08);
+background:#fff3e8;
+}
+
+
+/* =========================
+LAYOUT
+========================= */
+
+.container-pedido{
+padding:20px;
+display:flex;
+flex-direction:column;
+gap:18px;
+max-width:900px;
+margin:auto;
+}
+
+
+/* =========================
+CARDS (PADRÃO SISTEMA)
+========================= */
+
+.card-padrao{
 background:#fff;
-padding:40px;
+padding:16px;
 border-radius:14px;
-box-shadow:0 12px 35px rgba(0,0,0,0.12);
-
-}
-
-
-/* =========================================
-HEADER
-========================================= */
-
-.voltarCardapio{
-
-display:inline-block;
-margin-bottom:8px;
-font-size:14px;
-text-decoration:none;
-color:#ff6b00;
-font-weight:500;
+box-shadow:0 6px 20px rgba(0,0,0,0.08);
+display:flex;
+flex-direction:column;
+gap:12px;
 transition:.2s;
-
 }
 
-.voltarCardapio:hover{
+.card-padrao:hover{
+transform:translateY(-2px);
+}
 
-color:#ff8c00;
+
+/* títulos internos */
+
+.card-padrao h3{
+margin:0;
+font-size:16px;
+font-weight:600;
+color:#444;
+}
+
+
+/* =========================
+INPUTS
+========================= */
+
+.input-padrao{
+width:100%;
+padding:12px;
+border-radius:10px;
+border:1px solid #ddd;
+font-size:14px;
+transition:.2s;
+background:#fafafa;
+}
+
+.input-padrao:focus{
+border-color:#ff6b00;
+background:white;
+outline:none;
+box-shadow:0 0 8px rgba(255,107,0,0.2);
+}
+
+
+/* =========================
+TIPO ENTREGA (MELHOR UX)
+========================= */
+
+.tipo-entrega{
+display:flex;
+gap:10px;
+}
+
+.tipo-entrega label{
+flex:1;
+padding:12px;
+background:#f1f1f1;
+border-radius:12px;
+text-align:center;
+cursor:pointer;
+font-weight:600;
+transition:.2s;
+border:2px solid transparent;
+}
+
+.tipo-entrega input{
+display:none;
+}
+
+/* selecionado */
+
+.tipo-entrega label:has(input:checked){
+background:#ff6b00;
+color:white;
+border-color:#ff6b00;
+transform:scale(1.02);
+box-shadow:0 6px 15px rgba(255,107,0,0.3);
+}
+
+
+/* =========================
+RETIRADA
+========================= */
+
+.retirada-box{
+background:#fff3e8;
+text-align:center;
+border:1px dashed #ff6b00;
+}
+
+.retirada-box a{
+color:#ff6b00;
+font-weight:600;
+text-decoration:none;
+}
+
+.retirada-box a:hover{
 text-decoration:underline;
-
 }
 
 
-/* =========================================
-CARDS
-========================================= */
+/* =========================
+RESUMO
+========================= */
 
-.card{
+.resumo-pedido{
+background:#fff8f3;
+}
 
+#totalResumo{
+font-size:24px;
+font-weight:800;
+color:#ff6b00;
+text-align:center;
+margin-top:10px;
+padding:10px;
+border-radius:10px;
+background:linear-gradient(135deg,#fff3e8,#ffe0cc);
+box-shadow:0 6px 15px rgba(255,107,0,0.2);
+}
+
+
+/* =========================
+BOTÃO PRINCIPAL
+========================= */
+
+.btn-principal{
+width:100%;
+background:linear-gradient(135deg,#ff6b00,#ff8c00);
+color:#fff;
+padding:16px;
 border:none;
 border-radius:12px;
-box-shadow:0 8px 25px rgba(0,0,0,0.08);
-
-}
-
-.card-body{
-
-padding:24px;
-
-}
-
-
-/* =========================================
-FORMULÁRIO
-========================================= */
-
-input.form-control,
-select.form-select,
-textarea.form-control{
-
-border-radius:10px;
-padding:12px;
-font-size:14px;
-
-}
-
-textarea{
-
-resize:none;
-
-}
-
-input:focus,
-select:focus,
-textarea:focus{
-
-border-color:#ff6b00;
-box-shadow:0 0 0 3px rgba(255,107,0,0.15);
-
-}
-
-
-/* =========================================
-ERRO NOS CAMPOS
-========================================= */
-
-.is-invalid{
-
-border-color:#e74c3c !important;
-
-}
-
-.is-invalid:focus{
-
-box-shadow:0 0 0 3px rgba(231,76,60,0.15);
-
-}
-
-
-/* =========================================
-CUPOM
-========================================= */
-
-.input-group button{
-
-font-weight:600;
-
-}
-
-
-/* =========================================
-BOTÃO FINALIZAR
-========================================= */
-
-#btnEnviar{
-
-font-weight:600;
-letter-spacing:.4px;
-padding:14px;
-transition:.2s;
-
-}
-
-#btnEnviar:hover{
-
-transform:scale(1.02);
-
-}
-
-
-/* =========================================
-RESUMO DO PEDIDO
-========================================= */
-
-.resumoPedido{
-
-background:#fff4ea;
-border:1px solid #ffe0c7;
-
-}
-
-.resumoPedido h5{
-
-color:#8b0000;
-font-weight:600;
-
-}
-
-#pizzaResumo div,
-#bebidaResumo div{
-
-background:#fff;
-border:1px solid #eee;
-border-radius:10px;
-padding:10px;
-margin-bottom:10px;
-font-size:14px;
-
-}
-
-
-/* =========================================
-LINHAS DO RESUMO
-========================================= */
-
-#subtotalResumo,
-#cupomResumo,
-#taxaEntrega{
-
-display:flex;
-justify-content:space-between;
-font-size:15px;
-margin:6px 0;
-
-}
-
-#subtotalResumo{
-
-color:#444;
-
-}
-
-#cupomResumo{
-
-color:#27ae60;
-font-weight:600;
-
-}
-
-#taxaEntrega{
-
-color:#444;
-
-}
-
-
-/* =========================================
-TOTAL FINAL
-========================================= */
-
-#totalResumo{
-
-font-size:22px;
 font-weight:700;
-color:#ff6b00;
-text-align:right;
+font-size:17px;
+letter-spacing:.5px;
+transition:.25s;
+box-shadow:0 6px 20px rgba(255,107,0,0.35);
+}
 
+.btn-principal:hover{
+transform:scale(1.03);
+box-shadow:0 10px 25px rgba(255,107,0,0.45);
 }
 
 
-/* =========================================
-LOADER
-========================================= */
+/* =========================
+UTIL
+========================= */
 
-.spinner-border{
-
-width:18px;
-height:18px;
-
+.hidden{
+display:none;
 }
 
 
-/* =========================================
-STATUS DO PEDIDO (NOVO)
-========================================= */
+/* =========================
+FOOTER (COMPACTO E LIMPO)
+========================= */
 
-#feedbackPedido{
-
+.footer{
+background:#1f1f1f;
+color:#fff;
 text-align:center;
-
+padding:14px 10px;
+font-size:13px;
+line-height:1.4;
 }
 
-.status-pedido{
+/* remove espaçamento exagerado */
 
-font-size:22px;
-font-weight:600;
-color:#8b0000;
-animation:statusFade .5s ease;
-
-}
-
-.status-pedido span{
-
-display:block;
-margin-top:6px;
-font-size:14px;
-color:#666;
-
+.footer p{
+margin:4px 0;
 }
 
 
-/* animação suave */
-
-@keyframes statusFade{
-
-from{
-opacity:0;
-transform:translateY(8px);
-}
-
-to{
-opacity:1;
-transform:translateY(0);
-}
-
-}
-
-
-/* =========================================
-MODAL FEEDBACK
-========================================= */
-
-#modalFeedbackPedido .modal-content{
-
-border-radius:14px;
-border:none;
-box-shadow:0 15px 40px rgba(0,0,0,0.2);
-
-}
-
-#modalFeedbackPedido h5{
-
-font-weight:600;
-
-}
-
-
-/* =========================================
+/* =========================
 RESPONSIVO
-========================================= */
+========================= */
 
-@media(max-width:992px){
+@media(max-width:768px){
 
-.resumoPedido{
-
-margin-top:20px;
-
+.header-confirmacao{
+padding:18px 14px;
 }
 
-}
-
-@media(max-width:600px){
-
-main.container{
-
-padding:25px;
-
-}
-
-#totalResumo{
-
+.header-confirmacao h2{
 font-size:20px;
+}
 
+.container-pedido{
+padding:15px;
+gap:14px;
+}
+
+.btn-principal{
+font-size:16px;
+padding:14px;
 }
 
 }
