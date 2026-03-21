@@ -43,13 +43,17 @@ window.selecionarBebidaGlobal = selecionarBebidaGlobal
 
 
 // ================================
-// MAIS PEDIDAS
+// 🔥 INIT GERAL (TUDO AQUI)
 // ================================
 
 document.addEventListener("DOMContentLoaded",()=>{
 
+// ================================
+// MAIS PEDIDAS
+// ================================
+
 const lista = document.getElementById("lista-pizzas")
-if(!lista) return
+if(lista){
 
 const pizzas = [
 {nome:"Calabresa",img:"img/pizzas/imgPizzaMaisPedidas1.jpg",desc:"Molho, mussarela e calabresa",preco:30},
@@ -92,11 +96,9 @@ notificar("Pedido removido","warning")
 return
 }
 
-
 // 🔥 TROCA DE PIZZA
 pedidoAnterior.pizza = pedidoAtual.pizza
 pedidoAtual.pizza = pizza
-
 
 // limpar UI pizzas
 document.querySelectorAll("#lista-pizzas .pizza-card").forEach(c=>{
@@ -117,6 +119,28 @@ verificarEnvio()
 lista.appendChild(card)
 
 })
+
+}
+
+
+
+// ================================
+// 🔥 BOTÃO → PIZZA 1 SABOR
+// ================================
+
+const btnPizza1 = document.getElementById("btnPizza1")
+
+if(btnPizza1){
+btnPizza1.onclick = ()=>{
+
+// 🔥 salva estado atual (IMPORTANTE)
+localStorage.setItem("pedidoHome", JSON.stringify(pedidoAtual))
+
+// redireciona
+window.location.href = "html/pizza-1-sabor.html"
+
+}
+}
 
 })
 

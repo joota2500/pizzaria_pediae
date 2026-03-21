@@ -66,26 +66,45 @@ function selecionarPizzaLocal(btn,nome,tamanho,preco){
 
 const card = btn.closest(".pizza-card")
 
-card.querySelectorAll("button").forEach(b=>{
+// 🔁 SE CLICOU NO MESMO → REMOVE
+if(
+pedidoAtual &&
+pedidoAtual.nome === nome &&
+pedidoAtual.tamanho === tamanho
+){
+pedidoAtual = null
+
+document.querySelectorAll(".pizza-card").forEach(c=>{
+c.classList.remove("selecionado")
+})
+
+document.querySelectorAll(".tamanhos button").forEach(b=>{
 b.classList.remove("ativo")
 })
 
+return
+}
+
+// 🔥 LIMPA TODOS
+document.querySelectorAll(".pizza-card").forEach(c=>{
+c.classList.remove("selecionado")
+})
+
+document.querySelectorAll(".tamanhos button").forEach(b=>{
+b.classList.remove("ativo")
+})
+
+// 🔥 ATIVA
 btn.classList.add("ativo")
 card.classList.add("selecionado")
 
-if(typeof adicionarCarrinho === "function"){
-
-adicionarCarrinho({
-tipo:"pizza_custom",
-nome:nome,
-tamanho:tamanho,
-preco:preco
-}, btn)
-
+pedidoAtual = {
+nome,
+tamanho,
+preco
 }
 
 }
-
 
 
 // ================================
@@ -104,7 +123,7 @@ card.dataset.nome = p.nome.toLowerCase()
 
 card.innerHTML = `
 
-<img src="img/pizzas/imgPizza${nomeImagem}.jpg" alt="${p.nome}">
+<img src="../img/pizzas/imgPizza${nomeImagem}.jpg" alt="${p.nome}">
 
 <h3>${p.nome}</h3>
 
@@ -114,9 +133,9 @@ card.innerHTML = `
 
 <div class="tamanhos">
 
-<button onclick="selecionarPizzaLocal(this,'${p.nome}','P',${p.preco})">P</button>
-<button onclick="selecionarPizzaLocal(this,'${p.nome}','M',${p.preco+5})">M</button>
-<button onclick="selecionarPizzaLocal(this,'${p.nome}','G',${p.preco+10})">G</button>
+<button onclick="selecionarPizzaLocal(this,'${p.nome}','P',${p.preco},'${p.ing}')">P</button>
+<button onclick="selecionarPizzaLocal(this,'${p.nome}','M',${p.preco+5},'${p.ing}')">M</button>
+<button onclick="selecionarPizzaLocal(this,'${p.nome}','G',${p.preco+10},'${p.ing}')">G</button>
 
 </div>
 
@@ -153,7 +172,7 @@ lista.appendChild(criarCardPizza(p))
 document.addEventListener("DOMContentLoaded",()=>{
 
 // 🔥 SÓ RODA SE EXISTIR ESSE ID
-lista = document.getElementById("lista-cardapio")
+lista = document.getElementById("lista-pizzas")
 
 if(!lista) return
 

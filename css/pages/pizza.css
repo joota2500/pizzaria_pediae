@@ -1,5 +1,5 @@
 /* =========================
-HEADER (INTEGRADO)
+HEADER
 ========================= */
 
 .header-pizza{
@@ -39,15 +39,36 @@ color:#fff;
 transform:translateY(-50%) scale(1.1);
 }
 
+
 /* =========================
-SELEÇÃO (NÃO QUEBRA CARD GLOBAL)
+CARD SELECIONADO (FORTE)
 ========================= */
 
 .pizza-card.pizza-selecionada{
-border:2px solid #ff6b00;
-transform:translateY(-4px) scale(1.02);
-box-shadow:0 12px 30px rgba(0,0,0,0.2);
+border:2px solid #28a745;
+box-shadow:0 0 20px rgba(40,167,69,0.4);
+transform:scale(1.03);
 }
+
+/* título muda */
+.pizza-card.pizza-selecionada h3{
+color:#28a745;
+}
+
+
+/* =========================
+ANIMAÇÃO SELEÇÃO
+========================= */
+
+.pizza-card.animar{
+animation:pop .25s ease;
+}
+
+@keyframes pop{
+0%{transform:scale(0.95)}
+100%{transform:scale(1.03)}
+}
+
 
 /* =========================
 TAMANHOS
@@ -62,10 +83,10 @@ flex-wrap:wrap;
 }
 
 .tamanhos button{
-border:none;
+border:2px solid #ff6b00;
 padding:6px 12px;
 border-radius:20px;
-background:#eee;
+background:#fff;
 cursor:pointer;
 font-size:13px;
 font-weight:600;
@@ -73,17 +94,20 @@ transition:.25s;
 }
 
 .tamanhos button:hover{
-background:#ddd;
+background:#ff6b00;
+color:white;
 }
 
 .tamanhos button.ativo{
-background:#ff6b00;
+background:#28a745;
+border-color:#28a745;
 color:white;
-transform:scale(1.05);
+transform:scale(1.08);
 }
 
+
 /* =========================
-RESUMO FIXO (PROFISSIONAL)
+RESUMO FIXO
 ========================= */
 
 .resumo-pedido{
@@ -108,15 +132,19 @@ font-size:14px;
 font-weight:500;
 color:#333;
 max-width:60%;
+line-height:1.4;
 }
 
-/* BOTÕES */
+/* =========================
+BOTÕES
+========================= */
 
 .resumo-botoes{
 display:flex;
 gap:10px;
 }
 
+/* base */
 .resumo-botoes button{
 padding:10px 16px;
 border:none;
@@ -127,7 +155,6 @@ transition:.25s;
 }
 
 /* cancelar */
-
 .resumo-botoes button:first-child{
 background:#eee;
 color:#333;
@@ -137,22 +164,246 @@ color:#333;
 background:#ddd;
 }
 
-/* próximo */
-
-.resumo-botoes button:last-child{
-background:#ff6b00;
+/* 🔥 BOTÃO PRÓXIMO PRO */
+#btnProximo{
+background:linear-gradient(135deg,#28a745,#34d058);
 color:white;
+box-shadow:0 4px 12px rgba(40,167,69,0.4);
 }
 
-.resumo-botoes button:last-child:hover{
-background:#ff8c00;
+#btnProximo:hover{
+transform:translateY(-2px);
+box-shadow:0 8px 18px rgba(40,167,69,0.5);
 }
 
 /* desabilitado */
-
-.resumo-botoes button:disabled{
-background:#bbb;
+#btnProximo:disabled{
+background:#ccc;
+box-shadow:none;
 cursor:not-allowed;
+}
+
+
+/* =========================
+LOADING SKELETON
+========================= */
+
+.pizza-loading{
+height:120px;
+border-radius:12px;
+background:linear-gradient(90deg,#eee,#ddd,#eee);
+background-size:200% 100%;
+animation:loading 1.2s infinite;
+}
+
+@keyframes loading{
+0%{background-position:-100%}
+100%{background-position:100%}
+}
+
+
+/* =========================
+BUSCA
+========================= */
+
+.busca-container{
+margin-bottom:20px;
+text-align:center;
+}
+
+.busca-container input{
+width:100%;
+max-width:400px;
+padding:10px 14px;
+border-radius:25px;
+border:2px solid #ff6b00;
+outline:none;
+font-size:14px;
+}
+
+.busca-container input:focus{
+border-color:#28a745;
+}
+
+/* =========================
+BUSCA PROFISSIONAL
+========================= */
+
+.busca-container{
+margin-bottom:25px;
+display:flex;
+justify-content:center;
+padding:0 10px;
+}
+
+.busca-container input{
+width:100%;
+max-width:420px;
+padding:12px 18px;
+border-radius:30px;
+border:2px solid #ff6b00;
+outline:none;
+font-size:14px;
+font-weight:500;
+transition:.25s;
+background:white;
+box-shadow:0 4px 12px rgba(0,0,0,0.08);
+}
+
+/* foco */
+.busca-container input:focus{
+border-color:#28a745;
+box-shadow:0 6px 18px rgba(40,167,69,0.2);
+}
+
+/* placeholder */
+.busca-container input::placeholder{
+color:#999;
+}
+.modal-adicionais{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,0.6);
+display:none;
+z-index:9999;
+justify-content:center;
+align-items:flex-end;
+}
+
+.modal-adicionais.ativo{
+display:flex;
+}
+
+.modal-content{
+background:#fff;
+width:100%;
+max-height:90vh;
+border-radius:20px 20px 0 0;
+padding:20px;
+overflow-y:auto;
+animation:subir .3s ease;
+}
+
+@keyframes subir{
+from{transform:translateY(100%)}
+to{transform:translateY(0)}
+}
+
+/* HEADER */
+.modal-header{
+display:flex;
+align-items:center;
+gap:10px;
+}
+
+.modal-header button{
+border:none;
+background:#eee;
+width:36px;
+height:36px;
+border-radius:50%;
+}
+
+/* DESCRIÇÃO */
+.descricao{
+font-size:14px;
+color:#666;
+margin:10px 0;
+}
+
+/* BOTÃO */
+.btn-expandir{
+width:100%;
+padding:10px;
+border-radius:8px;
+border:2px solid #ff6b00;
+background:#fff;
+color:#ff6b00;
+font-weight:600;
+margin-bottom:10px;
+}
+
+/* LISTA */
+.lista-adicionais{
+display:none;
+flex-direction:column;
+gap:10px;
+}
+
+.lista-adicionais.ativo{
+display:flex;
+}
+
+.item-adicional{
+display:flex;
+justify-content:space-between;
+align-items:center;
+background:#f8f8f8;
+padding:10px;
+border-radius:10px;
+}
+
+.item-adicional span{
+font-size:14px;
+}
+
+.contador{
+display:flex;
+align-items:center;
+gap:8px;
+}
+
+.contador button{
+width:28px;
+height:28px;
+border:none;
+background:#ff6b00;
+color:#fff;
+border-radius:6px;
+}
+
+/* RESUMO */
+.resumo-adicional{
+margin-top:10px;
+font-size:13px;
+color:#333;
+}
+
+/* AÇÕES */
+.acoes-modal{
+display:flex;
+gap:10px;
+margin-top:15px;
+}
+
+.acoes-modal button{
+flex:1;
+padding:12px;
+border:none;
+border-radius:10px;
+font-weight:600;
+}
+
+.acoes-modal button:first-child{
+background:#eee;
+}
+
+.acoes-modal button:last-child{
+background:#ff6b00;
+color:#fff;
+}
+
+/* =========================
+RESPONSIVO
+========================= */
+
+@media(max-width:768px){
+
+.busca-container input{
+font-size:13px;
+padding:10px 14px;
+}
+
 }
 
 /* =========================
@@ -176,11 +427,26 @@ font-size:13px;
 .resumo-botoes{
 width:100%;
 display:flex;
-justify-content:space-between;
+gap:8px;
 }
 
 .resumo-botoes button{
 flex:1;
+padding:10px;
+font-size:14px;
+}
+
+.tamanhos button{
+font-size:12px;
+padding:5px 10px;
+}
+
+}
+
+@media(max-width:480px){
+
+#resumoTexto{
+font-size:12px;
 }
 
 }

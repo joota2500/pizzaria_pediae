@@ -4,6 +4,8 @@
 
 let pedidoAtual = null
 
+
+
 // ================================
 // FORMATAR
 // ================================
@@ -15,15 +17,53 @@ currency:"BRL"
 })
 }
 
+
+
 // ================================
-// SELEÇÃO LOCAL
+// 🔍 BUSCA
 // ================================
 
-function selecionarPizzaLocal(botao,nome,tamanho,preco){
+function filtrarPizza(valor){
+
+valor = valor.toLowerCase()
+
+// reset
+if(valor.length === 0){
+renderPizzas(4)
+return
+}
+
+// mostra tudo
+if(typeof renderPizzas === "function"){
+renderPizzas(pizzas.length)
+}
+
+// filtra
+document.querySelectorAll(".pizza-card").forEach(card=>{
+
+const nome = card.dataset.nome || ""
+
+if(nome.includes(valor)){
+card.style.display="block"
+}else{
+card.style.display="none"
+}
+
+})
+
+}
+
+
+
+// ================================
+// 🍕 SELEÇÃO LOCAL (CORRIGIDA)
+// ================================
+
+function selecionarPizzaLocal(botao,nome,tamanho,preco,ingredientes){
 
 const card = botao.closest(".pizza-card")
 
-// 🔥 SE CLICOU NA MESMA → DESMARCA
+// 🔁 toggle (desmarcar)
 if(
 pedidoAtual &&
 pedidoAtual.nome === nome &&
@@ -35,34 +75,73 @@ atualizarResumo()
 return
 }
 
-// 🔥 LIMPA ANTES DE MARCAR
+// 🔥 limpar anterior
 limparUI()
 
-// 🔥 MARCA CARD E BOTÃO
+// 🔥 animação
+card.classList.add("animar")
+setTimeout(()=>card.classList.remove("animar"),200)
+
+// 🔥 marcar
 card.classList.add("pizza-selecionada")
 botao.classList.add("ativo")
 
-// 🔥 SALVA ESTADO
-pedidoAtual = {
-nome,
-tamanho,
-preco
+// 🔥 AGORA SALVA COMPLETO (FIX PRINCIPAL)
+pedidoAtual = { 
+nome, 
+tamanho, 
+preco,
+ingredientes
 }
 
-// 🔥 ATUALIZA UI
 atualizarResumo()
 
+// 🔥 scroll automático
+const resumo = document.querySelector(".resumo-pedido")
+if(resumo){
+resumo.scrollIntoView({behavior:"smooth"})
 }
 
+// 🔥 sugestão inteligente
+sugestao()
+
+}
+
+
+
 // ================================
-// VOLTAR
+// 💡 SUGESTÃO AUTOMÁTICA
+// ================================
+
+function sugestao(){
+
+if(!pedidoAtual) return
+
+const nome = pedidoAtual.nome.toLowerCase()
+
+if(nome.includes("calabresa")){
+notificar?.("💡 Combina com Coca-Cola!")
+}
+
+if(nome.includes("frango")){
+notificar?.("💡 Que tal um Guaraná?")
+}
+
+}
+
+
+
+// ================================
+// 🔙 VOLTAR
 // ================================
 
 function voltarIndex(){
-window.location.href = "index.html"
+window.location.href = "../index.html"
 }
 
 window.voltarIndex = voltarIndex
+
+
 
 // ================================
 // LIMPAR UI
@@ -71,15 +150,21 @@ window.voltarIndex = voltarIndex
 function limparUI(){
 
 document.querySelectorAll(".pizza-card")
-.forEach(c=>c.classList.remove("pizza-selecionada"))
+.forEach(c=>{
+c.classList.remove("pizza-selecionada")
+})
 
 document.querySelectorAll(".tamanhos button")
-.forEach(b=>b.classList.remove("ativo"))
+.forEach(b=>{
+b.classList.remove("ativo")
+})
 
 }
 
+
+
 // ================================
-// RESUMO
+// RESUMO (AGORA COM INGREDIENTES)
 // ================================
 
 function atualizarResumo(){
@@ -93,12 +178,19 @@ btn.disabled=true
 return
 }
 
-texto.innerText =
-`${pedidoAtual.nome} (${pedidoAtual.tamanho}) - ${formatarMoeda(pedidoAtual.preco)}`
+texto.innerHTML = `
+<strong>${pedidoAtual.nome}</strong><br>
+<small style="color:#666;">${pedidoAtual.ingredientes}</small><br>
+Tamanho: ${pedidoAtual.tamanho}<br>
+<span style="color:#28a745;font-weight:600;">
+${formatarMoeda(pedidoAtual.preco)}
+</span>
+`
 
 btn.disabled=false
-
 }
+
+
 
 // ================================
 // AÇÕES
@@ -111,14 +203,12 @@ atualizarResumo()
 }
 
 function proximo(){
-
 if(!pedidoAtual) return
-
-localStorage.setItem("pedidoAtual", JSON.stringify(pedidoAtual))
-
-window.location.href = "confirmacao-item.html"
-
+window.pedidoAtual = pedidoAtual // 🔥 importante
+abrirAdicionais()
 }
+
+
 
 // ================================
 // INIT
@@ -126,17 +216,33 @@ window.location.href = "confirmacao-item.html"
 
 document.addEventListener("DOMContentLoaded",()=>{
 
-// 🔥 IMPORTANTE: usa id correto
-if(typeof renderPizzas === "function"){
+// ================================
+// 🔥 LOADING SKELETON
+// ================================
 
-// 🔥 garante que render usa o container certo
 const lista = document.getElementById("lista-pizzas")
+
 if(lista){
-window.lista = lista
+lista.innerHTML = `
+<div class="pizza-loading"></div>
+<div class="pizza-loading"></div>
+<div class="pizza-loading"></div>
+`
+}
+
+// ================================
+// 🔥 CARREGAR CARDÁPIO
+// ================================
+
+setTimeout(()=>{
+
+if(typeof renderPizzas === "function"){
 renderPizzas(4)
 }
 
-}
+},300)
+
+
 
 // ================================
 // BOTÃO VER MAIS
@@ -166,5 +272,27 @@ btn.dataset.aberto="true"
 
 }
 
+
+
+// ================================
+// 🔥 BUSCA INPUT
+// ================================
+
+const inputBusca = document.getElementById("buscaPizza")
+
+if(inputBusca){
+inputBusca.addEventListener("input",(e)=>{
+filtrarPizza(e.target.value)
 })
+}
+
+})
+
+
+
+// ================================
+// GLOBAL
+// ================================
+
 window.selecionarPizzaLocal = selecionarPizzaLocal
+window.filtrarPizza = filtrarPizza
