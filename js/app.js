@@ -1,21 +1,24 @@
 // ================================
-// INICIALIZAÇÃO DO SISTEMA
+// INIT SISTEMA (OTIMIZADO)
 // ================================
 
 document.addEventListener("DOMContentLoaded",()=>{
 
 console.log("Sistema iniciado")
 
+try{
 inicializarCardapio()
 inicializarCarrinho()
 verificarHorario()
 iniciarAnimacoes()
+}catch(e){
+console.warn("Erro na inicialização:",e)
+}
 
 })
 
-
 // ================================
-// CARREGAR CARDÁPIO
+// CARDÁPIO
 // ================================
 
 function inicializarCardapio(){
@@ -30,9 +33,8 @@ renderBebidas(3)
 
 }
 
-
 // ================================
-// ATUALIZAR CARRINHO
+// CARRINHO
 // ================================
 
 function inicializarCarrinho(){
@@ -43,40 +45,27 @@ atualizarCarrinhoLista()
 
 }
 
-
 // ================================
-// VERIFICAR HORÁRIO DA PIZZARIA
+// HORÁRIO
 // ================================
 
 function verificarHorario(){
 
 const status = document.getElementById("statusPizzaria")
-
 if(!status) return
 
-const agora = new Date()
-const hora = agora.getHours()
+const hora = new Date().getHours()
 
-const horaAbertura = 18
-const horaFechamento = 22
+const aberto = hora >= 18 && hora < 22
 
-if(hora >= horaAbertura && hora < horaFechamento){
-
-status.innerText =
-"🟢 Aberto agora • Entrega média 30–45 min"
-
-}else{
-
-status.innerText =
-"🔴 Fechado no momento • Abrimos às 18:00"
+status.innerText = aberto
+? "🟢 Aberto agora • Entrega média 30–45 min"
+: "🔴 Fechado • Abrimos às 18:00"
 
 }
-
-}
-
 
 // ================================
-// INICIAR ANIMAÇÕES
+// ANIMAÇÕES
 // ================================
 
 function iniciarAnimacoes(){

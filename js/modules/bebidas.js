@@ -1,5 +1,5 @@
 // ================================
-// LISTA DE BEBIDAS (COMPLETA)
+// LISTA DE BEBIDAS
 // ================================
 
 const bebidas=[
@@ -45,7 +45,6 @@ let bebidasAberto=false
 // ================================
 
 function limparNomeImagem(nome){
-
 return nome
 .replaceAll(" ","")
 .replaceAll("ç","c")
@@ -55,7 +54,6 @@ return nome
 .replaceAll("í","i")
 .replaceAll("ó","o")
 .replaceAll("ú","u")
-
 }
 
 
@@ -79,45 +77,81 @@ const card = document.createElement("article")
 card.className="pizza-card bebida-card"
 
 card.innerHTML=`
-
 <img src="img/bebidas/imgBebida${nomeImagem}.jpg"
 onerror="this.src='img/bebidas/imgBebidaCocaColaLata.jpg'">
-
 <h3>${b.nome}</h3>
-
 <p class="ingredientes">${formatarMoeda(b.preco)}</p>
-
-<button class="botao-bebida">Adicionar</button>
-
+<button class="botao-bebida">Selecionar</button>
 `
 
-// EVENTO
 const botao = card.querySelector("button")
 
-botao.onclick = (e)=>{
 
-if(typeof adicionarCarrinho === "function"){
+// ================================
+// CLICK
+// ================================
 
-adicionarCarrinho({
-tipo:"bebida",
-nome:b.nome,
-preco:b.preco
-}, e.target)
+botao.onclick = ()=>{
 
+// 🔁 DESMARCAR (baseado no HOME)
+if(
+typeof pedidoAtual !== "undefined" &&
+pedidoAtual.bebida &&
+pedidoAtual.bebida.nome === b.nome
+){
+
+card.classList.remove("selecionado")
+botao.classList.remove("bebidaSelecionada")
+botao.innerText="Selecionar"
+
+notificar("Bebida removida","warning")
+
+if(typeof selecionarBebidaGlobal === "function"){
+selecionarBebidaGlobal(null)
 }
 
-// feedback
-botao.classList.add("bebidaSelecionada")
-botao.innerText="✔ Adicionado"
+return
+}
 
-// animação
+
+// ================================
+// 🔥 LIMPAR TODAS
+// ================================
+
+document.querySelectorAll(".bebida-card").forEach(c=>{
+c.classList.remove("selecionado")
+})
+
+document.querySelectorAll(".botao-bebida").forEach(btn=>{
+btn.classList.remove("bebidaSelecionada")
+btn.innerText="Selecionar"
+})
+
+
+// ================================
+// 🔥 SELECIONAR
+// ================================
+
+card.classList.add("selecionado")
+botao.classList.add("bebidaSelecionada")
+botao.innerText="✔ Selecionado"
+
+
+// ================================
+// 🔥 AVISA HOME
+// ================================
+
+if(typeof selecionarBebidaGlobal === "function"){
+selecionarBebidaGlobal(b)
+}
+
+
+// animação leve
 card.style.transform="scale(1.05)"
 
 setTimeout(()=>{
-botao.classList.remove("bebidaSelecionada")
-botao.innerText="Adicionar"
 card.style.transform=""
-},1200)
+},200)
 
 }
 
@@ -140,7 +174,7 @@ renderBebidas(4)
 
 
 // ================================
-// BOTÃO VER MAIS (🔥 MELHORADO)
+// BOTÃO VER MAIS
 // ================================
 
 document.addEventListener("DOMContentLoaded",()=>{
@@ -153,15 +187,11 @@ btn.onclick=()=>{
 bebidasAberto=!bebidasAberto
 
 if(bebidasAberto){
-
 renderBebidas(bebidas.length)
 btn.innerText="Mostrar menos"
-
 }else{
-
 renderBebidas(4)
 btn.innerText="Ver mais bebidas"
-
 }
 
 }

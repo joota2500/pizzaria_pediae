@@ -1,0 +1,112 @@
+/* =========================
+CLIENTES (INSTAGRAM PRO)
+========================= */
+
+.clientes-grid{
+display:flex;
+flex-direction:column;
+align-items:center;
+gap:25px;
+margin-top:25px;
+}
+
+/* =========================
+CARD
+========================= */
+
+.cliente-post{
+position:relative;
+background:white;
+border-radius:14px;
+padding:12px;
+box-shadow:0 8px 25px rgba(0,0,0,0.12);
+width:100%;
+max-width:520px;
+transition:.3s ease;
+
+/* 🔥 altura controlada (equilíbrio ideal) */
+height:550px;
+
+overflow:hidden;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+.cliente-post:hover{
+transform:translateY(-4px);
+box-shadow:0 12px 30px rgba(0,0,0,0.18);
+}
+
+/* =========================
+SCROLL INTERNO
+========================= */
+
+.cliente-post blockquote{
+width:100% !important;
+height:100% !important;
+overflow:auto !important;
+}
+
+/* =========================
+INSTAGRAM
+========================= */
+
+.instagram-media{
+width:100% !important;
+margin:0 auto !important;
+}
+
+/* iframe */
+.cliente-post iframe{
+width:100% !important;
+height:100% !important;
+border-radius:10px;
+}
+
+/* =========================
+LOADING
+========================= */
+
+.cliente-loading{
+position:absolute;
+inset:0;
+background:linear-gradient(90deg,#eee,#ddd,#eee);
+background-size:200% 100%;
+animation:loading 1.2s infinite;
+z-index:2;
+border-radius:14px;
+}
+
+@keyframes loading{
+0%{background-position:-100%}
+100%{background-position:100%}
+}
+
+.cliente-post.loaded .cliente-loading{
+opacity:0;
+pointer-events:none;
+transition:.4s;
+}
+
+/* =========================
+RESPONSIVO
+========================= */
+
+@media(max-width:768px){
+
+.cliente-post{
+height:480px;
+max-width:100%;
+}
+
+}
+
+@media(max-width:480px){
+
+.cliente-post{
+height:420px;
+padding:10px;
+}
+
+}

@@ -1,41 +1,104 @@
+/* =========================
+MENU BOTTOM PROFISSIONAL 2.0
+========================= */
+
 .menu-bottom{
 position:fixed;
 bottom:0;
 left:0;
 width:100%;
-background:#8b0000;
+height:70px;
+background:linear-gradient(180deg,#8b0000,#6d0000);
 display:flex;
 justify-content:space-around;
 align-items:center;
-padding:10px 0;
 z-index:9999;
 box-shadow:0 -5px 20px rgba(0,0,0,0.25);
 }
 
+/* itens */
 .menu-bottom a{
+flex:1;
+height:100%;
 display:flex;
 flex-direction:column;
 align-items:center;
+justify-content:center;
 color:white;
 text-decoration:none;
 font-size:12px;
-transition:.3s;
+transition:.25s;
 }
 
+/* ícone + texto */
 .menu-bottom a span{
+font-size:11px;
+margin-top:2px;
+}
+
+/* hover */
+.menu-bottom a:hover{
+color:#ffd166;
+transform:translateY(-2px);
+}
+
+/* ativo */
+.menu-bottom a.ativo{
+color:#ffd166;
+transform:scale(1.08);
+}
+
+/* clique */
+.menu-bottom a:active{
+transform:scale(0.95);
+}
+
+/* =========================
+TABLET
+========================= */
+
+@media(max-width:992px){
+.menu-bottom{
+height:65px;
+}
+}
+
+/* =========================
+MOBILE
+========================= */
+
+@media(max-width:768px){
+
+.menu-bottom{
+height:65px;
+}
+
+.menu-bottom a{
 font-size:11px;
 }
 
-.menu-bottom a:hover{
-color:#ffd166;
+.menu-bottom a span{
+font-size:10px;
 }
 
-.menu-bottom a.ativo{
-color:#ffd166;
-transform:scale(1.1);
 }
 
-/* 🔥 IMPORTANTE (evitar sobreposição com toast depois) */
+/* =========================
+MOBILE PEQUENO
+========================= */
+
+@media(max-width:480px){
+
 .menu-bottom{
-pointer-events:auto;
+height:60px;
+}
+
+.menu-bottom a{
+font-size:10px;
+}
+
+.menu-bottom a span{
+font-size:9px;
+}
+
 }

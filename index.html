@@ -17,45 +17,54 @@
 <!-- FONT -->
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 
-<!-- CSS (ORGANIZADO) -->
 <!-- CSS -->
 <link rel="stylesheet" href="css/style.css">
-
-<!-- NOVOS (pode manter) -->
 <link rel="stylesheet" href="css/base/layout.css">
 <link rel="stylesheet" href="css/components/carrinho.css">
 <link rel="stylesheet" href="css/components/menu-bottom.css">
 <link rel="stylesheet" href="css/components/footer.css">
 <link rel="stylesheet" href="css/components/carrossel.css">
 <link rel="stylesheet" href="css/components/whatsapp.css">
+<link rel="stylesheet" href="css/sections/clientes.css">
+
+<style>
+html{ scroll-behavior:smooth; }
+
+/* 🔥 FIX VISUAL SELEÇÃO */
+.pizza-card.selecionado{
+border:2px solid #ff6b00;
+box-shadow:0 0 15px rgba(255,107,0,0.4);
+transform:scale(1.03);
+}
+
+.pizza-card.selecionado .btn{
+background:#28a745 !important;
+color:white;
+}
+</style>
 
 </head>
 
 <body>
 
-<!-- ================= HEADER ================= -->
 <header class="container-header">
 <img src="img/logo/imgLogoPizzaria.png" class="logo" alt="Logo pizzaria">
 </header>
 
 <div class="status-pizzaria" id="statusPizzaria"></div>
 
-<!-- ================= CARRINHO ================= -->
-<button class="carrinho-flutuante" id="iconeCarrinho" onclick="abrirCarrinho()" aria-label="Abrir carrinho">
+<!-- BOTÕES FIXOS -->
+<button class="carrinho-flutuante" id="iconeCarrinho" onclick="abrirCarrinho()">
 🛒
 <span id="contadorCarrinho">0</span>
 </button>
 
-<!-- ================= WHATSAPP ================= -->
-<a 
-href="https://wa.me/5585989214864?text=Olá,%20quero%20mais%20informações%20sobre%20a%20pizzaria"
-class="whatsapp-flutuante"
-target="_blank"
-aria-label="Falar no WhatsApp">
+<a href="https://wa.me/5585989214864?text=Olá,%20quero%20informações"
+class="whatsapp-flutuante" target="_blank">
 💬
 </a>
 
-<!-- ================= PAINEL CARRINHO ================= -->
+<!-- CARRINHO -->
 <aside class="painel-pedido" id="painelPedido">
 
 <header class="painel-header">
@@ -64,97 +73,49 @@ aria-label="Falar no WhatsApp">
 </header>
 
 <section class="painel-conteudo">
-
 <div id="listaCarrinho"></div>
-
-<p id="totalCarrinho" class="total-carrinho">
-Total: R$ 0
-</p>
-
-
+<p id="totalCarrinho" class="total-carrinho">Total: R$ 0</p>
 </section>
 
 </aside>
 
-<!-- ================= MAIN ================= -->
 <main>
 
-<!-- HERO -->
 <section id="inicio" class="hero">
-
 <div class="hero-texto">
-
 <h1>Monte sua pizza perfeita 🍕</h1>
-
 <p>Escolha sabores, borda e finalize rápido</p>
-
-<a href="montar-pizza.html" class="botao">
-Começar pedido
-</a>
-
+<a href="#escolha" class="botao">Começar pedido</a>
 </div>
-
 </section>
 
-<!-- PROMOÇÕES -->
 <section id="promocoes">
-
 <h2>🔥 Promoções da Semana</h2>
-
 <div class="carrossel">
 <div class="slides">
-
-<img src="img/carrossel/imgCarrossel1.jpg" alt="Promoção 1">
-<img src="img/carrossel/imgCarrossel2.jpg" alt="Promoção 2">
-<img src="img/carrossel/imgCarrossel3.jpg" alt="Promoção 3">
-<img src="img/carrossel/imgCarrossel4.jpg" alt="Promoção 4">
-
+<img src="img/carrossel/imgCarrossel1.jpg">
+<img src="img/carrossel/imgCarrossel2.jpg">
+<img src="img/carrossel/imgCarrossel3.jpg">
+<img src="img/carrossel/imgCarrossel4.jpg">
 </div>
 </div>
-
 </section>
 
 <!-- COMBOS -->
 <section id="combos">
-
 <h2>🍕 Combos</h2>
-
-<div class="grid-pizzas">
-
-<article class="combo-card">
-<img src="img/combos/comboCalabresa.jpg" alt="Combo Calabresa">
-<h3>Combo Calabresa</h3>
-<p>Pizza + Coca 1L</p>
-<button class="btn btn-warning" onclick="window.location.href='montar-pizza.html'">
-Ver combo
-</button>
-</article>
-
-<article class="combo-card">
-<img src="img/combos/comboPortuguesa.jpg" alt="Combo Portuguesa">
-<h3>Combo Portuguesa</h3>
-<p>Pizza + Guaraná</p>
-<button class="btn btn-warning" onclick="window.location.href='montar-pizza.html'">
-Ver combo
-</button>
-</article>
-
-</div>
-
+<div class="grid-pizzas" id="lista-combos"></div>
+<button id="verCombos" class="btn-ver-combos">Ver todos combos</button>
 </section>
 
 <!-- MAIS PEDIDAS -->
 <section id="destaques">
-
 <h2>🔥 Mais pedidas</h2>
-
 <div class="grid-pizzas" id="lista-pizzas"></div>
-
 </section>
 
 <!-- ESCOLHA -->
 <section id="escolha">
-
 <h2>🍕 Monte seu pedido</h2>
 
 <div class="grid-pizzas">
@@ -162,7 +123,7 @@ Ver combo
 <article class="pizza-card">
 <h3>🍕 Pizza 1 sabor</h3>
 <p>A partir de R$ 20</p>
-<button class="btn btn-warning" onclick="window.location.href='pizza-1-sabor.html'">
+<button class="btn btn-warning" id="btnPizza1">
 Escolher
 </button>
 </article>
@@ -170,122 +131,67 @@ Escolher
 <article class="pizza-card">
 <h3>🍕🍕 Pizza 2 sabores</h3>
 <p>A partir de R$ 30</p>
-<button class="btn btn-warning" onclick="window.location.href='montar-pizza.html?tipo=2'">
+<button class="btn btn-warning" id="btnPizza2">
 Escolher
 </button>
 </article>
 
 </div>
-
 </section>
 
 <!-- BEBIDAS -->
 <section id="bebidas">
-
 <h2>🥤 Bebidas</h2>
-
 <div id="lista-bebidas" class="grid-pizzas"></div>
-
 <button id="mostrarBebidas" class="botao-expandir">
 Ver todas bebidas
 </button>
-
 </section>
 
-<!-- SOBRE -->
-<section id="sobre">
-
-<h2>🍕 Sobre</h2>
-
-<div class="sobre-grid">
-
-<article class="sobre-item">
-<h3>🔥 Massa artesanal</h3>
-<p>Preparada diariamente</p>
-</article>
-
-<article class="sobre-item">
-<h3>🚚 Entrega rápida</h3>
-<p>30–45 minutos</p>
-</article>
-
-<article class="sobre-item">
-<h3>🥬 Ingredientes frescos</h3>
-<p>Selecionados todos os dias</p>
-</article>
-
-<article class="sobre-item">
-<h3>⭐ Qualidade garantida</h3>
-<p>Clientes satisfeitos</p>
-</article>
-
+<!-- LOCALIZAÇÃO -->
+<section id="localizacao">
+<h2>📍 Nossa localização</h2>
+<div class="mapa-container">
+<iframe src="https://www.google.com/maps?q=Fortaleza%20CE&output=embed" class="mapa"></iframe>
 </div>
-
 </section>
 
 </main>
 
-<!-- ================= FOOTER ================= -->
-<footer id="contato" class="footer">
-<p>📍 Fortaleza - CE</p>
-<p>©️ 2026 PeçaPizzaOnline</p>
+<footer class="footer">
+<div class="footer-content">
+<p class="footer-logo">🍕 PeçaPizzaOnline</p>
+<p class="footer-linha">
+© 2026 • Desenvolvido por 
+<a href="https://github.com/joota2500" target="_blank">DevJoota2500 🚀</a>
+</p>
+</div>
 </footer>
 
-<!-- ================= MENU INFERIOR ================= -->
+<!-- 🔥 ESPAÇO PRA NÃO COBRIR -->
+<div style="height:80px;"></div>
+
 <nav class="menu-bottom">
-
-<a href="#inicio" class="ativo">
-🏠
-<span>Início</span>
-</a>
-
-<a href="#escolha">
-🍕
-<span>Pedir</span>
-</a>
-
-<a href="#combos">
-🔥
-<span>Combos</span>
-</a>
-
-<a href="pedido.html">
-🛒
-<span>Pedido</span>
-</a>
-
-<a href="#contato">
-📍
-<span>Contato</span>
-</a>
-
+<a href="#inicio">🏠<span>Início</span></a>
+<a href="#escolha">🍕<span>Pedir</span></a>
+<a href="#combos">🔥<span>Combos</span></a>
+<a href="html/pedido.html">🛒<span>Pedido</span></a>
+<a href="#contato">📍<span>Contato</span></a>
 </nav>
 
-<!-- ================= JS ================= -->
+<!-- JS ORDEM CORRETA -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
-<script src="js/core/config.js" defer></script>
-<script src="js/core/carrinho.js" defer></script>
-<script src="js/core/cupom.js" defer></script>
-<script src="js/core/entrega.js" defer></script>
-<script src="js/core/horario.js" defer></script>
+<script src="js/core/carrinho.js"></script>
 
-<script src="js/services/pedido.js" defer></script>
+<!-- 🔥 NÃO CARREGAR cardapio.js AQUI -->
 
-<script src="js/modules/cardapio.js" defer></script>
-<script src="js/modules/bebidas.js" defer></script>
-<script src="js/modules/busca.js" defer></script>
-<script src="js/modules/categoria.js" defer></script>
-<script src="js/modules/sugestoes.js" defer></script>
-<script src="js/modules/animacoes.js" defer></script>
+<script src="js/modules/bebidas.js"></script>
+<script src="js/modules/combos.js"></script>
 
-<script src="js/ui/mobile.js" defer></script>
-<script src="js/ui/ui.js" defer></script>
-<script src="js/ui/carrossel.js" defer></script>
+<script src="js/pages/home.js"></script>
 
-<script src="js/pages/home.js" defer></script>
-
-<script src="js/app.js" defer></script>
+<script src="js/ui/carrossel.js"></script>
 
 </body>
 </html>

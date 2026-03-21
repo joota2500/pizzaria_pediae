@@ -1,8 +1,16 @@
+/* =========================
+GRID
+========================= */
+
 .grid-pizzas{
 display:grid;
 grid-template-columns:repeat(auto-fit,minmax(240px,1fr));
 gap:20px;
 }
+
+/* =========================
+CARD BASE
+========================= */
 
 .pizza-card,
 .combo-card{
@@ -11,9 +19,14 @@ border-radius:16px;
 box-shadow:0 10px 25px rgba(0,0,0,0.12);
 padding:20px;
 text-align:center;
-transition:.3s;
+transition:.25s ease;
 position:relative;
+border:2px solid transparent;
 }
+
+/* =========================
+HOVER
+========================= */
 
 .pizza-card:hover,
 .combo-card:hover{
@@ -21,7 +34,36 @@ transform:translateY(-6px);
 box-shadow:0 15px 35px rgba(0,0,0,0.2);
 }
 
-/* IMAGENS */
+/* =========================
+CLICK
+========================= */
+
+.pizza-card:active,
+.combo-card:active{
+transform:scale(0.97);
+}
+
+/* =========================
+🔥 SELECIONADO (FORTE VISUAL)
+========================= */
+
+.pizza-card.selecionado,
+.combo-card.selecionado{
+border:2px solid #ff6b00;
+box-shadow:0 0 20px rgba(255,107,0,0.45);
+transform:scale(1.03);
+}
+
+/* botão dentro do selecionado */
+.pizza-card.selecionado .btn,
+.combo-card.selecionado .btn{
+background:#28a745 !important;
+color:white;
+}
+
+/* =========================
+IMAGENS
+========================= */
 
 .pizza-card img{
 width:120px;
@@ -41,7 +83,9 @@ padding:10px;
 border-radius:12px;
 }
 
-/* PREÇO */
+/* =========================
+INFO
+========================= */
 
 .ingredientes{
 font-size:14px;
@@ -49,10 +93,19 @@ color:#666;
 margin:8px 0;
 }
 
-/* CARD BEBIDA (🔥 MELHORADO) */
+/* =========================
+BEBIDA
+========================= */
 
 .bebida-card{
 padding:18px;
+}
+
+/* 🔥 bebida segue mesmo padrão visual */
+.bebida-card.selecionado{
+border:2px solid #ff6b00;
+box-shadow:0 0 18px rgba(255,107,0,0.4);
+transform:scale(1.03);
 }
 
 .bebida-card img{
@@ -64,7 +117,15 @@ background:#fff7f2;
 padding:8px;
 }
 
-/* RESPONSIVO */
+/* botão bebida */
+.botao-bebida.bebidaSelecionada{
+background:#28a745 !important;
+color:white;
+}
+
+/* =========================
+RESPONSIVO
+========================= */
 
 @media(max-width:768px){
 
@@ -78,9 +139,31 @@ gap:15px;
 padding:15px;
 }
 
+.pizza-card img{
+width:100px;
+height:100px;
+}
+
+.combo-card img{
+height:150px;
+}
+
 .bebida-card img{
 width:70px;
 height:70px;
+}
+
+}
+
+@media(max-width:480px){
+
+.grid-pizzas{
+grid-template-columns:1fr;
+}
+
+.pizza-card,
+.combo-card{
+padding:14px;
 }
 
 }

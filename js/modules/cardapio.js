@@ -23,18 +23,7 @@ const pizzas = [
 {nome:"Atum",ing:"Atum e queijo",preco:34,categoria:"salgada"},
 {nome:"Milho com Catupiry",ing:"Milho e catupiry",preco:31,categoria:"salgada"},
 {nome:"Palmito com Mussarela",ing:"Palmito e queijo",preco:32,categoria:"salgada"},
-{nome:"Doce de Leite com Coco",ing:"Doce de leite e coco",preco:28,categoria:"doce"},
-
-{nome:"Teste 01",ing:"Pizza especial da casa",preco:30,categoria:"especial"},
-{nome:"Teste 02",ing:"Pizza especial da casa",preco:30,categoria:"especial"},
-{nome:"Teste 03",ing:"Pizza especial da casa",preco:30,categoria:"especial"},
-{nome:"Teste 04",ing:"Pizza especial da casa",preco:30,categoria:"especial"},
-{nome:"Teste 05",ing:"Pizza especial da casa",preco:30,categoria:"especial"},
-{nome:"Teste 06",ing:"Pizza especial da casa",preco:30,categoria:"especial"},
-{nome:"Teste 07",ing:"Pizza especial da casa",preco:30,categoria:"especial"},
-{nome:"Teste 08",ing:"Pizza especial da casa",preco:30,categoria:"especial"},
-{nome:"Teste 09",ing:"Pizza especial da casa",preco:30,categoria:"especial"},
-{nome:"Teste 10",ing:"Pizza especial da casa",preco:30,categoria:"especial"}
+{nome:"Doce de Leite com Coco",ing:"Doce de leite e coco",preco:28,categoria:"doce"}
 
 ]
 
@@ -64,6 +53,36 @@ return nome
 .replaceAll("í","i")
 .replaceAll("ó","o")
 .replaceAll("ú","u")
+
+}
+
+
+
+// ================================
+// SELECIONAR PIZZA (SÓ PARA PÁGINA DE CARDÁPIO)
+// ================================
+
+function selecionarPizzaLocal(btn,nome,tamanho,preco){
+
+const card = btn.closest(".pizza-card")
+
+card.querySelectorAll("button").forEach(b=>{
+b.classList.remove("ativo")
+})
+
+btn.classList.add("ativo")
+card.classList.add("selecionado")
+
+if(typeof adicionarCarrinho === "function"){
+
+adicionarCarrinho({
+tipo:"pizza_custom",
+nome:nome,
+tamanho:tamanho,
+preco:preco
+}, btn)
+
+}
 
 }
 
@@ -110,7 +129,7 @@ return card
 
 
 // ================================
-// RENDER PIZZAS
+// RENDER
 // ================================
 
 function renderPizzas(qtd){
@@ -120,9 +139,7 @@ if(!lista) return
 lista.innerHTML = ""
 
 pizzas.slice(0,qtd).forEach(p => {
-
 lista.appendChild(criarCardPizza(p))
-
 })
 
 }
@@ -130,46 +147,17 @@ lista.appendChild(criarCardPizza(p))
 
 
 // ================================
-// FILTRAR CATEGORIA
-// ================================
-
-function filtrarCategoria(cat){
-
-if(!lista) return
-
-lista.innerHTML=""
-
-if(cat==="todas"){
-
-pizzas.forEach(p=>{
-lista.appendChild(criarCardPizza(p))
-})
-
-return
-}
-
-pizzas
-.filter(p => p.categoria === cat)
-.forEach(p => {
-
-lista.appendChild(criarCardPizza(p))
-
-})
-
-}
-
-
-
-// ================================
-// INICIAR SISTEMA
+// INIT (🔥 PROTEGIDO)
 // ================================
 
 document.addEventListener("DOMContentLoaded",()=>{
 
-lista = document.getElementById("lista-pizzas")
-botaoCardapio = document.getElementById("mostrarCardapio")
+// 🔥 SÓ RODA SE EXISTIR ESSE ID
+lista = document.getElementById("lista-cardapio")
 
 if(!lista) return
+
+botaoCardapio = document.getElementById("mostrarCardapio")
 
 renderPizzas(3)
 
@@ -180,15 +168,11 @@ botaoCardapio.onclick = () => {
 cardapioAberto = !cardapioAberto
 
 if(cardapioAberto){
-
 renderPizzas(pizzas.length)
 botaoCardapio.innerText = "Fechar cardápio"
-
 }else{
-
 renderPizzas(3)
 botaoCardapio.innerText = "Ver cardápio completo"
-
 }
 
 }
