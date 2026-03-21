@@ -3,7 +3,6 @@
 // ================================ 
 
 const pizzas = [
-
 {nome:"Calabresa",ing:"Molho, mussarela, calabresa e cebola",preco:30,categoria:"salgada"},
 {nome:"Portuguesa",ing:"Presunto, ovos, cebola, azeitona",preco:32,categoria:"salgada"},
 {nome:"4 Queijos",ing:"Mussarela, provolone, parmesão e gorgonzola",preco:35,categoria:"salgada"},
@@ -24,106 +23,46 @@ const pizzas = [
 {nome:"Milho com Catupiry",ing:"Milho e catupiry",preco:31,categoria:"salgada"},
 {nome:"Palmito com Mussarela",ing:"Palmito e queijo",preco:32,categoria:"salgada"},
 {nome:"Doce de Leite com Coco",ing:"Doce de leite e coco",preco:28,categoria:"doce"}
-
 ]
 
 
-// ================================
-// VARIÁVEIS
-// ================================
-
-let lista
-let botaoCardapio
-let cardapioAberto = false
-
-
 
 // ================================
-// LIMPAR NOME DA IMAGEM
+// CONTROLE
+// ================================
+
+let aberto1 = false
+let aberto2 = false
+
+
+
+// ================================
+// UTIL (CORRIGIDO)
 // ================================
 
 function limparNomeImagem(nome){
-
 return nome
+.toLowerCase()
+.normalize("NFD").replace(/[\u0300-\u036f]/g, "")
 .replaceAll(" ","")
-.replaceAll("ç","c")
-.replaceAll("ã","a")
-.replaceAll("á","a")
-.replaceAll("é","e")
-.replaceAll("í","i")
-.replaceAll("ó","o")
-.replaceAll("ú","u")
-
 }
 
 
 
 // ================================
-// SELECIONAR PIZZA (SÓ PARA PÁGINA DE CARDÁPIO)
+// CRIAR CARD (🔥 REESCRITO)
 // ================================
 
-function selecionarPizzaLocal(btn,nome,tamanho,preco){
-
-const card = btn.closest(".pizza-card")
-
-// 🔁 SE CLICOU NO MESMO → REMOVE
-if(
-pedidoAtual &&
-pedidoAtual.nome === nome &&
-pedidoAtual.tamanho === tamanho
-){
-pedidoAtual = null
-
-document.querySelectorAll(".pizza-card").forEach(c=>{
-c.classList.remove("selecionado")
-})
-
-document.querySelectorAll(".tamanhos button").forEach(b=>{
-b.classList.remove("ativo")
-})
-
-return
-}
-
-// 🔥 LIMPA TODOS
-document.querySelectorAll(".pizza-card").forEach(c=>{
-c.classList.remove("selecionado")
-})
-
-document.querySelectorAll(".tamanhos button").forEach(b=>{
-b.classList.remove("ativo")
-})
-
-// 🔥 ATIVA
-btn.classList.add("ativo")
-card.classList.add("selecionado")
-
-pedidoAtual = {
-nome,
-tamanho,
-preco
-}
-
-}
-
-
-// ================================
-// CRIAR CARD
-// ================================
-
-function criarCardPizza(p){
+function criarCardPizza(p, tipo = null){
 
 let nomeImagem = limparNomeImagem(p.nome)
 
 const card = document.createElement("div")
-
 card.className = "pizza-card"
-card.dataset.categoria = p.categoria
 card.dataset.nome = p.nome.toLowerCase()
 
 card.innerHTML = `
-
-<img src="../img/pizzas/imgPizza${nomeImagem}.jpg" alt="${p.nome}">
+<img src="../img/pizzas/imgPizza${nomeImagem}.jpg">
 
 <h3>${p.nome}</h3>
 
@@ -132,14 +71,35 @@ card.innerHTML = `
 <p class="preco">A partir de ${formatarMoeda(p.preco)}</p>
 
 <div class="tamanhos">
-
-<button onclick="selecionarPizzaLocal(this,'${p.nome}','P',${p.preco},'${p.ing}')">P</button>
-<button onclick="selecionarPizzaLocal(this,'${p.nome}','M',${p.preco+5},'${p.ing}')">M</button>
-<button onclick="selecionarPizzaLocal(this,'${p.nome}','G',${p.preco+10},'${p.ing}')">G</button>
-
+<button data-t="P">P</button>
+<button data-t="M">M</button>
+<button data-t="G">G</button>
 </div>
-
 `
+
+// ================================
+// EVENTOS (🔥 SEM STRING BUGADA)
+// ================================
+
+card.querySelectorAll(".tamanhos button").forEach(btn=>{
+
+btn.onclick = ()=>{
+
+let tamanho = btn.dataset.t
+let precoFinal = p.preco
+
+if(tamanho === "M") precoFinal += 5
+if(tamanho === "G") precoFinal += 10
+
+if(tipo){
+selecionarPizzaLocal(tipo, btn, p.nome, tamanho, precoFinal, p.ing)
+}else{
+selecionarPizzaLocal(btn, p.nome, tamanho, precoFinal, p.ing)
+}
+
+}
+
+})
 
 return card
 
@@ -151,51 +111,63 @@ return card
 // RENDER
 // ================================
 
-function renderPizzas(qtd){
+function renderPizzas(qtd, idLista = "lista-pizzas", tipo = null){
 
+const lista = document.getElementById(idLista)
 if(!lista) return
 
 lista.innerHTML = ""
 
-pizzas.slice(0,qtd).forEach(p => {
-lista.appendChild(criarCardPizza(p))
+pizzas.slice(0,qtd).forEach(p=>{
+lista.appendChild(criarCardPizza(p, tipo))
 })
+
+// 🔥 mantém seleção
+if(typeof renderVisual === "function"){
+renderVisual()
+}
 
 }
 
 
 
 // ================================
-// INIT (🔥 PROTEGIDO)
+// TOGGLE CARDÁPIO
+// ================================
+
+function toggleCardapio(idLista, tipo){
+
+if(idLista === "lista-pizzas-1"){
+aberto1 = !aberto1
+renderPizzas(aberto1 ? pizzas.length : 4, idLista, tipo)
+}
+
+if(idLista === "lista-pizzas-2"){
+aberto2 = !aberto2
+renderPizzas(aberto2 ? pizzas.length : 4, idLista, tipo)
+}
+
+}
+
+
+
+// ================================
+// INIT
 // ================================
 
 document.addEventListener("DOMContentLoaded",()=>{
 
-// 🔥 SÓ RODA SE EXISTIR ESSE ID
-lista = document.getElementById("lista-pizzas")
-
-if(!lista) return
-
-botaoCardapio = document.getElementById("mostrarCardapio")
-
+const listaPadrao = document.getElementById("lista-pizzas")
+if(listaPadrao){
 renderPizzas(3)
-
-if(botaoCardapio){
-
-botaoCardapio.onclick = () => {
-
-cardapioAberto = !cardapioAberto
-
-if(cardapioAberto){
-renderPizzas(pizzas.length)
-botaoCardapio.innerText = "Fechar cardápio"
-}else{
-renderPizzas(3)
-botaoCardapio.innerText = "Ver cardápio completo"
 }
 
-}
+const lista1 = document.getElementById("lista-pizzas-1")
+const lista2 = document.getElementById("lista-pizzas-2")
 
+if(lista1 && lista2){
+renderPizzas(4,"lista-pizzas-1",1)
+renderPizzas(4,"lista-pizzas-2",2)
 }
 
 })

@@ -3,17 +3,59 @@
 // ================================
 
 function formatarMoeda(valor){
-return valor.toLocaleString("pt-BR",{
+return Number(valor || 0).toLocaleString("pt-BR",{
 style:"currency",
 currency:"BRL"
 })
 }
 
+
+
 // ================================
-// PEDIDO
+// ESTRUTURA V3
 // ================================
 
-let pedido = JSON.parse(localStorage.getItem("pedidoAtual"))
+let pedidos = JSON.parse(localStorage.getItem("pedidos")) || []
+let pedidoAtualId = localStorage.getItem("pedidoAtualId")
+
+let pedido = pedidos.find(p => p.id == pedidoAtualId)
+
+// fallback
+if(!pedido){
+pedido = JSON.parse(localStorage.getItem("pedidoAtual"))
+}
+
+
+
+// ================================
+// GERAR IMAGEM SEGURA 🔥
+// ================================
+
+function gerarImagem(nome){
+
+if(!nome) return "../img/pizzas/imgPizzaPadrao.jpg"
+
+// 🔥 pizza 2 sabores → pega só a primeira
+if(nome.includes("/")){
+nome = nome.split("/")[0]
+}
+
+nome = nome.trim()
+
+const nomeImg = nome
+.replaceAll(" ","")
+.replaceAll("ç","c")
+.replaceAll("ã","a")
+.replaceAll("á","a")
+.replaceAll("é","e")
+.replaceAll("í","i")
+.replaceAll("ó","o")
+.replaceAll("ú","u")
+
+return `../img/pizzas/imgPizza${nomeImg}.jpg`
+
+}
+
 
 
 // ================================
@@ -22,24 +64,46 @@ let pedido = JSON.parse(localStorage.getItem("pedidoAtual"))
 
 function render(){
 
-if(!pedido) return
+if(!pedido){
+alert("Pedido não encontrado")
+window.location.href = "../index.html"
+return
+}
 
-document.getElementById("nomePizza").innerText = pedido.nome
-document.getElementById("ingredientes").innerText = pedido.ingredientes
-document.getElementById("tamanho").innerText = "Tamanho: " + pedido.tamanho
+// estrutura
+let itens = pedido.itens || [pedido]
 
-// imagem
-const nomeImg = pedido.nome.replaceAll(" ","")
-document.getElementById("imgPizza").src =
-`../img/pizzas/imgPizza${nomeImg}.jpg`
+// remove render antigo
+const antigo = document.getElementById("outrosItens")
+if(antigo) antigo.remove()
 
-// adicionais
+
+
+// ================================
+// ITEM PRINCIPAL
+// ================================
+
+const item = itens[0]
+
+document.getElementById("nomePizza").innerText = item.nome || "-"
+document.getElementById("ingredientes").innerText = item.ingredientes || ""
+document.getElementById("tamanho").innerText = "Tamanho: " + (item.tamanho || "-")
+
+// 🔥 imagem corrigida
+document.getElementById("imgPizza").src = gerarImagem(item.nome)
+
+
+
+// ================================
+// ADICIONAIS
+// ================================
+
 const lista = document.getElementById("listaAdicionais")
 
-if(!pedido.adicionais || pedido.adicionais.length === 0){
+if(!item.adicionais || item.adicionais.length === 0){
 lista.innerHTML = "<li>Nenhum adicional</li>"
 }else{
-lista.innerHTML = pedido.adicionais.map(a=>`
+lista.innerHTML = item.adicionais.map(a=>`
 <li>
 <span>${a.nome}</span>
 <span>+ ${formatarMoeda(a.preco)}</span>
@@ -47,9 +111,95 @@ lista.innerHTML = pedido.adicionais.map(a=>`
 `).join("")
 }
 
-// total
-const total = pedido.precoFinal || pedido.preco
-document.getElementById("totalPedido").innerText = formatarMoeda(total)
+
+
+// ================================
+// OUTROS ITENS (MULTI)
+// ================================
+
+if(itens.length > 1){
+
+const container = document.createElement("div")
+container.id = "outrosItens"
+container.className = "lista-itens"
+
+container.innerHTML = "<h4>Outros itens</h4>"
+
+itens.slice(1).forEach(item=>{
+
+const div = document.createElement("div")
+div.className = "item-pedido"
+
+div.innerHTML = `
+<div class="item-info">
+<h4>${item.nome} (${item.tamanho})</h4>
+<small>${item.ingredientes || ""}</small>
+
+${
+item.adicionais?.length
+? `<div class="item-adicionais">
++ ${item.adicionais.map(a=>a.nome).join(", ")}
+</div>`
+: ""
+}
+
+<div class="item-preco">
+${formatarMoeda(item.precoFinal || item.preco)}
+</div>
+</div>
+`
+
+container.appendChild(div)
+
+})
+
+document.querySelector(".container-confirmacao")
+.appendChild(container)
+
+}
+
+
+
+// ================================
+// STATUS
+// ================================
+
+if(pedido.status){
+
+let statusEl = document.getElementById("statusPedido")
+
+if(!statusEl){
+statusEl = document.createElement("div")
+statusEl.id = "statusPedido"
+statusEl.className = "status-pedido"
+
+document.querySelector(".container-confirmacao")
+.prepend(statusEl)
+}
+
+statusEl.className = "status-pedido status-" + pedido.status
+
+statusEl.innerText =
+pedido.status === "confirmado" ? "🟢 Pedido confirmado" :
+pedido.status === "cancelado" ? "🔴 Pedido cancelado" :
+"🟡 Em edição"
+
+}
+
+
+
+// ================================
+// TOTAL
+// ================================
+
+let total = 0
+
+itens.forEach(i=>{
+total += Number(i.precoFinal || i.preco || 0)
+})
+
+document.getElementById("totalPedido").innerText =
+formatarMoeda(total)
 
 }
 
@@ -60,30 +210,78 @@ document.getElementById("totalPedido").innerText = formatarMoeda(total)
 // ================================
 
 function voltar(){
-window.history.back()
+
+// 🔥 inteligente (volta correto)
+if(pedido?.tipo === "pizza_2sabores"){
+window.location.href = "../html/pizza-2-sabores.html"
+}else{
+window.location.href = "../html/pizza-1-sabor.html"
+}
+
 }
 
 function adicionarMais(){
 window.location.href = "../index.html"
 }
 
+
+
+// ================================
+// CANCELAR
+// ================================
+
 function cancelarPedido(){
 
 if(!confirm("Cancelar pedido?")) return
 
+if(pedidoAtualId){
+
+pedidos = pedidos.map(p=>{
+if(p.id == pedidoAtualId){
+p.status = "cancelado"
+}
+return p
+})
+
+localStorage.setItem("pedidos", JSON.stringify(pedidos))
+localStorage.removeItem("pedidoAtualId")
+
+}else{
 localStorage.removeItem("pedidoAtual")
+}
 
 window.location.href = "../index.html"
 
 }
 
+
+
+// ================================
+// CONFIRMAR
+// ================================
+
 function confirmar(){
 
 const obs = document.getElementById("observacao").value
 
-pedido.observacao = obs
+if(pedidoAtualId){
 
+pedidos = pedidos.map(p=>{
+if(p.id == pedidoAtualId){
+p.observacao = obs
+p.status = "confirmado"
+}
+return p
+})
+
+localStorage.setItem("pedidos", JSON.stringify(pedidos))
+
+}else{
+
+pedido.observacao = obs
 localStorage.setItem("pedidoAtual", JSON.stringify(pedido))
+
+}
 
 window.location.href = "pedido.html"
 

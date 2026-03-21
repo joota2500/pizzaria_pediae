@@ -1,8 +1,8 @@
 // ================================
-// ESTADO
+// ESTADO V3 (MÚLTIPLAS PIZZAS)
 // ================================
 
-let pedidoAtual = null
+let pizzasSelecionadas = []
 
 
 
@@ -11,7 +11,7 @@ let pedidoAtual = null
 // ================================
 
 function formatarMoeda(valor){
-return valor.toLocaleString("pt-BR",{
+return Number(valor).toLocaleString("pt-BR",{
 style:"currency",
 currency:"BRL"
 })
@@ -27,27 +27,54 @@ function filtrarPizza(valor){
 
 valor = valor.toLowerCase()
 
-// reset
 if(valor.length === 0){
 renderPizzas(4)
 return
 }
 
-// mostra tudo
 if(typeof renderPizzas === "function"){
 renderPizzas(pizzas.length)
 }
 
-// filtra
 document.querySelectorAll(".pizza-card").forEach(card=>{
 
 const nome = card.dataset.nome || ""
 
-if(nome.includes(valor)){
-card.style.display="block"
-}else{
-card.style.display="none"
+card.style.display =
+nome.includes(valor) ? "block" : "none"
+
+})
+
 }
+function renderVisual(){
+
+// limpa tudo
+document.querySelectorAll(".pizza-card").forEach(c=>{
+c.classList.remove("pizza-selecionada")
+})
+
+document.querySelectorAll(".tamanhos button").forEach(b=>{
+b.classList.remove("ativo")
+})
+
+// reaplica seleção real
+pizzasSelecionadas.forEach(p=>{
+
+document.querySelectorAll(".pizza-card").forEach(card=>{
+
+if(card.dataset.nome === p.nome.toLowerCase()){
+
+card.classList.add("pizza-selecionada")
+
+card.querySelectorAll(".tamanhos button").forEach(btn=>{
+if(btn.innerText === p.tamanho){
+btn.classList.add("ativo")
+}
+})
+
+}
+
+})
 
 })
 
@@ -56,68 +83,70 @@ card.style.display="none"
 
 
 // ================================
-// 🍕 SELEÇÃO LOCAL (CORRIGIDA)
+// 🍕 SELEÇÃO V3 (MÚLTIPLAS)
 // ================================
 
 function selecionarPizzaLocal(botao,nome,tamanho,preco,ingredientes){
 
 const card = botao.closest(".pizza-card")
 
-// 🔁 toggle (desmarcar)
-if(
-pedidoAtual &&
-pedidoAtual.nome === nome &&
-pedidoAtual.tamanho === tamanho
-){
-pedidoAtual = null
-limparUI()
+const key = `${nome}_${tamanho}`
+
+const pizza = { nome, tamanho, preco, ingredientes, key }
+
+// ================================
+// 🔁 TOGGLE (REMOVE)
+// ================================
+
+const index = pizzasSelecionadas.findIndex(p => p.key === key)
+
+if(index !== -1){
+
+pizzasSelecionadas.splice(index,1)
+
+renderVisual()
 atualizarResumo()
 return
 }
 
-// 🔥 limpar anterior
-limparUI()
+// ================================
+// ADICIONAR
+// ================================
 
-// 🔥 animação
-card.classList.add("animar")
-setTimeout(()=>card.classList.remove("animar"),200)
+if(pizzasSelecionadas.length > 0){
 
-// 🔥 marcar
-card.classList.add("pizza-selecionada")
-botao.classList.add("ativo")
+const confirmar = confirm("👉 Deseja adicionar outra pizza?")
 
-// 🔥 AGORA SALVA COMPLETO (FIX PRINCIPAL)
-pedidoAtual = { 
-nome, 
-tamanho, 
-preco,
-ingredientes
+if(!confirmar){
+pizzasSelecionadas = []
 }
 
+}
+
+pizzasSelecionadas.push(pizza)
+
+renderVisual()
 atualizarResumo()
 
-// 🔥 scroll automático
-const resumo = document.querySelector(".resumo-pedido")
-if(resumo){
-resumo.scrollIntoView({behavior:"smooth"})
-}
+// scroll
+document.querySelector(".resumo-pedido")?.scrollIntoView({
+behavior:"smooth"
+})
 
-// 🔥 sugestão inteligente
-sugestao()
+// sugestão
+sugestao(nome)
 
 }
 
 
 
 // ================================
-// 💡 SUGESTÃO AUTOMÁTICA
+// 💡 SUGESTÃO
 // ================================
 
-function sugestao(){
+function sugestao(nome){
 
-if(!pedidoAtual) return
-
-const nome = pedidoAtual.nome.toLowerCase()
+nome = nome.toLowerCase()
 
 if(nome.includes("calabresa")){
 notificar?.("💡 Combina com Coca-Cola!")
@@ -132,30 +161,16 @@ notificar?.("💡 Que tal um Guaraná?")
 
 
 // ================================
-// 🔙 VOLTAR
-// ================================
-
-function voltarIndex(){
-window.location.href = "../index.html"
-}
-
-window.voltarIndex = voltarIndex
-
-
-
-// ================================
 // LIMPAR UI
 // ================================
 
 function limparUI(){
 
-document.querySelectorAll(".pizza-card")
-.forEach(c=>{
+document.querySelectorAll(".pizza-card").forEach(c=>{
 c.classList.remove("pizza-selecionada")
 })
 
-document.querySelectorAll(".tamanhos button")
-.forEach(b=>{
+document.querySelectorAll(".tamanhos button").forEach(b=>{
 b.classList.remove("ativo")
 })
 
@@ -164,7 +179,7 @@ b.classList.remove("ativo")
 
 
 // ================================
-// RESUMO (AGORA COM INGREDIENTES)
+// RESUMO V3 🔥
 // ================================
 
 function atualizarResumo(){
@@ -172,40 +187,95 @@ function atualizarResumo(){
 const texto = document.getElementById("resumoTexto")
 const btn = document.getElementById("btnProximo")
 
-if(!pedidoAtual){
-texto.innerText="Nenhuma pizza selecionada"
-btn.disabled=true
+if(pizzasSelecionadas.length === 0){
+texto.innerText = "Nenhuma pizza selecionada"
+btn.disabled = true
 return
 }
 
-texto.innerHTML = `
-<strong>${pedidoAtual.nome}</strong><br>
-<small style="color:#666;">${pedidoAtual.ingredientes}</small><br>
-Tamanho: ${pedidoAtual.tamanho}<br>
+let html = ""
+let total = 0
+
+pizzasSelecionadas.forEach((p,i)=>{
+
+total += p.preco
+
+html += `
+<strong>Pizza ${i+1}:</strong> ${p.nome}<br>
+<small>${p.ingredientes}</small><br>
+Tamanho: ${p.tamanho}<br><br>
+`
+
+})
+
+html += `
 <span style="color:#28a745;font-weight:600;">
-${formatarMoeda(pedidoAtual.preco)}
+Total: ${formatarMoeda(total)}
 </span>
 `
 
-btn.disabled=false
+ texto.innerHTML = html
+
+// 🔥 sempre rola pro final quando adiciona
+texto.scrollTop = texto.scrollHeight
+
+btn.disabled = false
+
 }
 
 
 
 // ================================
-// AÇÕES
+// CANCELAR
 // ================================
 
 function cancelar(){
-pedidoAtual = null
+
+pizzasSelecionadas = []
 limparUI()
 atualizarResumo()
+
 }
 
+
+
+// ================================
+// PRÓXIMO → ADICIONAIS 🔥
+// ================================
+
 function proximo(){
-if(!pedidoAtual) return
-window.pedidoAtual = pedidoAtual // 🔥 importante
+
+if(pizzasSelecionadas.length === 0) return
+
+// 🔥 estrutura V3
+window.pedidoAtual = {
+itens: pizzasSelecionadas.map(p=>({
+nome: p.nome,
+tamanho: p.tamanho,
+preco: p.preco,
+ingredientes: p.ingredientes,
+adicionais: []
+}))
+}
+
+// abre adicionais
+if(typeof abrirAdicionais === "function"){
 abrirAdicionais()
+}else{
+localStorage.setItem("pedidoAtual", JSON.stringify(window.pedidoAtual))
+window.location.href = "confirmacao.html"
+}
+
+}
+
+
+
+// ================================
+// 🔙 VOLTAR
+// ================================
+
+function voltarIndex(){
+window.location.href = "../index.html"
 }
 
 
@@ -215,10 +285,6 @@ abrirAdicionais()
 // ================================
 
 document.addEventListener("DOMContentLoaded",()=>{
-
-// ================================
-// 🔥 LOADING SKELETON
-// ================================
 
 const lista = document.getElementById("lista-pizzas")
 
@@ -230,10 +296,6 @@ lista.innerHTML = `
 `
 }
 
-// ================================
-// 🔥 CARREGAR CARDÁPIO
-// ================================
-
 setTimeout(()=>{
 
 if(typeof renderPizzas === "function"){
@@ -244,10 +306,7 @@ renderPizzas(4)
 
 
 
-// ================================
-// BOTÃO VER MAIS
-// ================================
-
+// botão ver mais
 const btn = document.getElementById("mostrarCardapio")
 
 if(btn){
@@ -260,12 +319,12 @@ const aberto = btn.dataset.aberto === "true"
 
 if(aberto){
 renderPizzas(4)
-btn.innerText="Ver cardápio completo"
-btn.dataset.aberto="false"
+btn.innerText = "Ver cardápio completo"
+btn.dataset.aberto = "false"
 }else{
 renderPizzas(pizzas.length)
-btn.innerText="Fechar cardápio"
-btn.dataset.aberto="true"
+btn.innerText = "Fechar cardápio"
+btn.dataset.aberto = "true"
 }
 
 }
@@ -274,10 +333,7 @@ btn.dataset.aberto="true"
 
 
 
-// ================================
-// 🔥 BUSCA INPUT
-// ================================
-
+// busca
 const inputBusca = document.getElementById("buscaPizza")
 
 if(inputBusca){
@@ -296,3 +352,6 @@ filtrarPizza(e.target.value)
 
 window.selecionarPizzaLocal = selecionarPizzaLocal
 window.filtrarPizza = filtrarPizza
+window.cancelar = cancelar
+window.proximo = proximo
+window.voltarIndex = voltarIndex

@@ -15,12 +15,38 @@ bebida:null
 
 
 // ================================
-// 🔥 FUNÇÃO GLOBAL (BEBIDA CHAMA)
+// 🔥 STATUS PIZZARIA
+// ================================
+
+function verificarStatus(){
+
+const status = document.getElementById("statusPizzaria")
+if(!status) return
+
+const hora = new Date().getHours()
+
+const aberto = hora >= 17 && hora <= 23
+
+if(aberto){
+status.innerHTML = "🟢 Aberto agora"
+status.style.background = "#d4edda"
+status.style.color = "#155724"
+}else{
+status.innerHTML = "🔴 Fechado"
+status.style.background = "#f8d7da"
+status.style.color = "#721c24"
+}
+
+}
+
+
+
+// ================================
+// 🔥 FUNÇÃO GLOBAL (BEBIDA)
 // ================================
 
 function selecionarBebidaGlobal(bebida){
 
-// 🔁 DESMARCAR
 if(!bebida){
 
 removerPedidoAnterior()
@@ -31,7 +57,6 @@ pedidoAnterior.bebida = null
 return
 }
 
-// 🔥 TROCA DE BEBIDA
 pedidoAnterior.bebida = pedidoAtual.bebida
 pedidoAtual.bebida = bebida
 
@@ -48,11 +73,17 @@ window.selecionarBebidaGlobal = selecionarBebidaGlobal
 
 document.addEventListener("DOMContentLoaded",()=>{
 
+// 🔥 status pizzaria
+verificarStatus()
+
+
+
 // ================================
 // MAIS PEDIDAS
 // ================================
 
 const lista = document.getElementById("lista-pizzas")
+
 if(lista){
 
 const pizzas = [
@@ -80,7 +111,6 @@ const botao = card.querySelector("button")
 
 botao.onclick = ()=>{
 
-// 🔁 REMOVER TUDO
 if(pedidoAtual.pizza && pedidoAtual.pizza.nome === pizza.nome){
 
 removerPedidoAnterior()
@@ -96,22 +126,18 @@ notificar("Pedido removido","warning")
 return
 }
 
-// 🔥 TROCA DE PIZZA
 pedidoAnterior.pizza = pedidoAtual.pizza
 pedidoAtual.pizza = pizza
 
-// limpar UI pizzas
 document.querySelectorAll("#lista-pizzas .pizza-card").forEach(c=>{
 c.classList.remove("selecionado")
 c.querySelector("button").innerText="Selecionar"
 })
 
-// selecionar atual
 card.classList.add("selecionado")
 botao.innerText="✔ Selecionado"
 
 bloquearSistema()
-
 verificarEnvio()
 
 }
@@ -125,20 +151,23 @@ lista.appendChild(card)
 
 
 // ================================
-// 🔥 BOTÃO → PIZZA 1 SABOR
+// 🔥 BOTÕES PIZZA (AGORA FUNCIONA)
 // ================================
 
 const btnPizza1 = document.getElementById("btnPizza1")
+const btnPizza2 = document.getElementById("btnPizza2")
 
 if(btnPizza1){
 btnPizza1.onclick = ()=>{
+console.log("clicou pizza 1")
+window.location.href = "./html/pizza-1-sabor.html"
+}
+}
 
-// 🔥 salva estado atual (IMPORTANTE)
-localStorage.setItem("pedidoHome", JSON.stringify(pedidoAtual))
-
-// redireciona
-window.location.href = "html/pizza-1-sabor.html"
-
+if(btnPizza2){
+btnPizza2.onclick = ()=>{
+console.log("clicou pizza 2")
+window.location.href = "./html/pizza-2-sabores.html"
 }
 }
 
@@ -154,10 +183,8 @@ function verificarEnvio(){
 
 if(pedidoAtual.pizza && pedidoAtual.bebida){
 
-// 🔥 remove anterior corretamente
 removerPedidoAnterior()
 
-// adiciona novo
 adicionarCarrinho({
 tipo:"pizza_simples",
 nome:pedidoAtual.pizza.nome,
@@ -171,7 +198,6 @@ nome:pedidoAtual.bebida.nome,
 preco:pedidoAtual.bebida.preco
 })
 
-// salva como anterior
 pedidoAnterior = {
 pizza:{...pedidoAtual.pizza},
 bebida:{...pedidoAtual.bebida}
@@ -186,7 +212,7 @@ notificar("✅ Pedido atualizado no carrinho")
 
 
 // ================================
-// 🔥 REMOVE ANTERIOR (FIX REAL)
+// 🔥 REMOVE ANTERIOR
 // ================================
 
 function removerPedidoAnterior(){

@@ -5,6 +5,7 @@
 let adicionaisSelecionados = []
 
 
+
 // ================================
 // DADOS
 // ================================
@@ -21,15 +22,7 @@ const adicionais = [
 {nome:"Ovo", preco:1},
 {nome:"Muçarela", preco:2},
 {nome:"Cebola", preco:1},
-{nome:"Tomate", preco:1},
-
-// testes
-{nome:"Teste 1", preco:2},
-{nome:"Teste 2", preco:3},
-{nome:"Teste 3", preco:4},
-{nome:"Teste 4", preco:2},
-{nome:"Teste 5", preco:5},
-{nome:"Teste 6", preco:3}
+{nome:"Tomate", preco:1}
 ]
 
 
@@ -41,6 +34,8 @@ const adicionais = [
 function abrirAdicionais(){
 
 if(!window.pedidoAtual) return
+
+adicionaisSelecionados = [] // reset
 
 document.getElementById("modalAdicionais")?.classList.add("ativo")
 
@@ -91,7 +86,7 @@ lista.appendChild(div)
 function adicionarAdicional(i){
 
 if(adicionaisSelecionados.length >= 3){
-notificar?.("⚠️ Limite de 3 adicionais","warning")
+notificar?.("⚠️ Máximo 3 adicionais","warning")
 return
 }
 
@@ -146,7 +141,7 @@ resumo.innerText = adicionaisSelecionados.map(a=>a.nome).join(", ")
 
 
 // ================================
-// FINALIZAR
+// FINALIZAR 🔥 (V3 COMPATÍVEL)
 // ================================
 
 function confirmarAdicionais(){
@@ -157,8 +152,10 @@ adicionaisSelecionados.forEach(a=>{
 totalExtras += a.preco
 })
 
+// 🔥 atualiza pedidoAtual (funciona pra pizza 1 e 2)
 window.pedidoAtual.adicionais = adicionaisSelecionados
-window.pedidoAtual.precoFinal = window.pedidoAtual.preco + totalExtras
+window.pedidoAtual.precoFinal =
+(window.pedidoAtual.preco || 0) + totalExtras
 
 localStorage.setItem("pedidoAtual", JSON.stringify(window.pedidoAtual))
 

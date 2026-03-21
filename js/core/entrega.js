@@ -1,78 +1,109 @@
 // ================================
-// SISTEMA DE ENTREGA
+// DADOS DE ENTREGA (🔥 CENTRALIZADO)
 // ================================
 
+const BAIRROS_ENTREGA = [
 
-// -------------------------------
-// NORMALIZAR NOME DO BAIRRO
-// -------------------------------
+{nome:"Mondego", taxa:5},
+{nome:"Conjunto São Francisco", taxa:5},
+{nome:"Vila Nova", taxa:5},
+
+{nome:"Centro", taxa:5},
+{nome:"Putiu", taxa:6},
+{nome:"Conjunto Esperança", taxa:8},
+{nome:"Alto Alegre", taxa:8},
+{nome:"Conjunto Maria José Viana", taxa:7},
+{nome:"Sambarrão", taxa:6},
+
+{nome:"Manga", taxa:5},
+{nome:"Mucunã", taxa:6},
+{nome:"Alto da Cruz", taxa:5},
+{nome:"Raposa", taxa:5},
+{nome:"Oiticica", taxa:7},
+
+{nome:"Proubi", taxa:7},
+{nome:"Coió de Cima", taxa:6},
+{nome:"Coió de Baixo", taxa:6},
+{nome:"Coió do Meio", taxa:6},
+
+{nome:"Larges", taxa:4},
+{nome:"Areias", taxa:5},
+{nome:"Candeia Boa Vista", taxa:8},
+{nome:"Beira Rio", taxa:6},
+{nome:"Jordão", taxa:8}
+
+]
+
+
+
+// ================================
+// NORMALIZAR
+// ================================
 
 function normalizarBairro(nome){
-
 return nome
 .toLowerCase()
 .normalize("NFD")
 .replace(/[\u0300-\u036f]/g,"")
 .replaceAll(" ","")
-
 }
 
 
 
-// -------------------------------
-// CALCULAR TAXA DE ENTREGA
-// -------------------------------
+// ================================
+// CALCULAR TAXA
+// ================================
 
 function calcularEntrega(bairro){
 
-if(!CONFIG || !bairro) return 0
+if(!bairro) return 0
 
 const chave = normalizarBairro(bairro)
 
-const taxa = CONFIG.taxaEntrega[chave]
+const encontrado = BAIRROS_ENTREGA.find(b =>
+normalizarBairro(b.nome) === chave
+)
 
-return taxa || 0
+return encontrado ? encontrado.taxa : 0
 
 }
 
 
 
-// -------------------------------
-// FORMATAR MOEDA
-// -------------------------------
+// ================================
+// FORMATAR
+// ================================
 
 function formatarDinheiro(valor){
-
 return Number(valor).toLocaleString("pt-BR",{
 style:"currency",
 currency:"BRL"
 })
-
 }
 
 
 
-// -------------------------------
-// MOSTRAR TAXA NA TELA
-// -------------------------------
+// ================================
+// MOSTRAR TAXA
+// ================================
 
 function mostrarTaxaEntrega(bairro){
 
-const elemento = document.getElementById("taxaEntrega")
+const el = document.getElementById("taxaEntrega")
 
-if(!elemento) return
+if(!el) return
 
 const taxa = calcularEntrega(bairro)
 
-elemento.innerText = "Entrega: " + formatarDinheiro(taxa)
+el.innerText = "Entrega: " + formatarDinheiro(taxa)
 
 }
 
 
 
-// -------------------------------
-// ATUALIZAR TOTAL COM ENTREGA
-// -------------------------------
+// ================================
+// TOTAL
+// ================================
 
 function atualizarTotalEntrega(){
 
@@ -86,41 +117,41 @@ const taxa = calcularEntrega(bairro)
 
 let subtotal = 0
 
-if(typeof pedido !== "undefined" && Array.isArray(pedido)){
+if(typeof pedido !== "undefined"){
 
 pedido.forEach(item=>{
-
 const qtd = item.qtd || 1
-subtotal += Number(item.preco) * Number(qtd)
-
+subtotal += Number(item.preco) * qtd
 })
 
 }
 
-const totalFinal = subtotal + Number(taxa)
+const total = subtotal + taxa
 
-totalElemento.innerText = "Total: " + formatarDinheiro(totalFinal)
+totalElemento.innerText = "Total: " + formatarDinheiro(total)
 
 }
 
 
 
-// -------------------------------
-// PREENCHER SELECT DE BAIRROS
-// -------------------------------
+// ================================
+// PREENCHER SELECT
+// ================================
 
 function carregarBairros(){
 
 const select = document.getElementById("bairro")
 
-if(!select || !CONFIG) return
+if(!select) return
 
-Object.keys(CONFIG.bairros).forEach(chave=>{
+select.innerHTML = `<option value="">Selecione seu bairro</option>`
+
+BAIRROS_ENTREGA.forEach(bairro=>{
 
 const option = document.createElement("option")
 
-option.value = chave
-option.innerText = CONFIG.bairros[chave]
+option.value = bairro.nome
+option.innerText = bairro.nome
 
 select.appendChild(option)
 
@@ -130,24 +161,23 @@ select.appendChild(option)
 
 
 
-// -------------------------------
-// EVENTO DE ALTERAÇÃO DE BAIRRO
-// -------------------------------
+// ================================
+// EVENTO
+// ================================
 
 document.addEventListener("DOMContentLoaded",()=>{
 
 carregarBairros()
 
-const bairroSelect = document.getElementById("bairro")
+const select = document.getElementById("bairro")
 
-if(bairroSelect){
+if(select){
 
-bairroSelect.addEventListener("change",()=>{
+select.addEventListener("change",()=>{
 
-const bairro = bairroSelect.value
+const bairro = select.value
 
 mostrarTaxaEntrega(bairro)
-
 atualizarTotalEntrega()
 
 })

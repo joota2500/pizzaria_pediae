@@ -1,3 +1,7 @@
+main {
+padding-bottom: 120px;
+}
+
 /* =========================
 HEADER
 ========================= */
@@ -110,80 +114,128 @@ transform:scale(1.08);
 RESUMO FIXO
 ========================= */
 
-.resumo-pedido{
-position:fixed;
-bottom:0;
-left:0;
-width:100%;
-background:#fff;
-box-shadow:0 -6px 20px rgba(0,0,0,0.15);
-padding:14px 18px;
-display:flex;
-justify-content:space-between;
-align-items:center;
-z-index:999;
-border-top:1px solid rgba(0,0,0,0.05);
+
+.resumo-pedido {
+position: fixed;
+bottom: 0;
+left: 0;
+width: 100%;
+
+display: flex;
+justify-content: space-between;
+align-items: center;
+gap: 10px;
+
+background: #fff;
+box-shadow: 0 -4px 10px rgba(0,0,0,0.1);
+
+padding: 10px 12px;
+
+z-index: 999;
 }
 
 /* TEXTO */
 
-#resumoTexto{
-font-size:14px;
-font-weight:500;
-color:#333;
-max-width:60%;
-line-height:1.4;
+/* 🔥 TEXTO COM SCROLL */
+#resumoTexto {
+flex: 1;
+
+max-height: 200px; /* 🔥 controla altura */
+overflow-y: auto;
+
+font-size: 14px;
+padding-right: 5px;
+}
+
+
+/* scroll mais bonito (opcional) */
+#resumoTexto::-webkit-scrollbar {
+width: 4px;
+}
+
+#resumoTexto::-webkit-scrollbar-thumb {
+background: #c62828;
+border-radius: 10px;
 }
 
 /* =========================
 BOTÕES
 ========================= */
 
-.resumo-botoes{
-display:flex;
-gap:10px;
+/* ================================
+BOTÕES DO RESUMO 🔥
+================================ */
+
+.resumo-botoes {
+display: flex;
+gap: 10px;
+flex-shrink: 0;
+align-items: center;
 }
 
-/* base */
-.resumo-botoes button{
-padding:10px 16px;
-border:none;
-border-radius:8px;
-font-weight:600;
-cursor:pointer;
-transition:.25s;
+/* ================================
+BOTÕES BASE
+================================ */
+
+.resumo-botoes button {
+padding: 10px 16px;
+border: none;
+border-radius: 8px;
+font-weight: 600;
+cursor: pointer;
+transition: all 0.25s ease;
+white-space: nowrap;
 }
 
-/* cancelar */
-.resumo-botoes button:first-child{
-background:#eee;
-color:#333;
+/* ================================
+CANCELAR
+================================ */
+
+.resumo-botoes button:first-child {
+background: #eee;
+color: #333;
 }
 
-.resumo-botoes button:first-child:hover{
-background:#ddd;
+.resumo-botoes button:first-child:hover {
+background: #ddd;
 }
 
-/* 🔥 BOTÃO PRÓXIMO PRO */
-#btnProximo{
-background:linear-gradient(135deg,#28a745,#34d058);
-color:white;
-box-shadow:0 4px 12px rgba(40,167,69,0.4);
+/* ================================
+PRÓXIMO (DESTAQUE)
+================================ */
+
+#btnProximo {
+background: linear-gradient(135deg, #28a745, #34d058);
+color: #fff;
+box-shadow: 0 4px 12px rgba(40,167,69,0.4);
 }
 
-#btnProximo:hover{
-transform:translateY(-2px);
-box-shadow:0 8px 18px rgba(40,167,69,0.5);
+/* hover */
+#btnProximo:hover:not(:disabled) {
+transform: translateY(-2px);
+box-shadow: 0 8px 18px rgba(40,167,69,0.5);
 }
 
 /* desabilitado */
-#btnProximo:disabled{
-background:#ccc;
-box-shadow:none;
-cursor:not-allowed;
+#btnProximo:disabled {
+background: #ccc;
+color: #666;
+box-shadow: none;
+cursor: not-allowed;
 }
 
+/* ================================
+SCROLL DO TEXTO
+================================ */
 
+#resumoTexto::-webkit-scrollbar {
+width: 4px;
+}
+
+#resumoTexto::-webkit-scrollbar-thumb {
+background: #c62828;
+border-radius: 10px;
+}
 /* =========================
 LOADING SKELETON
 ========================= */
@@ -391,6 +443,24 @@ background:#eee;
 .acoes-modal button:last-child{
 background:#ff6b00;
 color:#fff;
+}
+/* =========================
+🍕 2 SABORES (VISUAL)
+========================= */
+
+h3{
+margin-top:20px;
+text-align:center;
+font-weight:600;
+color:#333;
+}
+
+/* destaque de cada bloco */
+#lista-pizzas-1,
+#lista-pizzas-2{
+margin-bottom:25px;
+padding-bottom:10px;
+border-bottom:1px dashed #eee;
 }
 
 /* =========================

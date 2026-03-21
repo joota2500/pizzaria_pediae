@@ -1,4 +1,11 @@
 // ==========================
+// INIT (🔥 CORREÇÃO PRINCIPAL)
+// ==========================
+
+document.addEventListener("DOMContentLoaded", () => {
+
+
+// ==========================
 // CARREGAR PEDIDO
 // ==========================
 
@@ -7,12 +14,12 @@ const pedido = JSON.parse(localStorage.getItem("pedido")) || []
 if(pedido.length === 0){
 alert("Nenhum pedido encontrado")
 window.location.href="../index.html"
+return
 }
 
 
-
 // ==========================
-// FORMATAR MOEDA
+// FORMATAR
 // ==========================
 
 function moeda(v){
@@ -20,9 +27,8 @@ return Number(v).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})
 }
 
 
-
 // ==========================
-// AUTO PREENCHER CLIENTE 🔥
+// AUTO CLIENTE
 // ==========================
 
 const clienteSalvo = JSON.parse(localStorage.getItem("cliente"))
@@ -33,13 +39,13 @@ document.getElementById("telefone").value = clienteSalvo.telefone || ""
 }
 
 
-
 // ==========================
-// MÁSCARA TELEFONE 🔥
+// MÁSCARA TELEFONE
 // ==========================
 
 const telefoneInput = document.getElementById("telefone")
 
+if(telefoneInput){
 telefoneInput.addEventListener("input",()=>{
 
 let v = telefoneInput.value.replace(/\D/g,"")
@@ -52,20 +58,71 @@ v = v.replace(/(\d{5})(\d)/,"$1-$2")
 telefoneInput.value = v
 
 })
-
+}
 
 
 // ==========================
-// TIPO ENTREGA
+// ESTADO
 // ==========================
 
 let tipoEntrega = null
+let subtotal = 0
+let taxaEntrega = 0
 
-document.querySelectorAll('input[name="tipoEntrega"]').forEach(r=>{
 
-r.addEventListener("change",()=>{
+// ==========================
+// CALCULAR SUBTOTAL
+// ==========================
 
-tipoEntrega = r.value
+pedido.forEach(item=>{
+const qtd = Number(item.qtd || 1)
+subtotal += Number(item.preco) * qtd
+})
+
+document.getElementById("subtotalResumo").innerText="Subtotal: "+moeda(subtotal)
+
+
+// ==========================
+// ATUALIZAR TOTAL (🔥 COM CUPOM)
+// ==========================
+
+function atualizarTotal(){
+
+let desconto = 0
+
+if(window.cupomAplicado){
+
+if(cupomAplicado.valor < 100){
+desconto = subtotal * (cupomAplicado.valor/100)
+}
+
+if(cupomAplicado.codigo === "FRETEGRATIS"){
+taxaEntrega = 0
+document.getElementById("taxaEntrega").innerText="Entrega: R$ 0,00"
+}
+
+}
+
+const total = subtotal - desconto + taxaEntrega
+
+document.getElementById("totalResumo").innerText="Total: "+moeda(total)
+
+}
+
+atualizarTotal()
+
+
+// ==========================
+// TIPO ENTREGA (🔥 CORRIGIDO)
+// ==========================
+
+const radios = document.querySelectorAll('input[name="tipoEntrega"]')
+
+radios.forEach(radio => {
+
+radio.addEventListener("change", () => {
+
+tipoEntrega = radio.value
 
 document.getElementById("formEntrega")
 .classList.toggle("hidden", tipoEntrega !== "casa")
@@ -83,96 +140,48 @@ atualizarTotal()
 })
 
 
-
 // ==========================
-// CALCULAR SUBTOTAL
-// ==========================
-
-let subtotal = 0
-let taxaEntrega = 0
-
-pedido.forEach(item=>{
-const qtd = Number(item.qtd || 1)
-subtotal += Number(item.preco) * qtd
-})
-
-document.getElementById("subtotalResumo").innerText="Subtotal: "+moeda(subtotal)
-
-
-
-// ==========================
-// ATUALIZAR TOTAL
+// BAIRRO (🔥 INTEGRADO COM entrega.js)
 // ==========================
 
-function atualizarTotal(){
+const selectBairro = document.getElementById("bairro")
 
-let desconto = 0
-
-if(typeof cupomAplicado !== "undefined" && cupomAplicado){
-
-if(cupomAplicado.valor < 100){
-desconto = subtotal * (cupomAplicado.valor/100)
-}
-
-}
-
-const total = subtotal - desconto + taxaEntrega
-
-document.getElementById("totalResumo").innerText="Total: "+moeda(total)
-
-}
-
-atualizarTotal()
-
-
-
-// ==========================
-// BAIRROS
-// ==========================
-
-const selectBairro=document.getElementById("bairro")
-
-Object.keys(CONFIG.bairros).forEach(b=>{
-
-const opt=document.createElement("option")
-opt.value=b
-opt.innerText=CONFIG.bairros[b]
-
-selectBairro.appendChild(opt)
-
-})
+if(selectBairro){
 
 selectBairro.addEventListener("change",()=>{
 
-const bairro=selectBairro.value
+const bairro = selectBairro.value
 
 taxaEntrega = bairro ? Number(calcularEntrega(bairro)) : 0
 
-document.getElementById("taxaEntrega").innerText="Entrega: "+moeda(taxaEntrega)
-
+mostrarTaxaEntrega(bairro)
 atualizarTotal()
 
 })
 
+}
 
 
 // ==========================
 // TROCO
 // ==========================
 
-document.getElementById("pagamento").addEventListener("change",()=>{
+const pagamento = document.getElementById("pagamento")
 
-const forma=document.getElementById("pagamento").value
+if(pagamento){
+
+pagamento.addEventListener("change",()=>{
 
 document.getElementById("areaTroco")
-.classList.toggle("hidden", forma !== "dinheiro")
+.classList.toggle("hidden", pagamento.value !== "dinheiro")
 
 })
 
+}
 
 
 // ==========================
-// VALIDAR CAMPOS
+// VALIDAÇÃO
 // ==========================
 
 function validarCampos(){
@@ -222,9 +231,8 @@ return true
 }
 
 
-
 // ==========================
-// BOTÃO LOADING 🔥
+// LOADING
 // ==========================
 
 function ativarLoading(){
@@ -235,12 +243,11 @@ document.getElementById("loader").style.display="inline-block"
 }
 
 
-
 // ==========================
-// CONFIRMAR ENVIO
+// CONFIRMAR
 // ==========================
 
-function confirmarEnvio(){
+window.confirmarEnvio = function(){
 
 if(!validarCampos()) return
 
@@ -250,12 +257,11 @@ modal.show()
 }
 
 
-
 // ==========================
-// ENVIAR PEDIDO
+// ENVIAR
 // ==========================
 
-function enviarPedido(){
+window.enviarPedido = function(){
 
 ativarLoading()
 
@@ -266,7 +272,6 @@ document.getElementById("modalFeedbackPedido")
 )
 
 modal.show()
-
 
 
 // ==========================
@@ -285,13 +290,11 @@ const troco=document.getElementById("troco").value
 const obs=document.getElementById("obsFinal").value
 
 
-
-// 🔥 SALVAR CLIENTE
+// SALVAR CLIENTE
 localStorage.setItem("cliente", JSON.stringify({
 nome,
 telefone: document.getElementById("telefone").value
 }))
-
 
 
 // ==========================
@@ -315,23 +318,17 @@ itens+=linha
 })
 
 
-
 // ==========================
-// TOTAL
+// TOTAL FINAL
 // ==========================
 
 let desconto = 0
 
-if(typeof cupomAplicado !== "undefined" && cupomAplicado){
-
-if(cupomAplicado.valor < 100){
+if(window.cupomAplicado && cupomAplicado.valor < 100){
 desconto = subtotal * (cupomAplicado.valor/100)
 }
 
-}
-
 const total = subtotal - desconto + taxaEntrega
-
 
 
 // ==========================
@@ -348,7 +345,7 @@ let msg=`🍕 *NOVO PEDIDO*
 if(tipoEntrega === "casa"){
 msg+=`📍 Entrega:
 ${endereco}
-Bairro: ${CONFIG.bairros[bairro]}
+Bairro: ${bairro}
 
 `
 }else{
@@ -371,15 +368,14 @@ ${obs || "Nenhuma"}
 `
 
 
-
 // ==========================
 // ANIMAÇÃO
 // ==========================
 
 const mensagens = [
 "🍕 Preparando seu pedido...",
-"📡 Conectando com a pizzaria...",
-"🧾 Organizando tudo...",
+"📡 Conectando...",
+"🧾 Organizando...",
 "❤️ Obrigado!",
 "📲 Abrindo WhatsApp..."
 ]
@@ -391,7 +387,6 @@ feedback.innerHTML=`
 <div class="spinner-border text-danger mb-3"></div>
 <h5>${mensagens[i]}</h5>
 `
-
 i++
 if(i<mensagens.length){
 setTimeout(animar,900)
@@ -399,7 +394,6 @@ setTimeout(animar,900)
 }
 
 animar()
-
 
 
 // ==========================
@@ -417,3 +411,5 @@ localStorage.removeItem("pedido")
 },4500)
 
 }
+
+})

@@ -1,16 +1,15 @@
 // ================================
-// SISTEMA DE CARRINHO PROFISSIONAL (ATUALIZADO)
+// CARRINHO V3 (SEM STORAGE)
 // ================================
 
-let carrinho = JSON.parse(localStorage.getItem("carrinho")) || []
+let carrinho = []
 
 const LIMITE_ITENS = 30
-const EXPIRACAO_CARRINHO = 1000 * 60 * 60 * 1
 
 
 
 // ================================
-// 🔥 VERIFICAÇÕES
+// VERIFICAÇÕES
 // ================================
 
 function temPizzaSimples(){
@@ -25,7 +24,6 @@ item.tipo === "combo" || item.tipo === "pizza_custom"
 
 function removerPorTipo(tipo){
 carrinho = carrinho.filter(item => item.tipo !== tipo)
-salvarCarrinho()
 atualizarCarrinhoLista()
 }
 
@@ -35,35 +33,8 @@ atualizarCarrinhoLista()
 // UTIL
 // ================================
 
-function sanitizar(texto){
-return String(texto).replace(/</g,"&lt;").replace(/>/g,"&gt;")
-}
-
 function formatarMoeda(valor){
 return valor.toLocaleString("pt-BR",{style:"currency",currency:"BRL"})
-}
-
-
-
-// ================================
-// STORAGE
-// ================================
-
-function salvarCarrinho(){
-localStorage.setItem("carrinho", JSON.stringify(carrinho))
-localStorage.setItem("carrinhoHora", Date.now())
-}
-
-function verificarExpiracao(){
-const hora = localStorage.getItem("carrinhoHora")
-if(!hora) return
-
-if(Date.now() - hora > EXPIRACAO_CARRINHO){
-localStorage.removeItem("carrinho")
-carrinho = []
-atualizarCarrinhoLista()
-notificar("⏳ Carrinho expirado","warning")
-}
 }
 
 
@@ -74,30 +45,18 @@ notificar("⏳ Carrinho expirado","warning")
 
 function notificar(msg,tipo="success"){
 
-document.querySelectorAll(".toast").forEach(t=>t.remove())
-
 if(!window.bootstrap) return
 
 const toast = document.createElement("div")
 
 toast.className =
-`toast align-items-center text-bg-${tipo} border-0 position-fixed top-0 end-0 m-3`
+`toast text-bg-${tipo} position-fixed top-0 end-0 m-3`
 
-toast.style.zIndex = "99999"
-
-toast.innerHTML = `
-<div class="d-flex">
-<div class="toast-body">${msg}</div>
-<button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast"></button>
-</div>
-`
+toast.innerHTML = `<div class="p-2">${msg}</div>`
 
 document.body.appendChild(toast)
 
-const t = new bootstrap.Toast(toast)
-t.show()
-
-setTimeout(()=>toast.remove(),4000)
+setTimeout(()=>toast.remove(),3000)
 
 }
 
@@ -109,80 +68,18 @@ setTimeout(()=>toast.remove(),4000)
 
 function abrirCarrinho(){
 const painel = document.getElementById("painelPedido")
-if(!painel) return
-
+if(painel){
 painel.classList.add("ativo")
 document.body.style.overflow="hidden"
+}
 }
 
 function fecharCarrinho(){
 const painel = document.getElementById("painelPedido")
-if(!painel) return
-
+if(painel){
 painel.classList.remove("ativo")
 document.body.style.overflow="auto"
 }
-
-
-
-// ================================
-// 🔥 FECHAR AO CLICAR FORA (CORRETO)
-// ================================
-
-document.addEventListener("click",(e)=>{
-
-const painel = document.getElementById("painelPedido")
-const botao = document.getElementById("iconeCarrinho")
-
-if(!painel || !botao) return
-
-const clicouFora =
-!painel.contains(e.target) &&
-!botao.contains(e.target)
-
-if(painel.classList.contains("ativo") && clicouFora){
-fecharCarrinho()
-}
-
-})
-
-
-
-// ================================
-// ANIMAÇÃO
-// ================================
-
-function animarProdutoCarrinho(botao){
-
-const carrinhoIcon = document.querySelector(".carrinho-flutuante")
-if(!carrinhoIcon) return
-
-const rectBtn = botao.getBoundingClientRect()
-const rectCarrinho = carrinhoIcon.getBoundingClientRect()
-
-const bola = document.createElement("div")
-
-bola.style.position="fixed"
-bola.style.left = rectBtn.left + "px"
-bola.style.top = rectBtn.top + "px"
-bola.style.width="12px"
-bola.style.height="12px"
-bola.style.background="#ff6b00"
-bola.style.borderRadius="50%"
-bola.style.zIndex="99999"
-bola.style.transition="all 0.6s ease"
-
-document.body.appendChild(bola)
-
-setTimeout(()=>{
-bola.style.left = rectCarrinho.left + "px"
-bola.style.top = rectCarrinho.top + "px"
-bola.style.opacity="0.3"
-bola.style.transform="scale(0.5)"
-},50)
-
-setTimeout(()=>bola.remove(),650)
-
 }
 
 
@@ -214,62 +111,22 @@ if(botao) animarProdutoCarrinho(botao)
 
 const existente = carrinho.find(p=>
 p.nome===item.nome &&
-p.tipo===item.tipo &&
-p.tamanho===item.tamanho
+p.tamanho===item.tamanho &&
+JSON.stringify(p.adicionais || []) === JSON.stringify(item.adicionais || [])
 )
 
 if(existente){
 existente.qtd++
 }else{
-carrinho.push({...item,qtd:1})
+carrinho.push({
+...item,
+qtd:1,
+ingredientes: item.ingredientes || "",
+adicionais: item.adicionais || []
+})
 }
 
-salvarCarrinho()
 atualizarCarrinhoLista()
-
-}
-
-
-
-// ================================
-// 🔥 NOVOS BOTÕES TOPO
-// ================================
-
-function limparTudo(){
-
-if(!confirm("Limpar todo carrinho?")) return
-
-carrinho=[]
-salvarCarrinho()
-atualizarCarrinhoLista()
-
-// 🔥 RESET FORÇADO (resolve 100%)
-resetarUICompleta()
-
-// 🔥 fallback (caso exista lógica extra no home)
-if(typeof resetarSistema === "function"){
-resetarSistema()
-}
-
-notificar("Carrinho limpo","warning")
-
-}
-
-// ================================
-// Novo pedido
-// ================================
-function novoPedido(){
-
-// 🔥 NÃO mexe no carrinho
-// só limpa interface
-
-resetarUICompleta()
-
-if(typeof resetarSistema === "function"){
-resetarSistema()
-}
-
-notificar("Novo pedido iniciado")
 
 }
 
@@ -292,7 +149,7 @@ lista.innerHTML=""
 let total=0
 let qtdTotal=0
 
-// 🔥 BOTÕES TOPO
+// BOTÕES TOPO
 const topo = document.createElement("div")
 topo.className="acoes-carrinho"
 
@@ -310,25 +167,26 @@ const subtotal=item.preco*item.qtd
 total+=subtotal
 qtdTotal+=item.qtd
 
+const adicionaisHTML = (item.adicionais && item.adicionais.length)
+? `<small>+ ${item.adicionais.map(a=>a.nome).join(", ")}</small>`
+: ""
+
 const div=document.createElement("div")
 div.className="item-carrinho"
 
 div.innerHTML=`
-<div class="info">
+<div>
 <strong>${item.nome}</strong>
-<small>${item.tamanho}</small>
-<span>${formatarMoeda(item.preco)}</span>
+${adicionaisHTML}
 </div>
 
-<div class="controles">
+<div>
 <button onclick="diminuirQtd(${i})">−</button>
 <span>${item.qtd}</span>
 <button onclick="aumentarQtd(${i})">+</button>
 </div>
 
-<div class="subtotal">${formatarMoeda(subtotal)}</div>
-
-<button class="remover" onclick="removerCarrinho(${i})">✕</button>
+<div>${formatarMoeda(subtotal)}</div>
 `
 
 lista.appendChild(div)
@@ -348,13 +206,11 @@ if(totalElemento) totalElemento.innerText="Total: "+formatarMoeda(total)
 
 function removerCarrinho(i){
 carrinho.splice(i,1)
-salvarCarrinho()
 atualizarCarrinhoLista()
 }
 
 function aumentarQtd(i){
 carrinho[i].qtd++
-salvarCarrinho()
 atualizarCarrinhoLista()
 }
 
@@ -364,14 +220,13 @@ carrinho[i].qtd--
 }else{
 carrinho.splice(i,1)
 }
-salvarCarrinho()
 atualizarCarrinhoLista()
 }
 
 
 
 // ================================
-// FINALIZAR
+// FINALIZAR (🔥 V3)
 // ================================
 
 function irParaPedido(){
@@ -381,59 +236,51 @@ notificar("Carrinho vazio","danger")
 return
 }
 
-localStorage.setItem("pedido",JSON.stringify(carrinho))
-window.location.href="html/pedido.html"
+// 🔥 cria pedido no sistema novo
+if(typeof criarPedido === "function"){
+
+const pedido = criarPedido()
+
+carrinho.forEach(item=>{
+adicionarItemPedido(item)
+})
+
+}
+
+// limpa carrinho
+carrinho = []
+
+window.location.href="html/confirmacao.html"
 
 }
 
 
 
 // ================================
-// INIT
+// LIMPAR
 // ================================
 
-document.addEventListener("DOMContentLoaded",()=>{
-verificarExpiracao()
+function limparTudo(){
+carrinho = []
 atualizarCarrinhoLista()
-})
+}
+
+
 
 // ================================
-// 🔥 RESET FORÇADO DE UI (ANTI-BUG)
+// NOVO PEDIDO
 // ================================
 
-function resetarUICompleta(){
+function novoPedido(){
 
-// 🔥 limpar pizzas (mais pedidas)
-document.querySelectorAll("#lista-pizzas .pizza-card").forEach(c=>{
-c.classList.remove("selecionado")
-const btn = c.querySelector("button")
-if(btn) btn.innerText = "Selecionar"
-})
+carrinho = []
+atualizarCarrinhoLista()
 
-// 🔥 limpar bebidas
-document.querySelectorAll(".bebida-card").forEach(c=>{
-c.classList.remove("selecionado")
-})
-
-document.querySelectorAll(".botao-bebida").forEach(btn=>{
-btn.classList.remove("bebidaSelecionada")
-btn.innerText = "Selecionar"
-})
-
-// 🔥 limpar estado global HOME
-if(typeof pedidoAtual !== "undefined"){
-pedidoAtual = { pizza:null, bebida:null }
+if(typeof criarPedido === "function"){
+criarPedido()
 }
 
-// 🔥 limpar variável local bebida
-if(typeof bebidaSelecionada !== "undefined"){
-bebidaSelecionada = null
-}
-
-// 🔥 liberar sistema (combos + botões)
-if(typeof liberarSistema === "function"){
-liberarSistema()
-}
+notificar("Novo pedido iniciado")
 
 }
 
