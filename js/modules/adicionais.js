@@ -162,7 +162,7 @@ window.pedidoAtual.precoFinal = window.pedidoAtual.preco + totalExtras
 
 localStorage.setItem("pedidoAtual", JSON.stringify(window.pedidoAtual))
 
-window.location.href = "confirmacao-item.html"
+window.location.href = "confirmacao.html"
 
 }
 

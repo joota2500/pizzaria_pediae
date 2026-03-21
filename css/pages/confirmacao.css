@@ -1,0 +1,301 @@
+/* =========================
+HEADER
+========================= */
+
+.header-confirmacao{
+display:flex;
+align-items:center;
+gap:10px;
+padding:15px;
+background:linear-gradient(135deg,#ff6b00,#ff8c00);
+color:white;
+box-shadow:0 3px 10px rgba(0,0,0,0.15);
+}
+
+.header-confirmacao button{
+background:white;
+border:none;
+border-radius:50%;
+width:38px;
+height:38px;
+font-weight:bold;
+cursor:pointer;
+transition:.2s;
+}
+
+.header-confirmacao button:hover{
+transform:scale(1.1);
+}
+
+
+/* =========================
+LAYOUT
+========================= */
+
+.container-confirmacao{
+padding:20px;
+padding-bottom:220px;
+display:flex;
+flex-direction:column;
+gap:20px;
+}
+
+
+/* =========================
+CARD PIZZA
+========================= */
+
+.card-confirmacao{
+display:flex;
+gap:15px;
+background:white;
+padding:15px;
+border-radius:14px;
+box-shadow:0 8px 25px rgba(0,0,0,0.12);
+border-left:5px solid #ff6b00;
+transition:.25s;
+}
+
+.card-confirmacao:hover{
+transform:translateY(-3px) scale(1.01);
+}
+
+.card-confirmacao img{
+width:100px;
+height:100px;
+border-radius:12px;
+object-fit:cover;
+}
+
+
+/* =========================
+ADICIONAIS
+========================= */
+
+.card-adicionais{
+background:white;
+padding:15px;
+border-radius:14px;
+box-shadow:0 5px 20px rgba(0,0,0,0.1);
+}
+
+.card-adicionais li{
+display:flex;
+justify-content:space-between;
+padding:6px 0;
+}
+
+
+/* =========================
+OBSERVAÇÃO
+========================= */
+
+.observacao-box{
+background:white;
+padding:15px;
+border-radius:14px;
+box-shadow:0 5px 20px rgba(0,0,0,0.1);
+}
+
+.observacao-box textarea{
+width:100%;
+height:80px;
+border-radius:10px;
+border:1px solid #ddd;
+padding:10px;
+transition:.2s;
+}
+
+.observacao-box textarea:focus{
+border-color:#ff6b00;
+outline:none;
+box-shadow:0 0 10px rgba(255,107,0,0.25);
+}
+
+
+/* =========================
+🔥 TOTAL (DESTAQUE)
+========================= */
+
+.total-box{
+background:linear-gradient(135deg,#fff3e8,#ffe0cc);
+padding:20px;
+border-radius:16px;
+text-align:center;
+box-shadow:0 10px 30px rgba(255,107,0,0.25);
+animation:pulse 2s infinite;
+}
+
+.total-box span{
+display:block;
+font-size:14px;
+color:#555;
+}
+
+.total-box h2{
+color:#ff6b00;
+font-size:30px;
+font-weight:700;
+margin-top:5px;
+}
+
+/* animação */
+@keyframes pulse{
+0%{transform:scale(1);}
+50%{transform:scale(1.03);}
+100%{transform:scale(1);}
+}
+
+
+/* =========================
+🔥 BOTÕES PROFISSIONAIS
+========================= */
+
+.acoes-fixas{
+position:fixed;
+bottom:0;
+left:0;
+width:100%;
+background:white;
+padding:12px;
+display:flex;
+flex-direction:column;
+gap:12px;
+box-shadow:0 -10px 30px rgba(0,0,0,0.2);
+border-top:1px solid rgba(0,0,0,0.05);
+}
+
+
+/* linha secundária */
+.linha-acoes{
+display:grid;
+grid-template-columns:1fr 1fr 1fr;
+gap:10px;
+}
+
+
+/* base */
+.acoes-fixas button{
+padding:13px;
+border:none;
+border-radius:12px;
+font-weight:600;
+font-size:14px;
+cursor:pointer;
+transition:.2s;
+position:relative;
+overflow:hidden;
+}
+
+/* efeito brilho ao passar */
+.acoes-fixas button::after{
+content:"";
+position:absolute;
+top:0;
+left:-100%;
+width:100%;
+height:100%;
+background:linear-gradient(120deg,transparent,rgba(255,255,255,0.4),transparent);
+transition:.4s;
+}
+
+.acoes-fixas button:hover::after{
+left:100%;
+}
+
+/* clique */
+.acoes-fixas button:active{
+transform:scale(0.95);
+}
+
+
+/* EDITAR */
+.btn-editar{
+background:#f1f1f1;
+}
+
+.btn-editar:hover{
+background:#e5e5e5;
+}
+
+
+/* ADICIONAR */
+.btn-add{
+background:linear-gradient(135deg,#007bff,#0056b3);
+color:white;
+box-shadow:0 4px 15px rgba(0,123,255,0.4);
+}
+
+.btn-add:hover{
+transform:translateY(-2px);
+}
+
+
+/* CANCELAR */
+.btn-cancelar{
+background:linear-gradient(135deg,#dc3545,#a71d2a);
+color:white;
+box-shadow:0 4px 15px rgba(220,53,69,0.4);
+}
+
+.btn-cancelar:hover{
+transform:translateY(-2px);
+}
+
+
+/* 🔥 CONFIRMAR (FOCO TOTAL) */
+.btn-confirmar{
+width:100%;
+background:linear-gradient(135deg,#28a745,#1e7e34);
+color:white;
+font-size:17px;
+font-weight:700;
+padding:16px;
+border-radius:14px;
+box-shadow:0 8px 25px rgba(40,167,69,0.5);
+animation:confirmPulse 2s infinite;
+}
+
+/* glow */
+@keyframes confirmPulse{
+0%{box-shadow:0 0 0 rgba(40,167,69,0.5);}
+50%{box-shadow:0 0 20px rgba(40,167,69,0.6);}
+100%{box-shadow:0 0 0 rgba(40,167,69,0.5);}
+}
+
+.btn-confirmar:hover{
+transform:scale(1.03);
+}
+
+.btn-confirmar::after{
+content:" →";
+margin-left:6px;
+}
+
+
+/* =========================
+RESPONSIVO
+========================= */
+
+@media(max-width:768px){
+
+.container-confirmacao{
+padding-bottom:240px;
+}
+
+.card-confirmacao{
+flex-direction:column;
+align-items:center;
+text-align:center;
+}
+
+.card-confirmacao img{
+width:120px;
+height:120px;
+}
+
+.linha-acoes{
+grid-template-columns:1fr;
+}
+
+}
