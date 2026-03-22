@@ -1,3 +1,25 @@
+/*
+========================================
+📄 ARQUIVO: bebidas.js
+
+📌 FUNÇÃO:
+Renderiza bebidas com seleção múltipla (multi-select),
+mantém estado visual sincronizado com o carrinho.
+
+🔗 DEPENDE DE:
+- carrinho.js
+- utils
+
+📍 USADO EM:
+- index.html
+
+🧠 OBS:
+Agora mantém seleção mesmo ao re-renderizar (ver mais)
+e sincroniza com o carrinho corretamente.
+========================================
+*/
+
+
 // ================================
 // LISTA DE BEBIDAS
 // ================================
@@ -59,7 +81,7 @@ return nome
 
 
 // ================================
-// RENDER
+// RENDER (🔥 CORRIGIDO)
 // ================================
 
 function renderBebidas(qtd){
@@ -73,6 +95,11 @@ bebidas.slice(0,qtd).forEach(b=>{
 
 let nomeImagem = limparNomeImagem(b.nome)
 
+// 🔥 VERIFICA NO CARRINHO
+const selecionada = carrinho.some(item =>
+item.nome === b.nome && item.tipo === "bebida"
+)
+
 const card = document.createElement("article")
 card.className="pizza-card bebida-card"
 
@@ -81,77 +108,62 @@ card.innerHTML=`
 onerror="this.src='img/bebidas/imgBebidaCocaColaLata.jpg'">
 <h3>${b.nome}</h3>
 <p class="ingredientes">${formatarMoeda(b.preco)}</p>
-<button class="botao-bebida">Selecionar</button>
+<button class="botao-bebida">
+${selecionada ? "✔ Selecionado" : "Selecionar"}
+</button>
 `
 
 const botao = card.querySelector("button")
 
 
 // ================================
-// CLICK
+// 🔥 APLICA ESTADO VISUAL
+// ================================
+
+if(selecionada){
+card.classList.add("selecionado")
+botao.classList.add("bebidaSelecionada")
+}
+
+
+// ================================
+// CLICK MULTI SELECT
 // ================================
 
 botao.onclick = ()=>{
 
-// 🔁 DESMARCAR (baseado no HOME)
-if(
-typeof pedidoAtual !== "undefined" &&
-pedidoAtual.bebida &&
-pedidoAtual.bebida.nome === b.nome
-){
+const jaExiste = carrinho.find(item =>
+item.nome === b.nome && item.tipo === "bebida"
+)
 
-card.classList.remove("selecionado")
-botao.classList.remove("bebidaSelecionada")
-botao.innerText="Selecionar"
 
+// ❌ REMOVER
+if(jaExiste){
+
+carrinho = carrinho.filter(item =>
+!(item.nome === b.nome && item.tipo === "bebida")
+)
+
+// 🔥 RE-RENDER (ESSENCIAL)
+renderBebidas(bebidasAberto ? bebidas.length : 4)
+
+atualizarCarrinhoLista()
 notificar("Bebida removida","warning")
-
-if(typeof selecionarBebidaGlobal === "function"){
-selecionarBebidaGlobal(null)
-}
 
 return
 }
 
 
-// ================================
-// 🔥 LIMPAR TODAS
-// ================================
-
-document.querySelectorAll(".bebida-card").forEach(c=>{
-c.classList.remove("selecionado")
-})
-
-document.querySelectorAll(".botao-bebida").forEach(btn=>{
-btn.classList.remove("bebidaSelecionada")
-btn.innerText="Selecionar"
-})
+// ➕ ADICIONAR
+adicionarCarrinho({
+tipo:"bebida",
+nome:b.nome,
+preco:b.preco
+}, botao)
 
 
-// ================================
-// 🔥 SELECIONAR
-// ================================
-
-card.classList.add("selecionado")
-botao.classList.add("bebidaSelecionada")
-botao.innerText="✔ Selecionado"
-
-
-// ================================
-// 🔥 AVISA HOME
-// ================================
-
-if(typeof selecionarBebidaGlobal === "function"){
-selecionarBebidaGlobal(b)
-}
-
-
-// animação leve
-card.style.transform="scale(1.05)"
-
-setTimeout(()=>{
-card.style.transform=""
-},200)
+// 🔥 RE-RENDER (GARANTE SINCRONIA)
+renderBebidas(bebidasAberto ? bebidas.length : 4)
 
 }
 
@@ -164,7 +176,7 @@ listaB.appendChild(card)
 
 
 // ================================
-// INICIAL
+// INIT
 // ================================
 
 document.addEventListener("DOMContentLoaded",()=>{
@@ -197,3 +209,11 @@ btn.innerText="Ver mais bebidas"
 }
 
 })
+
+
+
+// ================================
+// 🔥 FORÇAR ATUALIZAÇÃO GLOBAL
+// ================================
+
+window.renderBebidas = renderBebidas

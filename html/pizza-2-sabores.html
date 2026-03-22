@@ -2,7 +2,6 @@
 <html lang="pt-BR"> 
 
 <head>
-
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -20,7 +19,6 @@
 <link rel="stylesheet" href="../css/components/whatsapp.css">
 <link rel="stylesheet" href="../css/pages/pizza.css">
 <link rel="stylesheet" href="../css/pages/pizza-2.css">
-
 </head>
 
 <body>
@@ -33,37 +31,28 @@
 <main>
 
 <section>
-    <h2>Escolha sua pizza 🍕</h2>
-<!-- 🔍 BUSCADOR -->
- <h3>Escolha o 1º sabor</h3>
-    <div class="busca-container">
-    <input 
-    id="buscaPizza1"
-    type="text" 
-    placeholder="Buscar sabor ou pizza 1...">
-    </div>
+<h2>Escolha sua pizza 🍕</h2>
+
+<h3>Escolha o 1º sabor</h3>
+<div class="busca-container">
+<input id="buscaPizza1" type="text" placeholder="Buscar sabor ou pizza 1...">
+</div>
+
 <div class="grid-pizzas" id="lista-pizzas-1"></div>
 
-<!-- ver lista completa-->>
-<button 
-class="botao-expandir"
-onclick="toggleCardapio('lista-pizzas-1',1)">
+<button class="botao-expandir" onclick="toggleCardapio('lista-pizzas-1',1)">
 Ver cardápio completo
 </button>
 
-
 <h3>Escolha o 2º sabor</h3>
- <div class="busca-container">
-    <input 
-    id="buscaPizza2"
-    type="text" 
-    placeholder="Buscar sabor ou pizza 2...">
-    </div>
+
+<div class="busca-container">
+<input id="buscaPizza2" type="text" placeholder="Buscar sabor ou pizza 2...">
+</div>
+
 <div class="grid-pizzas" id="lista-pizzas-2"></div>
 
-<button 
-class="botao-expandir"
-onclick="toggleCardapio('lista-pizzas-2',2)">
+<button class="botao-expandir" onclick="toggleCardapio('lista-pizzas-2',2)">
 Ver cardápio completo
 </button>
 
@@ -73,20 +62,49 @@ Ver cardápio completo
 
 <!-- RESUMO -->
 <div class="resumo-pedido">
-
-<div id="resumoTexto">
-Selecione 2 sabores
-</div>
+<div id="resumoTexto">Selecione 2 sabores</div>
 
 <div class="resumo-botoes">
 <button onclick="cancelar()">Cancelar</button>
 <button id="btnProximo" onclick="proximo()" disabled>Próximo</button>
 </div>
+</div>
 
+<!-- 🔥 MODAL ADICIONAIS (FALTAVA ISSO) -->
+<div id="modalAdicionais" class="modal-adicionais">
+<div class="modal-content">
+
+<div class="modal-header">
+<button onclick="fecharModal()">←</button>
+<h3>Personalize sua pizza</h3>
+</div>
+
+<p class="descricao">
+Deseja adicionar algo à sua pizza?<br>
+Escolha até <strong>3 adicionais</strong>.
+</p>
+
+<button class="btn-expandir" onclick="toggleAdicionais()">
+Ver adicionais
+</button>
+
+<div id="listaAdicionais" class="lista-adicionais"></div>
+
+<div class="resumo-adicional" id="resumoAdicional">
+Nenhum adicional selecionado
+</div>
+
+<div class="acoes-modal">
+<button onclick="pularAdicionais()">Não adicionar</button>
+<button onclick="confirmarAdicionais()">Próximo</button>
+</div>
+
+</div>
 </div>
 
 <script src="../js/modules/cardapio.js"></script>
 <script src="../js/pages/pizza2.js"></script>
+<script src="../js/modules/adicionais.js"></script>
 
 </body>
-</html> 
+</html>

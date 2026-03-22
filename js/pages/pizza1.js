@@ -5,7 +5,6 @@
 let pizzasSelecionadas = []
 
 
-
 // ================================
 // FORMATAR
 // ================================
@@ -16,7 +15,6 @@ style:"currency",
 currency:"BRL"
 })
 }
-
 
 
 // ================================
@@ -38,7 +36,7 @@ renderPizzas(pizzas.length)
 
 document.querySelectorAll(".pizza-card").forEach(card=>{
 
-const nome = card.dataset.nome || ""
+const nome = (card.dataset.nome || "").toLowerCase()
 
 card.style.display =
 nome.includes(valor) ? "block" : "none"
@@ -46,9 +44,43 @@ nome.includes(valor) ? "block" : "none"
 })
 
 }
+// ================================
+// 🔥 MODAL CONFIRMAÇÃO (OBRIGATÓRIO)
+// ================================
+
+function modalConfirmar({titulo, texto, onConfirm}){
+
+const modal = document.getElementById("modalConfirmacao")
+if(!modal) return
+
+const tituloEl = document.getElementById("modalTitulo")
+const textoEl = document.getElementById("modalTexto")
+const btnConfirmar = document.getElementById("btnConfirmar")
+const btnCancelar = document.getElementById("btnCancelar")
+
+tituloEl.innerText = titulo || "Confirmar"
+textoEl.innerText = texto || ""
+
+modal.classList.add("ativo")
+
+btnConfirmar.onclick = ()=>{
+modal.classList.remove("ativo")
+onConfirm && onConfirm()
+}
+
+btnCancelar.onclick = ()=>{
+modal.classList.remove("ativo")
+}
+
+}
+
+
+// ================================
+// 🎨 RENDER VISUAL
+// ================================
+
 function renderVisual(){
 
-// limpa tudo
 document.querySelectorAll(".pizza-card").forEach(c=>{
 c.classList.remove("pizza-selecionada")
 })
@@ -57,12 +89,12 @@ document.querySelectorAll(".tamanhos button").forEach(b=>{
 b.classList.remove("ativo")
 })
 
-// reaplica seleção real
 pizzasSelecionadas.forEach(p=>{
 
 document.querySelectorAll(".pizza-card").forEach(card=>{
 
-if(card.dataset.nome === p.nome.toLowerCase()){
+// 🔥 CORREÇÃO AQUI
+if(card.dataset.id === limparNomeImagem(p.nome)){
 
 card.classList.add("pizza-selecionada")
 
@@ -81,23 +113,24 @@ btn.classList.add("ativo")
 }
 
 
-
 // ================================
-// 🍕 SELEÇÃO V3 (MÚLTIPLAS)
+// 🍕 SELEÇÃO
 // ================================
 
 function selecionarPizzaLocal(botao,nome,tamanho,preco,ingredientes){
 
-const card = botao.closest(".pizza-card")
-
 const key = `${nome}_${tamanho}`
 
-const pizza = { nome, tamanho, preco, ingredientes, key }
+const pizza = { 
+  nome,
+  tamanho,
+  preco,
+  ingredientes,
+  key,
+  id: limparNomeImagem(nome) // 🔥 ESSENCIAL
+}
 
-// ================================
-// 🔁 TOGGLE (REMOVE)
-// ================================
-
+// 🔁 TOGGLE
 const index = pizzasSelecionadas.findIndex(p => p.key === key)
 
 if(index !== -1){
@@ -109,35 +142,50 @@ atualizarResumo()
 return
 }
 
-// ================================
-// ADICIONAR
-// ================================
 
-if(pizzasSelecionadas.length > 0){
+// 🔍 VERIFICA (ANTES DE ADICIONAR)
+const jaTemPizza = pizzasSelecionadas.length >= 1
 
-const confirmar = confirm("👉 Deseja adicionar outra pizza?")
 
-if(!confirmar){
-pizzasSelecionadas = []
-}
+// ❓ MODAL (só se já tiver pelo menos 1)
+if(jaTemPizza){
 
-}
+modalConfirmar({
+titulo:"🍕 Mais uma pizza?",
+texto:"Quem pede uma… sempre quer mais 😏",
+onConfirm:()=>{
 
 pizzasSelecionadas.push(pizza)
 
 renderVisual()
 atualizarResumo()
 
-// scroll
 document.querySelector(".resumo-pedido")?.scrollIntoView({
 behavior:"smooth"
 })
 
-// sugestão
 sugestao(nome)
 
 }
+})
 
+return
+}
+
+
+// ➕ NORMAL
+pizzasSelecionadas.push(pizza)
+
+renderVisual()
+atualizarResumo()
+
+document.querySelector(".resumo-pedido")?.scrollIntoView({
+behavior:"smooth"
+})
+
+sugestao(nome)
+
+}
 
 
 // ================================
@@ -159,7 +207,6 @@ notificar?.("💡 Que tal um Guaraná?")
 }
 
 
-
 // ================================
 // LIMPAR UI
 // ================================
@@ -177,9 +224,8 @@ b.classList.remove("ativo")
 }
 
 
-
 // ================================
-// RESUMO V3 🔥
+// RESUMO
 // ================================
 
 function atualizarResumo(){
@@ -214,15 +260,12 @@ Total: ${formatarMoeda(total)}
 </span>
 `
 
- texto.innerHTML = html
-
-// 🔥 sempre rola pro final quando adiciona
+texto.innerHTML = html
 texto.scrollTop = texto.scrollHeight
 
 btn.disabled = false
 
 }
-
 
 
 // ================================
@@ -232,22 +275,21 @@ btn.disabled = false
 function cancelar(){
 
 pizzasSelecionadas = []
-limparUI()
+
+renderVisual()
 atualizarResumo()
 
 }
 
 
-
 // ================================
-// PRÓXIMO → ADICIONAIS 🔥
+// PRÓXIMO
 // ================================
 
 function proximo(){
 
 if(pizzasSelecionadas.length === 0) return
 
-// 🔥 estrutura V3
 window.pedidoAtual = {
 itens: pizzasSelecionadas.map(p=>({
 nome: p.nome,
@@ -258,7 +300,6 @@ adicionais: []
 }))
 }
 
-// abre adicionais
 if(typeof abrirAdicionais === "function"){
 abrirAdicionais()
 }else{
@@ -269,15 +310,13 @@ window.location.href = "confirmacao.html"
 }
 
 
-
 // ================================
-// 🔙 VOLTAR
+// VOLTAR
 // ================================
 
 function voltarIndex(){
 window.location.href = "../index.html"
 }
-
 
 
 // ================================
@@ -297,16 +336,11 @@ lista.innerHTML = `
 }
 
 setTimeout(()=>{
-
 if(typeof renderPizzas === "function"){
 renderPizzas(4)
 }
-
 },300)
 
-
-
-// botão ver mais
 const btn = document.getElementById("mostrarCardapio")
 
 if(btn){
@@ -331,9 +365,6 @@ btn.dataset.aberto = "true"
 
 }
 
-
-
-// busca
 const inputBusca = document.getElementById("buscaPizza")
 
 if(inputBusca){
@@ -343,7 +374,6 @@ filtrarPizza(e.target.value)
 }
 
 })
-
 
 
 // ================================

@@ -37,7 +37,7 @@ let aberto2 = false
 
 
 // ================================
-// UTIL (CORRIGIDO)
+// UTIL
 // ================================
 
 function limparNomeImagem(nome){
@@ -50,7 +50,7 @@ return nome
 
 
 // ================================
-// CRIAR CARD (🔥 REESCRITO)
+// CRIAR CARD
 // ================================
 
 function criarCardPizza(p, tipo = null){
@@ -59,7 +59,9 @@ let nomeImagem = limparNomeImagem(p.nome)
 
 const card = document.createElement("div")
 card.className = "pizza-card"
-card.dataset.nome = p.nome.toLowerCase()
+
+// 🔥 CORREÇÃO (SEM lowercase)
+card.dataset.id = limparNomeImagem(p.nome)
 
 card.innerHTML = `
 <img src="../img/pizzas/imgPizza${nomeImagem}.jpg">
@@ -77,8 +79,9 @@ card.innerHTML = `
 </div>
 `
 
+
 // ================================
-// EVENTOS (🔥 SEM STRING BUGADA)
+// EVENTOS
 // ================================
 
 card.querySelectorAll(".tamanhos button").forEach(btn=>{
@@ -91,10 +94,23 @@ let precoFinal = p.preco
 if(tamanho === "M") precoFinal += 5
 if(tamanho === "G") precoFinal += 10
 
-if(tipo){
-selecionarPizzaLocal(tipo, btn, p.nome, tamanho, precoFinal, p.ing)
-}else{
+// 🔥 SUPORTE UNIVERSAL (NÃO QUEBRA NADA)
+if(typeof selecionarPizzaLocal === "function"){
+
+// tenta padrão novo (pizza1)
+try{
 selecionarPizzaLocal(btn, p.nome, tamanho, precoFinal, p.ing)
+}catch(e){
+
+// fallback padrão antigo (pizza2/index)
+try{
+selecionarPizzaLocal(tipo, btn, p.nome, tamanho, precoFinal, p.ing)
+}catch(err){
+console.error("Erro ao selecionar pizza:", err)
+}
+
+}
+
 }
 
 }
@@ -122,7 +138,7 @@ pizzas.slice(0,qtd).forEach(p=>{
 lista.appendChild(criarCardPizza(p, tipo))
 })
 
-// 🔥 mantém seleção
+// 🔥 mantém seleção correta
 if(typeof renderVisual === "function"){
 renderVisual()
 }

@@ -1,31 +1,32 @@
+/*
+========================================
+📄 ARQUIVO: carrinho.js
+
+📌 FUNÇÃO:
+Gerencia o carrinho de pedidos.
+Controla adição, remoção, renderização,
+limpeza, finalização e sincronização TOTAL com UI.
+
+🔗 DEPENDE DE:
+- home.js
+- bebidas.js
+- combos.js
+
+📍 USADO EM:
+- index.html
+
+🧠 OBS:
+Suporte completo a multi seleção (pizza, combo, bebida)
+========================================
+*/
+
+
 // ================================
-// CARRINHO V3 (SEM STORAGE)
+// CARRINHO
 // ================================
 
 let carrinho = []
-
 const LIMITE_ITENS = 30
-
-
-
-// ================================
-// VERIFICAÇÕES
-// ================================
-
-function temPizzaSimples(){
-return carrinho.some(item => item.tipo === "pizza_simples")
-}
-
-function temComboOuCustom(){
-return carrinho.some(item =>
-item.tipo === "combo" || item.tipo === "pizza_custom"
-)
-}
-
-function removerPorTipo(tipo){
-carrinho = carrinho.filter(item => item.tipo !== tipo)
-atualizarCarrinhoLista()
-}
 
 
 
@@ -34,7 +35,7 @@ atualizarCarrinhoLista()
 // ================================
 
 function formatarMoeda(valor){
-return valor.toLocaleString("pt-BR",{style:"currency",currency:"BRL"})
+return Number(valor).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})
 }
 
 
@@ -44,22 +45,59 @@ return valor.toLocaleString("pt-BR",{style:"currency",currency:"BRL"})
 // ================================
 
 function notificar(msg,tipo="success"){
-
 if(!window.bootstrap) return
 
 const toast = document.createElement("div")
-
-toast.className =
-`toast text-bg-${tipo} position-fixed top-0 end-0 m-3`
-
+toast.className = `toast text-bg-${tipo} position-fixed top-0 end-0 m-3`
 toast.innerHTML = `<div class="p-2">${msg}</div>`
 
 document.body.appendChild(toast)
-
 setTimeout(()=>toast.remove(),3000)
+}
+
+
+
+// ================================
+// BOTÕES PIZZA (AGORA LIVRE)
+// ================================
+
+function atualizarBotoesPizza(){
+
+const btnPizza1 = document.getElementById("btnPizza1")
+const btnPizza2 = document.getElementById("btnPizza2")
+
+if(!btnPizza1 || !btnPizza2) return
+
+// 🔥 REGRA CORRETA
+const temBloqueio = carrinho.some(item =>
+item.tipo === "pizza_simples" || item.tipo === "combo"
+)
+
+if(temBloqueio){
+
+btnPizza1.disabled = true
+btnPizza2.disabled = true
+
+btnPizza1.style.opacity = "0.5"
+btnPizza2.style.opacity = "0.5"
+
+btnPizza1.innerText = "Indisponível"
+btnPizza2.innerText = "Indisponível"
+
+}else{
+
+btnPizza1.disabled = false
+btnPizza2.disabled = false
+
+btnPizza1.style.opacity = "1"
+btnPizza2.style.opacity = "1"
+
+btnPizza1.innerText = "Escolher"
+btnPizza2.innerText = "Escolher"
 
 }
 
+}
 
 
 // ================================
@@ -85,33 +123,27 @@ document.body.style.overflow="auto"
 
 
 // ================================
-// ADICIONAR
+// ADICIONAR (SEM BLOQUEIO 🔥)
 // ================================
 
 function adicionarCarrinho(item,botao){
 
 if(!item || typeof item.preco !== "number") return
 
-if(item.tipo === "pizza_simples" && temComboOuCustom()){
-notificar("❌ Não pode misturar","danger")
-return
-}
-
-if((item.tipo === "combo" || item.tipo === "pizza_custom") && temPizzaSimples()){
-notificar("❌ Já tem pizza mais pedida","danger")
-return
-}
-
 if(carrinho.length >= LIMITE_ITENS){
 notificar("Limite atingido","danger")
 return
 }
 
-if(botao) animarProdutoCarrinho(botao)
+// animação
+if(botao && typeof animarProdutoCarrinho === "function"){
+animarProdutoCarrinho(botao)
+}
 
+// 🔥 lógica inteligente (evita duplicação exata)
 const existente = carrinho.find(p=>
-p.nome===item.nome &&
-p.tamanho===item.tamanho &&
+p.nome === item.nome &&
+(p.tamanho || "") === (item.tamanho || "") &&
 JSON.stringify(p.adicionais || []) === JSON.stringify(item.adicionais || [])
 )
 
@@ -149,7 +181,7 @@ lista.innerHTML=""
 let total=0
 let qtdTotal=0
 
-// BOTÕES TOPO
+// topo
 const topo = document.createElement("div")
 topo.className="acoes-carrinho"
 
@@ -161,14 +193,19 @@ topo.innerHTML=`
 
 lista.appendChild(topo)
 
+// itens
 carrinho.forEach((item,i)=>{
 
 const subtotal=item.preco*item.qtd
 total+=subtotal
 qtdTotal+=item.qtd
 
-const adicionaisHTML = (item.adicionais && item.adicionais.length)
+const adicionaisHTML = item.adicionais?.length
 ? `<small>+ ${item.adicionais.map(a=>a.nome).join(", ")}</small>`
+: ""
+
+const ingredientesHTML = item.ingredientes
+? `<small style="color:#666;">${item.ingredientes}</small>`
 : ""
 
 const div=document.createElement("div")
@@ -176,7 +213,8 @@ div.className="item-carrinho"
 
 div.innerHTML=`
 <div>
-<strong>${item.nome}</strong>
+<strong>${item.nome}</strong><br>
+${ingredientesHTML}
 ${adicionaisHTML}
 </div>
 
@@ -196,6 +234,9 @@ lista.appendChild(div)
 if(contador) contador.innerText=qtdTotal
 if(totalElemento) totalElemento.innerText="Total: "+formatarMoeda(total)
 
+// atualiza botões
+atualizarBotoesPizza()
+
 }
 
 
@@ -203,11 +244,6 @@ if(totalElemento) totalElemento.innerText="Total: "+formatarMoeda(total)
 // ================================
 // CONTROLES
 // ================================
-
-function removerCarrinho(i){
-carrinho.splice(i,1)
-atualizarCarrinhoLista()
-}
 
 function aumentarQtd(i){
 carrinho[i].qtd++
@@ -226,7 +262,7 @@ atualizarCarrinhoLista()
 
 
 // ================================
-// FINALIZAR (🔥 V3)
+// FINALIZAR
 // ================================
 
 function irParaPedido(){
@@ -236,20 +272,11 @@ notificar("Carrinho vazio","danger")
 return
 }
 
-// 🔥 cria pedido no sistema novo
-if(typeof criarPedido === "function"){
+localStorage.setItem("pedidoAtual", JSON.stringify({
+itens: carrinho
+}))
 
-const pedido = criarPedido()
-
-carrinho.forEach(item=>{
-adicionarItemPedido(item)
-})
-
-}
-
-// limpa carrinho
 carrinho = []
-
 window.location.href="html/confirmacao.html"
 
 }
@@ -257,12 +284,41 @@ window.location.href="html/confirmacao.html"
 
 
 // ================================
-// LIMPAR
+// 🔥 LIMPAR (AGORA 100% FUNCIONAL)
 // ================================
 
 function limparTudo(){
+
 carrinho = []
+
 atualizarCarrinhoLista()
+
+
+// ================================
+// 🔥 RE-RENDER TOTAL (SOLUÇÃO REAL)
+// ================================
+
+// pizzas
+if(typeof document !== "undefined"){
+document.querySelectorAll(".pizza-card").forEach(card=>{
+card.classList.remove("selecionado")
+const btn = card.querySelector("button")
+if(btn) btn.innerText = "Selecionar"
+})
+}
+
+// bebidas
+if(typeof renderBebidas === "function"){
+renderBebidas(window.bebidasAberto ? bebidas.length : 4)
+}
+
+// combos
+if(typeof renderCombos === "function"){
+renderCombos(window.aberto ? combos.length : 2)
+}
+
+notificar("Carrinho limpo","warning")
+
 }
 
 
@@ -274,10 +330,11 @@ atualizarCarrinhoLista()
 function novoPedido(){
 
 carrinho = []
+
 atualizarCarrinhoLista()
 
-if(typeof criarPedido === "function"){
-criarPedido()
+if(typeof limparTudo === "function"){
+limparTudo()
 }
 
 notificar("Novo pedido iniciado")
@@ -287,14 +344,35 @@ notificar("Novo pedido iniciado")
 
 
 // ================================
+// FECHAR AO CLICAR FORA
+// ================================
+
+document.addEventListener("click", (e) => {
+
+const painel = document.getElementById("painelPedido")
+if(!painel) return
+
+const clicouDentro = painel.contains(e.target)
+const clicouBotao = e.target.closest(".carrinho-flutuante")
+
+if(!clicouDentro && !clicouBotao){
+painel.classList.remove("ativo")
+document.body.style.overflow="auto"
+}
+
+})
+
+
+
+// ================================
 // GLOBAL
 // ================================
 
 window.adicionarCarrinho=adicionarCarrinho
-window.removerPorTipo=removerPorTipo
 window.notificar=notificar
 window.abrirCarrinho=abrirCarrinho
 window.fecharCarrinho=fecharCarrinho
 window.irParaPedido=irParaPedido
 window.limparTudo=limparTudo
 window.novoPedido=novoPedido
+window.atualizarBotoesPizza = atualizarBotoesPizza

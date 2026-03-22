@@ -10,7 +10,6 @@ currency:"BRL"
 }
 
 
-
 // ================================
 // ESTRUTURA V3
 // ================================
@@ -20,11 +19,10 @@ let pedidoAtualId = localStorage.getItem("pedidoAtualId")
 
 let pedido = pedidos.find(p => p.id == pedidoAtualId)
 
-// fallback
+// fallback (carrinho)
 if(!pedido){
 pedido = JSON.parse(localStorage.getItem("pedidoAtual"))
 }
-
 
 
 // ================================
@@ -35,7 +33,6 @@ function gerarImagem(nome){
 
 if(!nome) return "../img/pizzas/imgPizzaPadrao.jpg"
 
-// 🔥 pizza 2 sabores → pega só a primeira
 if(nome.includes("/")){
 nome = nome.split("/")[0]
 }
@@ -53,9 +50,7 @@ const nomeImg = nome
 .replaceAll("ú","u")
 
 return `../img/pizzas/imgPizza${nomeImg}.jpg`
-
 }
-
 
 
 // ================================
@@ -70,14 +65,12 @@ window.location.href = "../index.html"
 return
 }
 
-// estrutura
+// 🔥 suporte carrinho OU sistema antigo
 let itens = pedido.itens || [pedido]
 
 // remove render antigo
 const antigo = document.getElementById("outrosItens")
 if(antigo) antigo.remove()
-
-
 
 // ================================
 // ITEM PRINCIPAL
@@ -89,28 +82,29 @@ document.getElementById("nomePizza").innerText = item.nome || "-"
 document.getElementById("ingredientes").innerText = item.ingredientes || ""
 document.getElementById("tamanho").innerText = "Tamanho: " + (item.tamanho || "-")
 
-// 🔥 imagem corrigida
+if(item.img){
+document.getElementById("imgPizza").src = "../" + item.img
+}else{
 document.getElementById("imgPizza").src = gerarImagem(item.nome)
-
+}
 
 
 // ================================
 // ADICIONAIS
 // ================================
 
-const lista = document.getElementById("listaAdicionais")
+const listaAdicionais = document.getElementById("listaAdicionais")
 
 if(!item.adicionais || item.adicionais.length === 0){
-lista.innerHTML = "<li>Nenhum adicional</li>"
+listaAdicionais.innerHTML = "<li>Nenhum adicional</li>"
 }else{
-lista.innerHTML = item.adicionais.map(a=>`
+listaAdicionais.innerHTML = item.adicionais.map(a=>`
 <li>
 <span>${a.nome}</span>
 <span>+ ${formatarMoeda(a.preco)}</span>
 </li>
 `).join("")
 }
-
 
 
 // ================================
@@ -132,7 +126,8 @@ div.className = "item-pedido"
 
 div.innerHTML = `
 <div class="item-info">
-<h4>${item.nome} (${item.tamanho})</h4>
+<h4>${item.nome} ${item.tamanho ? "(" + item.tamanho + ")" : ""}</h4>
+
 <small>${item.ingredientes || ""}</small>
 
 ${
@@ -158,6 +153,53 @@ document.querySelector(".container-confirmacao")
 
 }
 
+
+// ================================
+// 🔥 NOVO BLOCO: ITENS DO CARRINHO
+// ================================
+
+const lista = document.getElementById("listaConfirmacao")
+const totalEl = document.getElementById("totalConfirmacao")
+
+if(lista && pedido.itens){
+
+lista.innerHTML = ""
+
+let totalCarrinho = 0
+
+pedido.itens.forEach(item => {
+
+const qtd = item.qtd || 1
+const subtotal = (item.preco || 0) * qtd
+
+totalCarrinho += subtotal
+
+const div = document.createElement("div")
+div.className = "item-confirmacao"
+
+div.innerHTML = `
+<strong>${item.nome}</strong><br>
+
+<small style="color:#666;">
+${item.ingredientes || ""}
+</small><br>
+
+Qtd: ${qtd}<br>
+
+<span style="color:#28a745;">
+${formatarMoeda(subtotal)}
+</span>
+`
+
+lista.appendChild(div)
+
+})
+
+if(totalEl){
+totalEl.innerText = "Total: " + formatarMoeda(totalCarrinho)
+}
+
+}
 
 
 // ================================
@@ -187,22 +229,21 @@ pedido.status === "cancelado" ? "🔴 Pedido cancelado" :
 }
 
 
-
 // ================================
-// TOTAL
+// TOTAL FINAL (GERAL)
 // ================================
 
-let total = 0
+let totalFinal = 0
 
 itens.forEach(i=>{
-total += Number(i.precoFinal || i.preco || 0)
+const qtd = i.qtd || 1
+totalFinal += (i.precoFinal || i.preco || 0) * qtd
 })
 
 document.getElementById("totalPedido").innerText =
-formatarMoeda(total)
+formatarMoeda(totalFinal)
 
 }
-
 
 
 // ================================
@@ -211,7 +252,6 @@ formatarMoeda(total)
 
 function voltar(){
 
-// 🔥 inteligente (volta correto)
 if(pedido?.tipo === "pizza_2sabores"){
 window.location.href = "../html/pizza-2-sabores.html"
 }else{
@@ -223,7 +263,6 @@ window.location.href = "../html/pizza-1-sabor.html"
 function adicionarMais(){
 window.location.href = "../index.html"
 }
-
 
 
 // ================================
@@ -253,7 +292,6 @@ localStorage.removeItem("pedidoAtual")
 window.location.href = "../index.html"
 
 }
-
 
 
 // ================================
@@ -286,7 +324,6 @@ localStorage.setItem("pedidoAtual", JSON.stringify(pedido))
 window.location.href = "pedido.html"
 
 }
-
 
 
 // ================================

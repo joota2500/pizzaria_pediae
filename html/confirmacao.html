@@ -15,7 +15,6 @@
 <link rel="stylesheet" href="../css/components/botoes.css">
 <link rel="stylesheet" href="../css/components/footer.css">
 <link rel="stylesheet" href="../css/components/whatsapp.css">
-
 <link rel="stylesheet" href="../css/pages/confirmacao.css">
 
 </head>
@@ -29,7 +28,9 @@
 
 <main class="container-confirmacao">
 
-<!-- CARD -->
+<!-- ================================
+CARD PRINCIPAL (1º ITEM)
+================================ -->
 <div class="card-confirmacao">
 
 <img id="imgPizza">
@@ -42,13 +43,33 @@
 
 </div>
 
-<!-- ADICIONAIS -->
+
+<!-- ================================
+🔥 LISTA COMPLETA DO CARRINHO
+================================ -->
+<div class="card-adicionais">
+
+<h4>🧾 Itens do Pedido</h4>
+
+<div id="listaConfirmacao"></div>
+
+<p id="totalConfirmacao" style="margin-top:10px;font-weight:600;"></p>
+
+</div>
+
+
+<!-- ================================
+ADICIONAIS (ITEM PRINCIPAL)
+================================ -->
 <div class="card-adicionais">
 <h4>Adicionais</h4>
 <ul id="listaAdicionais"></ul>
 </div>
 
-<!-- OBSERVAÇÃO -->
+
+<!-- ================================
+OBSERVAÇÃO
+================================ -->
 <div class="observacao-box">
 
 <label>Observação</label>
@@ -58,7 +79,10 @@ placeholder="Ex: sem cebola, bem passada..."></textarea>
 
 </div>
 
-<!-- TOTAL -->
+
+<!-- ================================
+TOTAL FINAL
+================================ -->
 <div class="total-box">
 <span>Total</span>
 <h2 id="totalPedido"></h2>
@@ -66,7 +90,10 @@ placeholder="Ex: sem cebola, bem passada..."></textarea>
 
 </main>
 
-<!-- BOTÕES -->
+
+<!-- ================================
+BOTÕES FIXOS
+================================ -->
 <div class="acoes-fixas"> 
 
 <div class="linha-acoes">
@@ -81,10 +108,14 @@ Confirmar pedido
 
 </div>
 
+
 <a href="#" class="whatsapp-flutuante">💬</a>
 
+
+<!-- JS -->
 <script src="../js/pages/confirmacao.js"></script>
 <script src="../js/core/pedidos.js"></script>
+<script src="../js/core/carrinho.js"></script>
 
 </body>
 </html>

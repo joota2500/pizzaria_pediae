@@ -1,38 +1,39 @@
+/*
+========================================
+📄 ARQUIVO: combos.js
+
+📌 FUNÇÃO:
+Renderiza combos e integra com carrinho.
+Suporta múltiplos combos e sincroniza com UI.
+
+🔗 DEPENDE DE:
+- carrinho.js
+- home.js (resetUI)
+- utils
+
+📍 USADO EM:
+- index.html
+========================================
+*/
+
+
 // ================================
 // DADOS DOS COMBOS
 // ================================
 
 const combos = [
-
-{
-nome:"Combo Calabresa",
-desc:"Pizza Calabresa + Coca 1L",
-preco:40,
-img:"img/combos/comboCalabresa.jpg"
-},
-
-{
-nome:"Combo Portuguesa",
-desc:"Pizza Portuguesa + Guaraná",
-preco:42,
-img:"img/combos/comboPortuguesa.jpg"
-},
-
-{
-nome:"Combo Teste 1",
-desc:"Pizza + refri",
-preco:35,
-img:"img/combos/comboCalabresa.jpg"
-},
-
-{
-nome:"Combo Teste 2",
-desc:"Pizza + suco",
-preco:36,
-img:"img/combos/comboPortuguesa.jpg"
-}
-
+{nome:"Combo Calabresa",desc:"Pizza Calabresa (molho, mussarela, calabresa e cebola) + Coca-Cola 1L gelada",preco:40,img:"img/combos/comboCalabresa.jpg"},
+{nome:"Combo Portuguesa",desc:"Pizza Portuguesa (presunto, ovos, cebola e azeitona) + Guaraná 1L",preco:42,img:"img/combos/comboPortuguesa.jpg"},
+{nome:"Combo Frango Supremo",desc:"Pizza Frango com Catupiry + Coca-Cola 1L",preco:43,img:"img/combos/comboCalabresa.jpg"},
+{nome:"Combo 4 Queijos",desc:"Pizza 4 Queijos + Pepsi 1L",preco:45,img:"img/combos/comboPortuguesa.jpg"},
+{nome:"Combo Nordestino",desc:"Pizza Carne de Sol + Guaraná 1L",preco:48,img:"img/combos/comboCalabresa.jpg"},
+{nome:"Combo Família",desc:"Pizza Grande (2 sabores) + Coca-Cola 2L",preco:70,img:"img/combos/comboPortuguesa.jpg"},
+{nome:"Combo Casal",desc:"Pizza Média (2 sabores) + Coca-Cola 1L + borda recheada",preco:55,img:"img/combos/comboCalabresa.jpg"},
+{nome:"Combo Econômico",desc:"Pizza Mussarela + refrigerante 600ml",preco:32,img:"img/combos/comboPortuguesa.jpg"},
+{nome:"Combo Doce",desc:"Pizza Chocolate ou Banana + Guaraná 1L",preco:38,img:"img/combos/comboCalabresa.jpg"},
+{nome:"Combo Premium",desc:"Pizza Camarão ou Bacon + Coca-Cola 2L",preco:75,img:"img/combos/comboPortuguesa.jpg"}
 ]
+
 
 // ================================
 // VARIÁVEIS
@@ -40,28 +41,6 @@ img:"img/combos/comboPortuguesa.jpg"
 
 let aberto = false
 let listaCombos
-
-// 🔥 estado local
-let comboSelecionado = null
-
-
-
-// ================================
-// BLOQUEIO GLOBAL
-// ================================
-
-function comboBloqueado(){
-
-if(typeof temPizzaSimples === "function" && temPizzaSimples()){
-return true
-}
-
-if(typeof pedidoAtual !== "undefined" && pedidoAtual.pizza){
-return true
-}
-
-return false
-}
 
 
 
@@ -71,76 +50,97 @@ return false
 
 function criarCardCombo(c){
 
+const selecionado = carrinho.some(item =>
+item.nome === c.nome && item.tipo === "combo"
+)
+
 const card = document.createElement("article")
 card.className = "combo-card"
 
 card.innerHTML = `
 <img src="${c.img}" alt="${c.nome}">
 <h3>${c.nome}</h3>
-<p>${c.desc}</p>
-<p class="preco">R$ ${c.preco}</p>
-<button class="btn btn-warning">Selecionar</button>
+<p class="descricao">${c.desc}</p>
+<p class="preco">${formatarMoeda(c.preco)}</p>
+<button class="btn btn-warning">
+${selecionado ? "✔ Selecionado" : "Selecionar"}
+</button>
 `
 
 const botao = card.querySelector("button")
 
+if(selecionado){
+card.classList.add("selecionado")
+}
+
 
 // ================================
-// CLICK (🔥 NOVA LÓGICA)
+// CLICK (🔥 MULTI COMBO)
 // ================================
 
 botao.onclick = ()=>{
 
-// bloqueio
-if(comboBloqueado()){
-notificar("❌ Não pode usar combo com pizza mais pedida","danger")
-return
-}
+const jaExiste = carrinho.find(item =>
+item.nome === c.nome && item.tipo === "combo"
+)
 
 
-// ================================
-// 🔁 TOGGLE (DESSELECIONAR)
-// ================================
+// ❌ REMOVER APENAS ESSE COMBO
+if(jaExiste){
 
-if(comboSelecionado && comboSelecionado.nome === c.nome){
+carrinho = carrinho.filter(item =>
+!(item.nome === c.nome && item.tipo === "combo")
+)
 
-comboSelecionado = null
-
-card.classList.remove("selecionado")
-botao.innerText="Selecionar"
+resetUI()
+atualizarCarrinhoLista()
 
 notificar("Combo removido","warning")
+return
+}
+
+
+// ❓ PERGUNTA (SE JÁ TEM ALGUM COMBO)
+const jaTemCombo = carrinho.some(item => item.tipo === "combo")
+
+if(jaTemCombo){
+
+modalConfirmar({
+titulo:"🍕 Mais um combo?",
+texto:"Esse tá bom… mas sempre cabe mais um 😏",
+onConfirm:()=>{
+
+adicionarCarrinho({
+nome:c.nome,
+preco:c.preco,
+ingredientes:c.desc,
+tipo:"combo",
+img:c.img
+})
+
+resetUI()
+
+notificar("Combo adicionado","success")
+
+}
+})
 
 return
 }
 
 
-// ================================
-// 🔥 LIMPAR OUTROS
-// ================================
-
-document.querySelectorAll(".combo-card").forEach(card=>{
-card.classList.remove("selecionado")
-card.querySelector("button").innerText="Selecionar"
+// ➕ ADICIONAR NORMAL
+adicionarCarrinho({
+nome:c.nome,
+preco:c.preco,
+ingredientes:c.desc,
+tipo:"combo",
+img:c.img
 })
 
-
-// ================================
-// 🔥 SELECIONAR
-// ================================
-
-comboSelecionado = c
-
-card.classList.add("selecionado")
-botao.innerText="✔ Selecionado"
+resetUI()
 
 notificar("Combo selecionado","success")
-
-
-// ================================
-// 🚀 FUTURO (PÁGINA)
-// ================================
-// window.location.href = "combo.html"
 
 }
 
@@ -199,3 +199,11 @@ btn.innerText = "Ver todos combos"
 }
 
 })
+
+
+
+// ================================
+// GLOBAL
+// ================================
+
+window.renderCombos = renderCombos

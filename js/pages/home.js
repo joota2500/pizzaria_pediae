@@ -1,21 +1,25 @@
+/*
+========================================
+📄 ARQUIVO: home.js
+
+📌 FUNÇÃO:
+Controla a página inicial (index).
+Renderiza pizzas mais pedidas e sincroniza
+com o carrinho.
+
+🔗 DEPENDE DE:
+- carrinho.js
+- bebidas.js
+- combos.js
+
+📍 USADO EM:
+- index.html
+========================================
+*/
+
+
 // ================================
-// 🔥 CONTROLE GLOBAL
-// ================================
-
-let pedidoAtual = {
-pizza:null,
-bebida:null
-}
-
-let pedidoAnterior = {
-pizza:null,
-bebida:null
-}
-
-
-
-// ================================
-// 🔥 STATUS PIZZARIA
+// 🔥 STATUS
 // ================================
 
 function verificarStatus(){
@@ -24,67 +28,54 @@ const status = document.getElementById("statusPizzaria")
 if(!status) return
 
 const hora = new Date().getHours()
-
 const aberto = hora >= 17 && hora <= 23
 
-if(aberto){
-status.innerHTML = "🟢 Aberto agora"
-status.style.background = "#d4edda"
-status.style.color = "#155724"
-}else{
-status.innerHTML = "🔴 Fechado"
-status.style.background = "#f8d7da"
-status.style.color = "#721c24"
-}
+status.innerHTML = aberto ? "🟢 Aberto agora" : "🔴 Fechado"
+
+status.style.background = aberto ? "#d4edda" : "#f8d7da"
+status.style.color = aberto ? "#155724" : "#721c24"
 
 }
 
 
 
 // ================================
-// 🔥 FUNÇÃO GLOBAL (BEBIDA)
+// 🔥 MODAL
 // ================================
 
-function selecionarBebidaGlobal(bebida){
+function modalConfirmar({titulo, texto, onConfirm}){
 
-if(!bebida){
+const modal = document.getElementById("modalConfirmacao")
+if(!modal) return
 
-removerPedidoAnterior()
+document.getElementById("modalTitulo").innerText = titulo
+document.getElementById("modalTexto").innerText = texto
 
-pedidoAtual.bebida = null
-pedidoAnterior.bebida = null
+modal.classList.add("ativo")
 
-return
+document.getElementById("btnConfirmar").onclick = ()=>{
+modal.classList.remove("ativo")
+onConfirm && onConfirm()
 }
 
-pedidoAnterior.bebida = pedidoAtual.bebida
-pedidoAtual.bebida = bebida
-
-verificarEnvio()
+document.getElementById("btnCancelar").onclick = ()=>{
+modal.classList.remove("ativo")
 }
 
-window.selecionarBebidaGlobal = selecionarBebidaGlobal
+}
+
+window.modalConfirmar = modalConfirmar
 
 
 
 // ================================
-// 🔥 INIT GERAL (TUDO AQUI)
+// 🍕 RENDER PIZZAS
 // ================================
 
-document.addEventListener("DOMContentLoaded",()=>{
-
-// 🔥 status pizzaria
-verificarStatus()
-
-
-
-// ================================
-// MAIS PEDIDAS
-// ================================
+function renderPizzas(){
 
 const lista = document.getElementById("lista-pizzas")
-
-if(lista){
+if(!lista) return
 
 const pizzas = [
 {nome:"Calabresa",img:"img/pizzas/imgPizzaMaisPedidas1.jpg",desc:"Molho, mussarela e calabresa",preco:30},
@@ -96,6 +87,10 @@ lista.innerHTML=""
 
 pizzas.forEach(pizza=>{
 
+const selecionada = carrinho.some(item =>
+item.nome === pizza.nome && item.tipo === "pizza_simples"
+)
+
 const card = document.createElement("article")
 card.className="pizza-card"
 
@@ -104,41 +99,83 @@ card.innerHTML=`
 <h3>${pizza.nome}</h3>
 <p class="ingredientes">${pizza.desc}</p>
 <p class="preco">R$ ${pizza.preco}</p>
-<button class="btn btn-warning">Selecionar</button>
+<button class="btn btn-warning">
+${selecionada ? "✔ Selecionado" : "Selecionar"}
+</button>
 `
 
 const botao = card.querySelector("button")
 
+if(selecionada){
+card.classList.add("selecionado")
+}
+
+
+// ================================
+// CLICK
+// ================================
+
 botao.onclick = ()=>{
 
-if(pedidoAtual.pizza && pedidoAtual.pizza.nome === pizza.nome){
+const jaExiste = carrinho.find(item =>
+item.nome === pizza.nome && item.tipo === "pizza_simples"
+)
 
-removerPedidoAnterior()
 
-pedidoAtual = {pizza:null,bebida:null}
-pedidoAnterior = {pizza:null,bebida:null}
+// ❌ remover
+if(jaExiste){
+
+carrinho = carrinho.filter(item =>
+!(item.nome === pizza.nome && item.tipo === "pizza_simples")
+)
 
 resetUI()
-liberarSistema()
+atualizarCarrinhoLista()
 
-notificar("Pedido removido","warning")
+notificar("Pizza removida","warning")
+return
+}
+
+
+// ❓ modal
+const jaTemPizza = carrinho.some(item => item.tipo === "pizza_simples")
+
+if(jaTemPizza){
+
+modalConfirmar({
+titulo:"🍕 Mais uma pizza?",
+texto:"Quem pede uma… sempre quer mais 😏",
+onConfirm:()=>{
+
+adicionarCarrinho({
+tipo:"pizza_simples",
+nome:pizza.nome,
+ingredientes:pizza.desc,
+tamanho:"M",
+preco:pizza.preco
+})
+
+resetUI()
+sugerirBebida()
+
+}
+})
 
 return
 }
 
-pedidoAnterior.pizza = pedidoAtual.pizza
-pedidoAtual.pizza = pizza
 
-document.querySelectorAll("#lista-pizzas .pizza-card").forEach(c=>{
-c.classList.remove("selecionado")
-c.querySelector("button").innerText="Selecionar"
+// ➕ adicionar normal
+adicionarCarrinho({
+tipo:"pizza_simples",
+nome:pizza.nome,
+ingredientes:pizza.desc,
+tamanho:"M",
+preco:pizza.preco
 })
 
-card.classList.add("selecionado")
-botao.innerText="✔ Selecionado"
-
-bloquearSistema()
-verificarEnvio()
+resetUI()
+sugerirBebida()
 
 }
 
@@ -151,145 +188,92 @@ lista.appendChild(card)
 
 
 // ================================
-// 🔥 BOTÕES PIZZA (AGORA FUNCIONA)
+// 💡 SUGESTÃO BEBIDA
+// ================================
+
+function sugerirBebida(){
+
+const temBebida = carrinho.some(item => item.tipo === "bebida")
+if(temBebida) return
+
+const box = document.createElement("div")
+box.className = "sugestao-bebida"
+
+box.innerHTML = `
+<div class="sugestao-content">
+<p>🥤 Quem pediu essa pizza também gosta de uma bebida 😋</p>
+<button id="btnVerBebidas">Ver bebidas</button>
+<button id="btnAgoraNao">Agora não</button>
+</div>
+`
+
+document.body.appendChild(box)
+
+document.getElementById("btnVerBebidas").onclick = ()=>{
+document.getElementById("bebidas")?.scrollIntoView({behavior:"smooth"})
+box.remove()
+}
+
+document.getElementById("btnAgoraNao").onclick = ()=> box.remove()
+
+}
+
+
+
+// ================================
+// 🔥 RESET GLOBAL
+// ================================
+
+function resetUI(){
+
+renderPizzas()
+
+if(typeof renderBebidas === "function"){
+renderBebidas(window.bebidasAberto ? bebidas.length : 4)
+}
+
+if(typeof renderCombos === "function"){
+renderCombos(window.aberto ? combos.length : 2)
+}
+
+if(typeof atualizarBotoesPizza === "function"){
+atualizarBotoesPizza()
+}
+
+}
+
+window.resetUI = resetUI
+
+
+
+// ================================
+// INIT
+// ================================
+
+document.addEventListener("DOMContentLoaded",()=>{
+
+verificarStatus()
+renderPizzas()
+
+// ================================
+// 🔥 BOTÕES PIZZA (ADIÇÃO SEGURA)
 // ================================
 
 const btnPizza1 = document.getElementById("btnPizza1")
 const btnPizza2 = document.getElementById("btnPizza2")
 
 if(btnPizza1){
-btnPizza1.onclick = ()=>{
-console.log("clicou pizza 1")
+btnPizza1.addEventListener("click", ()=>{
+if(btnPizza1.disabled) return
 window.location.href = "./html/pizza-1-sabor.html"
-}
+})
 }
 
 if(btnPizza2){
-btnPizza2.onclick = ()=>{
-console.log("clicou pizza 2")
+btnPizza2.addEventListener("click", ()=>{
+if(btnPizza2.disabled) return
 window.location.href = "./html/pizza-2-sabores.html"
-}
+})
 }
 
 })
-
-
-
-// ================================
-// 🚀 ENVIO CONTROLADO
-// ================================
-
-function verificarEnvio(){
-
-if(pedidoAtual.pizza && pedidoAtual.bebida){
-
-removerPedidoAnterior()
-
-adicionarCarrinho({
-tipo:"pizza_simples",
-nome:pedidoAtual.pizza.nome,
-tamanho:"M",
-preco:pedidoAtual.pizza.preco
-})
-
-adicionarCarrinho({
-tipo:"bebida",
-nome:pedidoAtual.bebida.nome,
-preco:pedidoAtual.bebida.preco
-})
-
-pedidoAnterior = {
-pizza:{...pedidoAtual.pizza},
-bebida:{...pedidoAtual.bebida}
-}
-
-notificar("✅ Pedido atualizado no carrinho")
-
-}
-
-}
-
-
-
-// ================================
-// 🔥 REMOVE ANTERIOR
-// ================================
-
-function removerPedidoAnterior(){
-
-if(pedidoAnterior.pizza){
-carrinho = carrinho.filter(item =>
-!(item.nome === pedidoAnterior.pizza.nome && item.tipo === "pizza_simples")
-)
-}
-
-if(pedidoAnterior.bebida){
-carrinho = carrinho.filter(item =>
-!(item.nome === pedidoAnterior.bebida.nome && item.tipo === "bebida")
-)
-}
-
-salvarCarrinho()
-atualizarCarrinhoLista()
-
-}
-
-
-
-// ================================
-// UI RESET
-// ================================
-
-function resetUI(){
-
-document.querySelectorAll("#lista-pizzas .pizza-card").forEach(c=>{
-c.classList.remove("selecionado")
-c.querySelector("button").innerText="Selecionar"
-})
-
-document.querySelectorAll(".bebida-card").forEach(c=>{
-c.classList.remove("selecionado")
-})
-
-document.querySelectorAll(".botao-bebida").forEach(btn=>{
-btn.classList.remove("bebidaSelecionada")
-btn.innerText="Selecionar"
-})
-
-}
-
-
-
-// ================================
-// BLOQUEIO
-// ================================
-
-function bloquearSistema(){
-
-document.querySelectorAll(".combo-card button").forEach(btn=>{
-btn.disabled = true
-btn.style.opacity = "0.5"
-})
-
-document.querySelectorAll("#escolha button").forEach(btn=>{
-btn.disabled = true
-btn.style.opacity = "0.5"
-})
-
-notificar("⚠️ Apenas bebidas disponíveis agora","warning")
-
-}
-
-function liberarSistema(){
-
-document.querySelectorAll(".combo-card button").forEach(btn=>{
-btn.disabled = false
-btn.style.opacity = "1"
-})
-
-document.querySelectorAll("#escolha button").forEach(btn=>{
-btn.disabled = false
-btn.style.opacity = "1"
-})
-
-}

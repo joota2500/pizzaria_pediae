@@ -26,7 +26,7 @@ return pizzasSelecionadas[pizzasSelecionadas.length - 1]
 }
 
 // ================================
-// SELEÇÃO FINAL (CORRIGIDA)
+// SELEÇÃO FINAL
 // ================================
 
 function selecionarPizzaLocal(tipo, botao, nome, tamanho, preco, ingredientes){
@@ -38,20 +38,14 @@ nome,
 tamanho,
 preco,
 ingredientes,
-tipo, // 🔥 salva se é lista 1 ou 2
+tipo,
 key: `${nome}_${tamanho}_${tipo}`
 }
 
-// ================================
-// 🔁 TOGGLE
-// ================================
-
-const index = pizzaAtual.sabores.findIndex(
-p => p.key === pizza.key
-)
+// TOGGLE
+const index = pizzaAtual.sabores.findIndex(p => p.key === pizza.key)
 
 if(index !== -1){
-
 pizzaAtual.sabores.splice(index,1)
 
 if(pizzaAtual.sabores.length === 0){
@@ -63,14 +57,10 @@ atualizarResumo()
 return
 }
 
-// ================================
 // NOVA PIZZA
-// ================================
-
 if(pizzaAtual.sabores.length === 2){
 
 const confirmar = confirm("👉 Deseja adicionar outra pizza?")
-
 if(!confirmar) return
 
 pizzasSelecionadas.push({
@@ -81,10 +71,7 @@ tamanho: null
 pizzaAtual = getPizzaAtual()
 }
 
-// ================================
-// VALIDA TAMANHO (POR PIZZA)
-// ================================
-
+// VALIDA TAMANHO
 if(!pizzaAtual.tamanho){
 pizzaAtual.tamanho = tamanho
 }else if(pizzaAtual.tamanho !== tamanho){
@@ -92,24 +79,19 @@ alert("❌ Essa pizza deve ter o mesmo tamanho")
 return
 }
 
-// ================================
 // ADICIONA
-// ================================
-
 pizzaAtual.sabores.push(pizza)
 
 renderVisual()
 atualizarResumo()
-
 }
 
 // ================================
-// RENDER VISUAL (🔥 CORRIGIDO REAL)
+// RENDER VISUAL
 // ================================
 
 function renderVisual(){
 
-// limpa listas separadas
 ["lista-pizzas-1","lista-pizzas-2"].forEach(id=>{
 
 const lista = document.getElementById(id)
@@ -125,7 +107,7 @@ b.classList.remove("ativo")
 
 })
 
-// reaplica seleção corretamente
+// reaplica
 pizzasSelecionadas.forEach(pizza=>{
 pizza.sabores.forEach(p=>{
 
@@ -167,14 +149,12 @@ const btn = document.getElementById("btnProximo")
 
 if(!texto || !btn) return
 
-// vazio
 if(pizzasSelecionadas.length === 1 && pizzasSelecionadas[0].sabores.length === 0){
 texto.innerText = "Selecione sua pizza"
 btn.disabled = true
 return
 }
 
-// valida pares
 let completas = pizzasSelecionadas.every(p => p.sabores.length === 2)
 
 if(!completas){
@@ -183,7 +163,6 @@ btn.disabled = true
 return
 }
 
-// monta resumo
 let html = ""
 let total = 0
 
@@ -203,7 +182,6 @@ html += `<span style="color:#28a745;">${formatarMoeda(total)}</span>`
 
 texto.innerHTML = html
 btn.disabled = false
-
 }
 
 // ================================
@@ -211,18 +189,13 @@ btn.disabled = false
 // ================================
 
 function cancelar(){
-
-pizzasSelecionadas = [
-{ sabores: [], tamanho: null }
-]
-
+pizzasSelecionadas = [{ sabores: [], tamanho: null }]
 renderVisual()
 atualizarResumo()
-
 }
 
 // ================================
-// PRÓXIMO
+// PRÓXIMO (🔥 CORRIGIDO)
 // ================================
 
 function proximo(){
@@ -233,21 +206,45 @@ if(!completas) return
 let itens = []
 
 pizzasSelecionadas.forEach(pizza=>{
-
 itens.push({
 nome: pizza.sabores.map(s=>s.nome).join(" / "),
 tamanho: pizza.tamanho,
 preco: Math.max(...pizza.sabores.map(s=>s.preco)),
-ingredientes: pizza.sabores.map(s=>s.ingredientes).join(" / ")
+ingredientes: pizza.sabores.map(s=>s.ingredientes).join(" / "),
+adicionais: []
+})
 })
 
-})
+// 🔥 estrutura padrão do sistema
+const pedido = { itens }
 
-localStorage.setItem("pedidoAtual", JSON.stringify({itens}))
+// 🔥 salva global + storage
+window.pedidoAtual = pedido
+localStorage.setItem("pedidoAtual", JSON.stringify(pedido))
 
+// 🔥 DEBUG (pode remover depois)
+console.log("Pedido criado:", pedido)
+
+// 🔥 GARANTE QUE O SCRIPT DE ADICIONAIS EXISTE
+setTimeout(()=>{
+
+if(typeof abrirAdicionais === "function"){
+
+// 🔥 força leitura correta no adicionais.js
+window.pedidoAtual = JSON.parse(localStorage.getItem("pedidoAtual"))
+
+abrirAdicionais()
+
+}else{
+
+console.warn("abrirAdicionais não encontrado → indo direto")
 window.location.href = "confirmacao.html"
 
 }
+
+}, 100)
+
+} // ✅ FECHAMENTO CORRETO
 
 // ================================
 // INIT

@@ -4,8 +4,6 @@
 
 let adicionaisSelecionados = []
 
-
-
 // ================================
 // DADOS
 // ================================
@@ -25,25 +23,27 @@ const adicionais = [
 {nome:"Tomate", preco:1}
 ]
 
-
-
 // ================================
 // ABRIR MODAL
 // ================================
 
 function abrirAdicionais(){
 
-if(!window.pedidoAtual) return
+let pedido = window.pedidoAtual || JSON.parse(localStorage.getItem("pedidoAtual"))
 
-adicionaisSelecionados = [] // reset
+if(!pedido){
+console.warn("Pedido não encontrado")
+return
+}
+
+window.pedidoAtual = pedido
+
+adicionaisSelecionados = []
 
 document.getElementById("modalAdicionais")?.classList.add("ativo")
 
 renderAdicionais()
-
 }
-
-
 
 // ================================
 // RENDER
@@ -54,7 +54,7 @@ function renderAdicionais(){
 const lista = document.getElementById("listaAdicionais")
 if(!lista) return
 
-lista.innerHTML=""
+lista.innerHTML = ""
 
 adicionais.forEach((item,i)=>{
 
@@ -74,10 +74,7 @@ div.innerHTML = `
 lista.appendChild(div)
 
 })
-
 }
-
-
 
 // ================================
 // CONTROLE
@@ -86,12 +83,11 @@ lista.appendChild(div)
 function adicionarAdicional(i){
 
 if(adicionaisSelecionados.length >= 3){
-notificar?.("⚠️ Máximo 3 adicionais","warning")
+alert("Máximo 3 adicionais")
 return
 }
 
 adicionaisSelecionados.push(adicionais[i])
-
 atualizarUIAdicionais()
 }
 
@@ -107,8 +103,6 @@ adicionaisSelecionados.splice(index,1)
 
 atualizarUIAdicionais()
 }
-
-
 
 // ================================
 // UI
@@ -135,13 +129,10 @@ return
 }
 
 resumo.innerText = adicionaisSelecionados.map(a=>a.nome).join(", ")
-
 }
 
-
-
 // ================================
-// FINALIZAR 🔥 (V3 COMPATÍVEL)
+// FINALIZAR (🔥 CORRIGIDO)
 // ================================
 
 function confirmarAdicionais(){
@@ -152,18 +143,27 @@ adicionaisSelecionados.forEach(a=>{
 totalExtras += a.preco
 })
 
-// 🔥 atualiza pedidoAtual (funciona pra pizza 1 e 2)
+// 🔥 FUNCIONA COM MULTI ITENS
+if(window.pedidoAtual.itens){
+
+window.pedidoAtual.itens = window.pedidoAtual.itens.map(item=>({
+...item,
+adicionais: adicionaisSelecionados,
+precoFinal: (item.preco || 0) + totalExtras
+}))
+
+}else{
+
 window.pedidoAtual.adicionais = adicionaisSelecionados
 window.pedidoAtual.precoFinal =
 (window.pedidoAtual.preco || 0) + totalExtras
 
+}
+
 localStorage.setItem("pedidoAtual", JSON.stringify(window.pedidoAtual))
 
 window.location.href = "confirmacao.html"
-
 }
-
-
 
 // ================================
 // AÇÕES
@@ -180,8 +180,6 @@ confirmarAdicionais()
 function toggleAdicionais(){
 document.getElementById("listaAdicionais")?.classList.toggle("ativo")
 }
-
-
 
 // ================================
 // GLOBAL
