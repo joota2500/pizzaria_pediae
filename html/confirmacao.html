@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 
-<head>
+<head> 
 
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -93,7 +93,7 @@ BOTÕES FIXOS
 
 <div class="linha-acoes">
 <button class="btn-cancelar" onclick="cancelarPedido()">Cancelar</button>
-<button class="btn-editar" onclick="voltar()">Editar</button>
+<button class="btn-editar" onclick="abrirModalEditar()">Editar</button>
 <button class="btn-add" onclick="adicionarMais()">+ Adicionar</button>
 </div>
 
@@ -111,6 +111,39 @@ Confirmar pedido
 <script src="../js/pages/confirmacao.js"></script>
 <script src="../js/core/pedidos.js"></script>
 <script src="../js/core/carrinho.js"></script>
+
+<!-- ================================
+🛠 MODAL EDITAR PEDIDOS (REUTILIZÁVEL)
+================================ -->
+<div id="modalEditar" class="modal-editar">
+
+  <div class="modal-box">
+
+    <!-- TÍTULO -->
+    <h3>🧾 Seus pedidos</h3>
+
+    <!-- LISTA DINÂMICA -->
+    <div id="listaEditar"></div>
+
+    <!-- TOTAL -->
+    <p id="totalEditar" style="margin-top:10px;font-weight:600;"></p>
+
+    <!-- AÇÃO -->
+    <button class="btn-confirmar" onclick="fecharModalEditar()">
+      Salvar alterações
+    </button>
+
+  </div>
+
+</div> 
+<div id="toastAtualizando" class="toast-atualizando">
+
+  <div class="toast-box">
+   <span id="textoToast">🔄 Atualizando seu pedido...</span>
+    <div class="barra"></div>
+  </div>
+
+</div>
 
 </body>
 </html>

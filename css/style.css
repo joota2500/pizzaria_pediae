@@ -55,6 +55,8 @@ Organizar o CSS de forma escalável e fácil manutenção.
 /* Menu inferior (mobile) */
 @import url('./components/menu-bottom.css');
 
+/* whatszaap */
+@import url('./components/whatsapp.css');
 
 
 /* ========================================

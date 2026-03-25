@@ -276,5 +276,66 @@ if(btnPizza2.disabled) return
 window.location.href = "./html/pizza-2-sabores.html"
 })
 }
+// ================================
+// 🔥 CONTROLE DE RETORNO (COMBOS)
+// ================================
 
+const modo = localStorage.getItem("modoRetorno")
+
+if(modo){
+
+// limpa depois de usar
+localStorage.removeItem("modoRetorno")
+
+// ================================
+// 🟢 ADICIONAR MAIS
+// ================================
+
+if(modo === "adicionar"){
+
+// 🔥 NÃO abrir carrinho
+if(typeof fecharCarrinho === "function"){
+fecharCarrinho()
+}
+
+// 🔥 NÃO forçar abrir combos
+// mantém estado atual do botão
+
+// scroll suave
+setTimeout(()=>{
+document.getElementById("combos")?.scrollIntoView({
+behavior:"smooth"
+})
+},300)
+
+// toast bonito (se existir)
+if(typeof mostrarToastNovoPedido === "function"){
+mostrarToastNovoPedido()
+}else{
+notificar?.("✨ Já pode adicionar seu novo pedido 😋")
+}
+
+}
+
+
+// ================================
+// 🟡 EDITAR PEDIDO
+// ================================
+
+if(modo === "editar"){
+
+if(typeof fecharCarrinho === "function"){
+fecharCarrinho()
+}
+
+// só rola, não abre combos automaticamente
+setTimeout(()=>{
+document.getElementById("combos")?.scrollIntoView({
+behavior:"smooth"
+})
+},300)
+
+}
+
+}
 })

@@ -28,7 +28,15 @@ Suporte completo a multi seleção (pizza, combo, bebida)
 let carrinho = []
 const LIMITE_ITENS = 30
 
+// ================================
+// 🔥 RECUPERAR PEDIDO AO VOLTAR
+// ================================
 
+const pedidoSalvo = JSON.parse(localStorage.getItem("pedidoAtual"))
+
+if(pedidoSalvo && pedidoSalvo.itens && pedidoSalvo.itens.length > 0){
+carrinho = pedidoSalvo.itens
+}
 
 // ================================
 // UTIL

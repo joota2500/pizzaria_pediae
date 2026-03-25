@@ -10,18 +10,18 @@ currency:"BRL"
 }
 
 
+
 // ================================
-// ESTRUTURA V3
+// 🔥 FONTE ÚNICA DE DADOS
 // ================================
 
-let pedidos = JSON.parse(localStorage.getItem("pedidos")) || []
-let pedidoAtualId = localStorage.getItem("pedidoAtualId")
+let pedido = JSON.parse(localStorage.getItem("pedidoAtual")) || {itens:[]}
 
-let pedido = pedidos.find(p => p.id == pedidoAtualId)
-
-// fallback (carrinho)
-if(!pedido){
-pedido = JSON.parse(localStorage.getItem("pedidoAtual"))
+// ================================
+// 
+// ================================
+function getPedido(){
+return JSON.parse(localStorage.getItem("pedidoAtual")) || {itens:[]}
 }
 
 
@@ -66,7 +66,8 @@ return
 }
 
 // 🔥 suporte carrinho OU sistema antigo
-let itens = pedido.itens || [pedido]
+const pedidoAtual = getPedido()
+let itens = pedidoAtual.itens || [pedidoAtual]
 
 // remove render antigo
 const antigo = document.getElementById("outrosItens")
@@ -87,7 +88,7 @@ document.getElementById("imgPizza").src = "../" + item.img
 }else{
 document.getElementById("imgPizza").src = gerarImagem(item.nome)
 }
-
+ 
 
 // ================================
 // ADICIONAIS
@@ -161,13 +162,13 @@ document.querySelector(".container-confirmacao")
 const lista = document.getElementById("listaConfirmacao")
 const totalEl = document.getElementById("totalConfirmacao")
 
-if(lista && pedido.itens){
+if(lista && pedidoAtual.itens){
 
 lista.innerHTML = ""
 
 let totalCarrinho = 0
 
-pedido.itens.forEach(item => {
+pedidoAtual.itens.forEach(item => {
 
 const qtd = item.qtd || 1
 const subtotal = (item.preco || 0) * qtd
@@ -255,13 +256,20 @@ function voltar(){
 if(pedido?.tipo === "pizza_2sabores"){
 window.location.href = "../html/pizza-2-sabores.html"
 }else{
-window.location.href = "../html/pizza-1-sabor.html"
+window.location.href = "../html/pizza-1-sabor.html" 
 }
 
 }
 
 function adicionarMais(){
+
+const pedido = JSON.parse(localStorage.getItem("pedidoAtual")) || {itens:[]}
+
+// 🔥 salva quantidade anterior
+localStorage.setItem("qtdAntes", pedido.itens.length)
+
 window.location.href = "../index.html"
+
 }
 
 
@@ -273,23 +281,179 @@ function cancelarPedido(){
 
 if(!confirm("Cancelar pedido?")) return
 
-if(pedidoAtualId){
-
-pedidos = pedidos.map(p=>{
-if(p.id == pedidoAtualId){
-p.status = "cancelado"
-}
-return p
-})
-
-localStorage.setItem("pedidos", JSON.stringify(pedidos))
-localStorage.removeItem("pedidoAtualId")
-
-}else{
 localStorage.removeItem("pedidoAtual")
-}
 
 window.location.href = "../index.html"
+
+}
+
+// ================================
+// 🛠 MODAL EDITAR PEDIDOS
+// ================================
+
+function abrirModalEditar(){
+
+const modal = document.getElementById("modalEditar")
+if(!modal) return
+
+modal.classList.add("ativo")
+
+renderEditar()
+
+}
+
+
+// ================================
+// 🔥 RENDER LISTA EDITAR
+// ================================
+
+function renderEditar(){
+
+const lista = document.getElementById("listaEditar")
+const totalEl = document.getElementById("totalEditar")
+
+if(!lista) return
+
+lista.innerHTML = ""
+
+// 🔥 pega dados corretos
+const pedido = JSON.parse(localStorage.getItem("pedidoAtual")) || {itens:[]}
+const itens = pedido.itens || []
+
+let total = 0
+
+itens.forEach((item,i)=>{
+
+const subtotal = item.preco * (item.qtd || 1)
+total += subtotal
+
+const div = document.createElement("div")
+div.className = "item-editar"
+
+div.innerHTML = `
+<div>
+<strong>${item.nome}</strong><br>
+<small>${item.ingredientes || ""}</small>
+</div>
+
+<div class="qtd-box">
+<button onclick="diminuirEditar(${i})">−</button>
+<span>${item.qtd || 1}</span>
+<button onclick="aumentarEditar(${i})">+</button>
+</div>
+`
+
+lista.appendChild(div)
+
+})
+
+// total
+if(totalEl){
+totalEl.innerText = "Total: " + formatarMoeda(total)
+}
+
+}
+
+
+// ================================
+// ➕ AUMENTAR
+// ================================
+
+function aumentarEditar(i){
+
+let pedido = JSON.parse(localStorage.getItem("pedidoAtual"))
+
+pedido.itens[i].qtd = (pedido.itens[i].qtd || 1) + 1
+
+localStorage.setItem("pedidoAtual", JSON.stringify(pedido))
+
+renderEditar()
+render()
+renderConfirmacao?.()
+
+}
+
+
+// ================================
+// ➖ DIMINUIR
+// ================================
+
+function diminuirEditar(i){
+
+let pedido = JSON.parse(localStorage.getItem("pedidoAtual"))
+
+if(pedido.itens[i].qtd > 1){
+pedido.itens[i].qtd--
+}else{
+pedido.itens.splice(i,1)
+}
+
+localStorage.setItem("pedidoAtual", JSON.stringify(pedido))
+
+renderEditar()
+render()
+renderConfirmacao?.()
+
+}
+
+
+// ================================
+// ❌ FECHAR MODAL
+// ================================
+
+function fecharModalEditar(){
+
+const modal = document.getElementById("modalEditar")
+if(!modal) return
+
+modal.classList.remove("ativo")
+
+// 🔥 ESSA LINHA É A CHAVE
+renderConfirmacao()
+
+}
+
+
+// ================================
+// 🔥 RENDER CONFIRMAÇÃO (OFICIAL)
+// ================================
+
+function renderConfirmacao(){
+
+const pedido = JSON.parse(localStorage.getItem("pedidoAtual")) || {itens:[]}
+const itens = pedido.itens || []
+
+const lista = document.getElementById("listaConfirmacao")
+const totalEl = document.getElementById("totalConfirmacao")
+
+if(!lista) return
+
+lista.innerHTML = ""
+
+let total = 0
+
+itens.forEach(item => {
+
+const qtd = item.qtd || 1
+const subtotal = item.preco * qtd
+
+total += subtotal
+
+lista.innerHTML += `
+<p>
+<strong>${item.nome}</strong><br>
+${item.ingredientes || ""}<br>
+Qtd: ${qtd}<br>
+${formatarMoeda(subtotal)}
+</p>
+`
+
+})
+
+// total geral
+if(totalEl){
+totalEl.innerText = "Total: " + formatarMoeda(total)
+}
 
 }
 
@@ -327,7 +491,66 @@ window.location.href = "pedido.html"
 
 
 // ================================
+// 🔥 EFEITO "ATUALIZANDO PEDIDO"
+// ================================
+
+document.addEventListener("DOMContentLoaded", ()=>{
+
+render()
+renderConfirmacao()
+
+const pedido = JSON.parse(localStorage.getItem("pedidoAtual")) || {itens:[]}
+const qtdAntes = Number(localStorage.getItem("qtdAntes") || 0)
+
+// 🔥 se aumentou itens → mostrar toast
+if(pedido.itens.length > qtdAntes){
+
+localStorage.removeItem("qtdAntes")
+
+const toast = document.getElementById("toastAtualizando")
+
+if(toast){
+
+// 🔥 mensagens dinâmicas
+if(textoToast){
+
+const novasQtd = pedido.itens.length - qtdAntes
+
+if(novasQtd === 1){
+textoToast.innerText = "✨ Novo item adicionado ao pedido!"
+}else{
+textoToast.innerText = `🔥 ${novasQtd} itens adicionados ao pedido!`
+}
+
+}
+
+toast.classList.add("ativo")
+
+const lista = document.getElementById("listaConfirmacao")
+if(lista) lista.style.opacity = "0"
+
+setTimeout(()=>{
+
+render()
+renderConfirmacao()
+
+if(lista) lista.style.opacity = "1"
+
+toast.classList.remove("ativo")
+
+},2500)
+
+}
+}
+
+})
+
+
+// ================================
 // INIT
 // ================================
 
-document.addEventListener("DOMContentLoaded",render)
+document.addEventListener("DOMContentLoaded", ()=>{
+render()
+renderConfirmacao()
+})

@@ -111,6 +111,62 @@ border-color:#ff6b00;
 outline:none;
 box-shadow:0 0 10px rgba(255,107,0,0.25);
 }
+/* ================================
+🛠 MODAL EDITAR PEDIDOS
+================================ */
+
+.modal-editar{
+position: fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background: rgba(0,0,0,0.5);
+display:flex;
+align-items:center;
+justify-content:center;
+opacity:0;
+pointer-events:none;
+transition:0.3s;
+z-index:9999;
+}
+
+.modal-editar.ativo{
+opacity:1;
+pointer-events:auto;
+}
+
+.modal-box{
+background:#fff;
+padding:20px;
+border-radius:12px;
+width:90%;
+max-width:400px;
+max-height:80vh;
+overflow:auto;
+}
+
+.item-editar{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin:10px 0;
+}
+
+.qtd-box{
+display:flex;
+align-items:center;
+gap:10px;
+}
+
+.qtd-box button{
+width:30px;
+height:30px;
+border:none;
+background:#eee;
+border-radius:6px;
+font-size:18px;
+}
 
 
 /* =========================
@@ -357,7 +413,42 @@ background:#f8d7da;
 color:#721c24;
 }
 
+.toast-atualizando{
+position:fixed;
+bottom:20px;
+left:50%;
+transform:translateX(-50%);
+background:#222;
+color:#fff;
+padding:15px 20px;
+border-radius:10px;
+opacity:0;
+pointer-events:none;
+transition:0.3s;
+z-index:9999;
+}
 
+.toast-atualizando.ativo{
+opacity:1;
+}
+
+.toast-box{
+display:flex;
+flex-direction:column;
+gap:8px;
+}
+
+.toast-atualizando .barra{
+height:4px;
+background:#28a745;
+width:100%;
+animation:carregar 2.5s linear;
+}
+
+@keyframes carregar{
+from{width:0%}
+to{width:100%}
+}
 /* =========================
 RESPONSIVO
 ========================= */

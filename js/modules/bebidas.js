@@ -26,13 +26,13 @@ e sincroniza com o carrinho corretamente.
 
 const bebidas=[
 
-{nome:"Coca Cola Lata",preco:6},
-{nome:"Coca Cola 1L",preco:8},
-{nome:"Coca Cola 2L",preco:12}, 
-{nome:"Refrigerante Laranja",preco:7},
-{nome:"Guaraná Lata",preco:6},
-{nome:"Guaraná 1L",preco:8},
-{nome:"Cajuína",preco:6},
+{nome:"CocaCola 350ml",preco:6},
+{nome:"CocaCola <br>1L",preco:8},
+{nome:"CocaCola <br>2L",preco:12}, 
+{nome:"Laranja <br>350ml",preco:7},
+{nome:"Guaraná <br>350ml",preco:6},
+{nome:"Guaraná <br>1L",preco:8},
+{nome:"Cajuína <br>1L",preco:6},
 
 {nome:"Teste01",preco:5},
 {nome:"Teste02",preco:5},
