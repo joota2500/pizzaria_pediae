@@ -28,6 +28,7 @@ Organizar o CSS de forma escalável e fácil manutenção.
 /* Estrutura base (containers, grid, layout geral) */
 @import url('./base/layout.css');
 
+@import url(./base/inputs.css); 
 
 
 /* ========================================
@@ -40,7 +41,7 @@ Organizar o CSS de forma escalável e fácil manutenção.
 /* Footer (rodapé) */
 @import url('./components/footer.css');
 
-/* Botões padrão */
+/* Botões padrão */ 
 @import url('./components/botoes.css');
 
 /* Cards (pizzas, combos, produtos) */
@@ -99,6 +100,7 @@ Organizar o CSS de forma escalável e fácil manutenção.
 @import url('./pages/confirmacao.css');
 @import url('./pages/pizza.css');
 @import url('./pages/pizza-2.css');
+@import url('./pages/pedido.css');
 
 /* ========================================
 📌 OBSERVAÇÕES IMPORTANTES

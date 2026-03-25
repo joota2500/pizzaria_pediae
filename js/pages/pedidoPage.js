@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // CARREGAR PEDIDO
 // ==========================
 
-const pedido = JSON.parse(localStorage.getItem("pedido")) || []
+const pedido = JSON.parse(localStorage.getItem("pedidoAtual"))?.itens || []
 
 if(pedido.length === 0){
 alert("Nenhum pedido encontrado")
@@ -110,6 +110,41 @@ document.getElementById("totalResumo").innerText="Total: "+moeda(total)
 }
 
 atualizarTotal()
+
+// ==========================
+// 🧾 RENDER DO RESUMO (🔥 ESSENCIAL)
+// ==========================
+
+const pizzaResumo = document.getElementById("pizzaResumo")
+
+if(pizzaResumo){
+
+pizzaResumo.innerHTML = ""
+
+pedido.forEach(item => {
+
+pizzaResumo.innerHTML += `
+<div class="item-resumo">
+
+<strong>${item.nome}</strong>
+
+${item.nome2 ? `<br><small>${item.nome2}</small>` : ""}
+
+<br>
+<small>${item.ingredientes || ""}</small>
+
+<br>
+Qtd: ${item.qtd || 1}
+
+<br>
+<span>${moeda(item.preco * (item.qtd || 1))}</span>
+
+</div>
+`
+
+})
+
+}
 
 
 // ==========================
@@ -406,7 +441,7 @@ const url=`https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(msg)}`
 
 window.location.href=url
 
-localStorage.removeItem("pedido")
+localStorage.removeItem("pedidoAtual")
 
 },4500)
 
