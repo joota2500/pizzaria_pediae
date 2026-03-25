@@ -1,0 +1,23 @@
+.cupom-box{
+display:flex;
+gap:6px;
+margin-bottom:6px;
+}
+
+.cupom-box input{
+flex:1;
+padding:8px;
+border-radius:8px;
+border:1px solid #ddd;
+font-size:13px;
+}
+
+.cupom-box button{
+padding:8px 10px;
+border:none;
+background:#ff6b00;
+color:#fff;
+border-radius:8px;
+font-size:12px;
+cursor:pointer;
+}

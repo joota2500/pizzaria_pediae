@@ -19,14 +19,14 @@ if(Array.isArray(data)){
 }else if(data?.itens){
   pedido = data.itens
 }
-console.log("DADOS FINAL:", pedido)
+window.pedido = pedido
 
 
 // ==========================
 // FORMATAR
 // ==========================
 
-function moeda(v){
+window.moeda = function moeda(v){
 return Number(v).toLocaleString("pt-BR",{style:"currency",currency:"BRL"})
 }
 
@@ -93,44 +93,13 @@ const elSubtotal = document.getElementById("subtotalResumo")
 if(elSubtotal){
   elSubtotal.innerText = "Subtotal: " + moeda(subtotal)
 }
+atualizarTotalComCupom()
 
 
 // ==========================
 // ATUALIZAR TOTAL (🔥 COM CUPOM)
 // ==========================
 
-function atualizarTotal(){
-
-let desconto = 0
-
-if(window.cupomAplicado){
-
-if(cupomAplicado.valor < 100){
-desconto = subtotal * (cupomAplicado.valor/100)
-}
-
-if(cupomAplicado.codigo === "FRETEGRATIS"){
-taxaEntrega = 0
-const elTaxa = document.getElementById("taxaEntrega")
-
-if(elTaxa){
-  elTaxa.innerText = "Entrega: R$ 0,00"
-}
-}
-
-}
-
-const total = subtotal - desconto + taxaEntrega
-
-const elTotal = document.getElementById("totalResumo")
-
-if(elTotal){
-  elTotal.innerText = "Total: " + moeda(total)
-}
-
-}
-
-atualizarTotal()
 
 // ==========================
 // 🧾 RENDER DO RESUMO (🔥 ESSENCIAL)
@@ -206,7 +175,7 @@ if(elTaxa){
   elTaxa.innerText = "Entrega: R$ 0,00"
 }
 
-atualizarTotal()
+atualizarTotalComCupom()
 
 })
 
@@ -228,7 +197,7 @@ const bairro = selectBairro.value
 taxaEntrega = bairro ? Number(calcularEntrega(bairro)) : 0
 
 mostrarTaxaEntrega(bairro)
-atualizarTotal()
+atualizarTotalComCupom()
 
 })
 
@@ -405,7 +374,22 @@ if(window.cupomAplicado && cupomAplicado.valor < 100){
 desconto = subtotal * (cupomAplicado.valor/100)
 }
 
-const total = subtotal - desconto + taxaEntrega
+let total = calcularSubtotal()
+
+let taxa = 0
+
+const bairroSelect = document.getElementById("bairro")
+if(bairroSelect){
+  taxa = calcularEntrega(bairroSelect.value)
+}
+
+let descontoFinal = 0
+
+if(window.cupomAplicado && cupomAplicado.valor < 100){
+  descontoFinal = total * (cupomAplicado.valor / 100)
+}
+
+total = total - descontoFinal + taxa
 
 
 // ==========================

@@ -124,6 +124,10 @@ Ver Pedido 🧾
       </div>
 
       <div class="resumo-totais">
+        <div class="cupom-box">
+          <input id="cupom" placeholder="Cupom de desconto" />
+          <button onclick="aplicarCupom()">Aplicar</button>
+        </div>
         <p id="subtotalResumo"></p>
         <p id="cupomResumo"></p>
         <p id="taxaEntrega">Entrega: R$ 0,00</p>
@@ -162,7 +166,7 @@ window.abrirModalPedido = function(){
     modal.classList.add("ativo")
     document.body.style.overflow = "hidden"
   }
-
+  atualizarTotalComCupom()
 }
 
 window.fecharModalPedido = function(){

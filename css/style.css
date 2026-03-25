@@ -32,6 +32,8 @@ Organizar o CSS de forma escalável e fácil manutenção.
 
 @import url(./sections/feedback.css);
 
+@import url(./sections/cupons.css);
+
 
 /* ========================================
 🔹 2. COMPONENTES (REUTILIZÁVEIS)

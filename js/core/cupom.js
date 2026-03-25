@@ -288,7 +288,7 @@ desconto = subtotal * (cupomAplicado.valor/100)
 // ================================
 // TOTAL FINAL
 // ================================
-
+ 
 let total = subtotal - desconto + taxa
 
 total = parseFloat(total.toFixed(2))
