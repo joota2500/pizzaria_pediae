@@ -9,13 +9,17 @@ document.addEventListener("DOMContentLoaded", () => {
 // CARREGAR PEDIDO
 // ==========================
 
-const pedido = JSON.parse(localStorage.getItem("pedidoAtual"))?.itens || []
+const data = JSON.parse(localStorage.getItem("pedidoAtual"))
 
-if(pedido.length === 0){
-alert("Nenhum pedido encontrado")
-window.location.href="../index.html"
-return
+// 🔥 aceita os dois formatos
+let pedido = []
+
+if(Array.isArray(data)){
+  pedido = data
+}else if(data?.itens){
+  pedido = data.itens
 }
+console.log("DADOS FINAL:", pedido)
 
 
 // ==========================
@@ -74,12 +78,21 @@ let taxaEntrega = 0
 // CALCULAR SUBTOTAL
 // ==========================
 
-pedido.forEach(item=>{
-const qtd = Number(item.qtd || 1)
-subtotal += Number(item.preco) * qtd
+pedido.forEach(item => {
+    console.log("ITEM COMPLETO:", item)
+
+const qtd = Number(item.qtd || item.quantidade || 1)
+const preco = Number(item.preco || item.precoTotal || item.valor || 0)
+
+subtotal += preco * qtd
+
 })
 
-document.getElementById("subtotalResumo").innerText="Subtotal: "+moeda(subtotal)
+const elSubtotal = document.getElementById("subtotalResumo")
+
+if(elSubtotal){
+  elSubtotal.innerText = "Subtotal: " + moeda(subtotal)
+}
 
 
 // ==========================
@@ -98,14 +111,22 @@ desconto = subtotal * (cupomAplicado.valor/100)
 
 if(cupomAplicado.codigo === "FRETEGRATIS"){
 taxaEntrega = 0
-document.getElementById("taxaEntrega").innerText="Entrega: R$ 0,00"
+const elTaxa = document.getElementById("taxaEntrega")
+
+if(elTaxa){
+  elTaxa.innerText = "Entrega: R$ 0,00"
+}
 }
 
 }
 
 const total = subtotal - desconto + taxaEntrega
 
-document.getElementById("totalResumo").innerText="Total: "+moeda(total)
+const elTotal = document.getElementById("totalResumo")
+
+if(elTotal){
+  elTotal.innerText = "Total: " + moeda(total)
+}
 
 }
 
@@ -114,30 +135,43 @@ atualizarTotal()
 // ==========================
 // 🧾 RENDER DO RESUMO (🔥 ESSENCIAL)
 // ==========================
-
 const pizzaResumo = document.getElementById("pizzaResumo")
 
 if(pizzaResumo){
 
-pizzaResumo.innerHTML = ""
+pizzaResumo.innerHTML = "" // limpa antes
 
 pedido.forEach(item => {
+
+const nome = item.nome || item.titulo || item.nomeProduto || "Item"
+const nome2 = item.nome2 || ""
+const qtd = item.qtd || item.quantidade || 1
+const preco = item.preco || item.precoTotal || item.valor || 0
 
 pizzaResumo.innerHTML += `
 <div class="item-resumo">
 
-<strong>${item.nome}</strong>
+  <div class="linha-topo">
 
-${item.nome2 ? `<br><small>${item.nome2}</small>` : ""}
+    <div class="item-info">
+      <div class="item-nome">
+        ${nome}${nome2 ? " / " + nome2 : ""}
+      </div>
 
-<br>
-<small>${item.ingredientes || ""}</small>
+      <div class="item-desc">
+        ${item.ingredientes || ""}
+      </div>
 
-<br>
-Qtd: ${item.qtd || 1}
+      <div class="item-qtd">
+        Qtd: ${qtd}
+      </div>
+    </div>
 
-<br>
-<span>${moeda(item.preco * (item.qtd || 1))}</span>
+    <div class="item-preco">
+      ${moeda(preco * qtd)}
+    </div>
+
+  </div>
 
 </div>
 `
@@ -166,7 +200,11 @@ document.getElementById("retiradaBox")
 .classList.toggle("hidden", tipoEntrega !== "retirada")
 
 taxaEntrega = 0
-document.getElementById("taxaEntrega").innerText="Entrega: R$ 0,00"
+const elTaxa = document.getElementById("taxaEntrega")
+
+if(elTaxa){
+  elTaxa.innerText = "Entrega: R$ 0,00"
+}
 
 atualizarTotal()
 
@@ -272,8 +310,11 @@ return true
 
 function ativarLoading(){
 
-document.getElementById("textoBotao").innerText="Enviando..."
-document.getElementById("loader").style.display="inline-block"
+const botao = document.querySelector(".btn-principal")
+
+if(botao){
+  botao.innerText = "Enviando..."
+}
 
 }
 
@@ -286,8 +327,7 @@ window.confirmarEnvio = function(){
 
 if(!validarCampos()) return
 
-const modal=new bootstrap.Modal(document.getElementById("modalConfirmar"))
-modal.show()
+
 
 }
 
@@ -298,15 +338,11 @@ modal.show()
 
 window.enviarPedido = function(){
 
+if(!validarCampos()) return
+
 ativarLoading()
 
-const feedback=document.getElementById("feedbackPedido")
-
-const modal=new bootstrap.Modal(
-document.getElementById("modalFeedbackPedido")
-)
-
-modal.show()
+const feedback = document.getElementById("feedbackPedido") || null
 
 
 // ==========================
@@ -346,7 +382,10 @@ if(i.nome2) linha+=` / ${i.nome2}`
 if(i.tamanho) linha+=` (${i.tamanho})`
 
 linha+=`\nQtd: ${i.qtd}`
-linha+=`\nSubtotal: ${moeda(i.preco*i.qtd)}\n\n`
+const precoItem = i.preco || i.precoTotal || i.valor || 0
+const qtdItem = i.qtd || i.quantidade || 1
+
+linha+=`\nSubtotal: ${moeda(precoItem * qtdItem)}\n\n`
 
 itens+=linha
 
@@ -418,10 +457,13 @@ const mensagens = [
 let i=0
 
 function animar(){
-feedback.innerHTML=`
+if(feedback){
+feedback.innerHTML = `
 <div class="spinner-border text-danger mb-3"></div>
 <h5>${mensagens[i]}</h5>
 `
+}
+
 i++
 if(i<mensagens.length){
 setTimeout(animar,900)
@@ -436,7 +478,7 @@ animar()
 // ==========================
 
 setTimeout(()=>{
-
+document.getElementById("modalPedido").classList.add("hidden")
 const url=`https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(msg)}`
 
 window.location.href=url

@@ -10,8 +10,6 @@ box-shadow:0 6px 18px rgba(0,0,0,0.25);
 .header-confirmacao{
 display:flex;
 align-items:center;
-justify-content:flex-start;
-gap:12px;
 
 height:64px;
 padding:0 16px;
@@ -24,17 +22,29 @@ top:0;
 z-index:1000;
 }
 
-/* título ocupa espaço certo */
-.header-confirmacao h2{
+/* lado esquerdo (botão) */
+.header-left{
+width:50px;
+display:flex;
+align-items:center;
+justify-content:center;
+}
+
+/* título */
+.header-title{
+flex:1;
+display:flex;
+align-items:center;
+}
+
+/* texto */
+.header-title h2{
 margin:0;
 font-size:24px;
 font-weight:700;
-
-/* 🔥 ESSA LINHA RESOLVE */
-margin-left:8px;
 }
 
-/* botão normal, sem interferência */
+/* botão */
 .btn-voltar{
 width:38px;
 height:38px;
@@ -47,10 +57,6 @@ background:white;
 border:none;
 border-radius:50%;
 cursor:pointer;
-
-/* 🔥 GARANTE QUE NÃO SOBREPÕE */
-position:relative;
-z-index:1;
 }
 
 .logo{

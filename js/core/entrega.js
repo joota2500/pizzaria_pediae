@@ -89,13 +89,11 @@ currency:"BRL"
 
 function mostrarTaxaEntrega(bairro){
 
-const el = document.getElementById("taxaEntrega")
+  const elTaxa = document.getElementById("taxaEntrega")
 
-if(!el) return
-
-const taxa = calcularEntrega(bairro)
-
-el.innerText = "Entrega: " + formatarDinheiro(taxa)
+  if(elTaxa){
+    elTaxa.innerText = "Entrega: R$ " + calcularEntrega(bairro)
+  }
 
 }
 
