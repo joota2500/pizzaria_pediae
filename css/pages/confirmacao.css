@@ -445,6 +445,25 @@ width:100%;
 animation:carregar 2.5s linear;
 }
 
+.btn-obs{
+margin-top:8px;
+padding:6px 10px;
+border:none;
+background:#f1f1f1;
+border-radius:8px;
+font-size:12px;
+cursor:pointer;
+}
+
+.obs-box textarea{
+width:100%;
+margin-top:6px;
+border-radius:8px;
+border:1px solid #ddd;
+padding:8px;
+font-size:13px;
+}
+
 @keyframes carregar{
 from{width:0%}
 to{width:100%}

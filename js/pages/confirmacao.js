@@ -432,7 +432,7 @@ lista.innerHTML = ""
 
 let total = 0
 
-itens.forEach(item => {
+itens.forEach((item, i) => {
 
 const qtd = item.qtd || 1
 const subtotal = item.preco * qtd
@@ -440,12 +440,34 @@ const subtotal = item.preco * qtd
 total += subtotal
 
 lista.innerHTML += `
-<p>
+<div class="item-confirmacao">
+
 <strong>${item.nome}</strong><br>
-${item.ingredientes || ""}<br>
+
+<small>${item.ingredientes || ""}</small><br>
+
 Qtd: ${qtd}<br>
-${formatarMoeda(subtotal)}
-</p>
+
+<span>${formatarMoeda(subtotal)}</span>
+
+<br>
+
+<!-- 🔥 BOTÃO OBS -->
+<button onclick="toggleObs(${i})" class="btn-obs">
+${item.observacao ? "✏️ Editar observação" : "📝 Observação"}
+</button>
+
+<!-- 🔥 CAMPO OBS -->
+<div id="obsBox-${i}" class="obs-box" style="display:${item.observacao ? 'block' : 'none'};">
+
+<textarea
+placeholder="Ex: sem cebola, bem passado..."
+oninput="salvarObs(${i}, this.value)"
+>${item.observacao || ""}</textarea>
+
+</div>
+
+</div>
 `
 
 })
@@ -464,26 +486,10 @@ totalEl.innerText = "Total: " + formatarMoeda(total)
 
 function confirmar(){
 
-const obs = document.getElementById("observacao").value
+let pedido = JSON.parse(localStorage.getItem("pedidoAtual")) || {itens:[]}
 
-if(pedidoAtualId){
-
-pedidos = pedidos.map(p=>{
-if(p.id == pedidoAtualId){
-p.observacao = obs
-p.status = "confirmado"
-}
-return p
-})
-
-localStorage.setItem("pedidos", JSON.stringify(pedidos))
-
-}else{
-
-pedido.observacao = obs
+// 🔥 já tem observações por item, não precisa mais global
 localStorage.setItem("pedidoAtual", JSON.stringify(pedido))
-
-}
 
 window.location.href = "pedido.html"
 
@@ -544,6 +550,36 @@ toast.classList.remove("ativo")
 }
 
 })
+
+// ================================
+// 📝 ABRIR / FECHAR OBS
+// ================================
+
+function toggleObs(i){
+
+const box = document.getElementById(`obsBox-${i}`)
+if(!box) return
+
+box.style.display = box.style.display === "none" ? "block" : "none"
+
+}
+
+
+// ================================
+// 💾 SALVAR OBSERVAÇÃO
+// ================================
+
+function salvarObs(i, valor){
+
+let pedido = JSON.parse(localStorage.getItem("pedidoAtual")) || {itens:[]}
+
+if(!pedido.itens[i]) return
+
+pedido.itens[i].observacao = valor
+
+localStorage.setItem("pedidoAtual", JSON.stringify(pedido))
+
+}
 
 
 // ================================
