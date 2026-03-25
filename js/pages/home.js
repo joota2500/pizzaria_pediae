@@ -9,7 +9,7 @@ com o carrinho.
 
 🔗 DEPENDE DE:
 - carrinho.js
-- bebidas.js
+- bebidas.js 
 - combos.js
 
 📍 USADO EM:
@@ -78,9 +78,9 @@ const lista = document.getElementById("lista-pizzas")
 if(!lista) return
 
 const pizzas = [
-{nome:"Calabresa",img:"img/pizzas/imgPizzaMaisPedidas1.jpg",desc:"Molho, mussarela e calabresa",preco:30},
-{nome:"Portuguesa",img:"img/pizzas/imgPizzaMaisPedidas2.jpg",desc:"Presunto, ovo e cebola",preco:35},
-{nome:"4 Queijos",img:"img/pizzas/imgPizzaMaisPedidas3.jpg",desc:"Mix de queijos",preco:38}
+{nome:"Calabresa ( G )",img:"img/pizzas/imgPizzaMaisPedidas1.jpg",desc:"Molho, mussarela e calabresa",preco:30},
+{nome:"Portuguesa ( G )",img:"img/pizzas/imgPizzaMaisPedidas2.jpg",desc:"Presunto, ovo e cebola",preco:35},
+{nome:"4 Queijos ( G )",img:"img/pizzas/imgPizzaMaisPedidas3.jpg",desc:"Mix de queijos",preco:38}
 ]
 
 lista.innerHTML=""
@@ -233,7 +233,8 @@ renderBebidas(window.bebidasAberto ? bebidas.length : 4)
 }
 
 if(typeof renderCombos === "function"){
-renderCombos(window.aberto ? combos.length : 2)
+// 🔥 combos NÃO são resetados aqui
+// cada combo controla seu próprio estado
 }
 
 if(typeof atualizarBotoesPizza === "function"){

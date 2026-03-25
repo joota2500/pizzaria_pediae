@@ -1,24 +1,116 @@
+/* ========================================
+📄 ARQUIVO: style.css
+
+📌 FUNÇÃO:
+Arquivo central de importação de TODOS os estilos do projeto.
+
+📦 ESTRUTURA:
+1. Base (fundação global)
+2. Componentes (reutilizáveis)
+3. Seções (partes da página)
+4. Páginas (customizações específicas)
+
+🎯 OBJETIVO:
+Organizar o CSS de forma escalável e fácil manutenção.
+======================================== */
+
+
+/* ========================================
+🔹 1. BASE (GLOBAL DO PROJETO)
+======================================== */
+
+/* Reset geral (remove estilos padrão do navegador) */
 @import url('./base/reset.css');
+
+/* Variáveis globais (cores, fontes, espaçamentos) */
 @import url('./base/variables.css');
+
+/* Estrutura base (containers, grid, layout geral) */
 @import url('./base/layout.css');
 
+
+
+/* ========================================
+🔹 2. COMPONENTES (REUTILIZÁVEIS)
+======================================== */
+
+/* Header (topo do site) */
 @import url('./components/header.css');
+
+/* Footer (rodapé) */
 @import url('./components/footer.css');
+
+/* Botões padrão */
 @import url('./components/botoes.css');
+
+/* Cards (pizzas, combos, produtos) */
 @import url('./components/cards.css');
+
+/* Carrinho lateral */
 @import url('./components/carrinho.css');
+
+/* Carrossel (slides) */
 @import url('./components/carrossel.css');
+
+/* Menu inferior (mobile) */
 @import url('./components/menu-bottom.css');
 
+
+
+/* ========================================
+🔹 3. SEÇÕES (PARTES DA HOME)
+======================================== */
+
+/* Banner principal */
 @import url('./sections/hero.css');
+
+/* Promoções */
 @import url('./sections/promocoes.css');
+
+/* Combos */
 @import url('./sections/combos.css');
+
+/* Destaques (produtos principais) */
 @import url('./sections/destaques.css');
+
+/* Sobre a empresa */
 @import url('./sections/sobre.css');
 
-/* 🔥 NOVOS */
+/* Avaliações de clientes */
 @import url('./sections/clientes.css');
+
+/* Localização / mapa */
 @import url('./sections/localizacao.css');
 
+
+
+/* ========================================
+🔹 4. PÁGINAS (ESTILO ESPECÍFICO)
+======================================== */
+
+/* Página inicial (home / index) */
 @import url('./pages/home.css');
-@import url('./sections/clientes.css');
+
+
+/* Páginas () */
+
+@import url('./pages/confirmacao.css');
+@import url('./pages/pizza.css');
+@import url('./pages/pizza-2.css');
+
+/* ========================================
+📌 OBSERVAÇÕES IMPORTANTES
+======================================== */
+
+/*
+✔ Ordem importa:
+Base → Componentes → Seções → Páginas
+
+✔ Páginas sempre por último:
+permite sobrescrever estilos específicos
+
+✔ NÃO duplicar imports (removido clientes duplicado)
+
+✔ Arquivo style.css NÃO deve ter CSS direto,
+apenas imports (boa prática)
+*/

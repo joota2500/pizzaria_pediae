@@ -15,8 +15,6 @@ Suporta múltiplos combos e sincroniza com UI.
 - index.html
 ========================================
 */
-
-
 // ================================
 // DADOS DOS COMBOS
 // ================================
@@ -39,9 +37,8 @@ const combos = [
 // VARIÁVEIS
 // ================================
 
-let aberto = false
+window.aberto = false
 let listaCombos
-
 
 
 // ================================
@@ -55,7 +52,7 @@ item.nome === c.nome && item.tipo === "combo"
 )
 
 const card = document.createElement("article")
-card.className = "combo-card"
+card.className="combo-card"
 
 card.innerHTML = `
 <img src="${c.img}" alt="${c.nome}">
@@ -75,7 +72,7 @@ card.classList.add("selecionado")
 
 
 // ================================
-// CLICK (🔥 MULTI COMBO)
+// CLICK (CORRIGIDO 🔥)
 // ================================
 
 botao.onclick = ()=>{
@@ -85,14 +82,16 @@ item.nome === c.nome && item.tipo === "combo"
 )
 
 
-// ❌ REMOVER APENAS ESSE COMBO
+// ❌ REMOVER
 if(jaExiste){
 
 carrinho = carrinho.filter(item =>
 !(item.nome === c.nome && item.tipo === "combo")
 )
 
-resetUI()
+// 🔥 atualiza só combos (mantém aberto)
+renderCombos(aberto ? combos.length : 2)
+
 atualizarCarrinhoLista()
 
 notificar("Combo removido","warning")
@@ -100,7 +99,7 @@ return
 }
 
 
-// ❓ PERGUNTA (SE JÁ TEM ALGUM COMBO)
+// ❓ MODAL
 const jaTemCombo = carrinho.some(item => item.tipo === "combo")
 
 if(jaTemCombo){
@@ -118,7 +117,8 @@ tipo:"combo",
 img:c.img
 })
 
-resetUI()
+// 🔥 mantém lista aberta
+renderCombos(aberto ? combos.length : 2)
 
 notificar("Combo adicionado","success")
 
@@ -138,7 +138,8 @@ tipo:"combo",
 img:c.img
 })
 
-resetUI()
+// 🔥 mantém lista aberta
+renderCombos(aberto ? combos.length : 2)
 
 notificar("Combo selecionado","success")
 
@@ -146,7 +147,6 @@ notificar("Combo selecionado","success")
 
 return card
 }
-
 
 
 // ================================
@@ -164,7 +164,6 @@ listaCombos.appendChild(criarCardCombo(c))
 })
 
 }
-
 
 
 // ================================
@@ -199,7 +198,6 @@ btn.innerText = "Ver todos combos"
 }
 
 })
-
 
 
 // ================================

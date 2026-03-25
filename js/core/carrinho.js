@@ -72,7 +72,7 @@ if(!btnPizza1 || !btnPizza2) return
 const temBloqueio = carrinho.some(item =>
 item.tipo === "pizza_simples" || item.tipo === "combo"
 )
-
+ 
 if(temBloqueio){
 
 btnPizza1.disabled = true
@@ -329,15 +329,30 @@ notificar("Carrinho limpo","warning")
 
 function novoPedido(){
 
-carrinho = []
+// 🔥 apenas fecha o carrinho
+fecharCarrinho()
 
-atualizarCarrinhoLista()
+// 💬 mensagem bonita
+toastNovoPedido()
 
-if(typeof limparTudo === "function"){
-limparTudo()
 }
 
-notificar("Novo pedido iniciado")
+function toastNovoPedido(){
+
+const toast = document.getElementById("toastNovoPedido")
+if(!toast) return
+
+toast.classList.add("show")
+
+// reinicia animação da barra
+const barra = toast.querySelector(".barra")
+barra.style.animation = "none"
+barra.offsetHeight // força reflow
+barra.style.animation = null
+
+setTimeout(()=>{
+toast.classList.remove("show")
+},3000)
 
 }
 
