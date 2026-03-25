@@ -87,22 +87,17 @@ font-weight:600;
 text-decoration:none;
 }
 
-.retirada-box a:hover{
-text-decoration:underline;
-}
-
 /* =========================
 BOTÃO
 ========================= */
 
 .btn-principal{
 width:100%;
-padding:12px;
-
+padding:14px;
 font-size:15px;
 font-weight:700;
 
-border-radius:10px;
+border-radius:12px;
 border:none;
 
 background:#ff6b00;
@@ -121,11 +116,11 @@ UTIL
 ========================= */
 
 .hidden{
-display:none;
+display:none !important;
 }
 
 /* =========================
-🔥 MODAL PEDIDO (PRINCIPAL)
+🔥 MODAL BASE (APP STYLE)
 ========================= */
 
 .modal-pedido{
@@ -134,41 +129,74 @@ top:0;
 left:0;
 width:100%;
 height:100%;
-pointer-events: auto;
 
-background:#fff; /* 🔥 remove fundo escuro */
+background:rgba(0,0,0,0.4);
 
 display:flex;
 justify-content:center;
-align-items:stretch; /* 🔥 ocupa tudo */
+align-items:flex-end;
+
+opacity:0;
+pointer-events:none;
+
+transition:opacity .25s ease;
 
 z-index:9999;
 }
 
-/* caixa */
+/* ATIVO */
+.modal-pedido.ativo{
+opacity:1;
+pointer-events:auto;
+}
+
+/* =========================
+CONTEÚDO
+========================= */
+
 .modal-conteudo{
 width:100%;
-height:100vh; /* 🔥 ocupa tela toda */
+max-width:640px;
+height:90vh;
 
 background:#fff;
 
-border-radius:0; /* 🔥 remove arredondado estranho */
+border-top-left-radius:20px;
+border-top-right-radius:20px;
 
 display:flex;
 flex-direction:column;
 
 padding:15px;
 gap:10px;
+
+transform:translateY(100%);
+transition:transform .3s ease;
+}
+
+/* animação */
+.modal-pedido.ativo .modal-conteudo{
+transform:translateY(0);
 }
 
 /* =========================
-HEADER MODAL
+HEADER FIXO
 ========================= */
 
 .modal-header{
+position:sticky;
+top:0;
+
+background:#fff;
+
 display:flex;
 justify-content:space-between;
 align-items:center;
+
+padding-bottom:8px;
+border-bottom:1px solid #eee;
+
+z-index:10;
 }
 
 .modal-header h3{
@@ -179,40 +207,36 @@ font-size:16px;
 .modal-header button{
 background:none;
 border:none;
-font-size:18px;
+font-size:20px;
 cursor:pointer;
-pointer-events: auto;
-z-index: 10000;
 }
 
 /* =========================
-🔥 GRID (ESQUERDA / DIREITA)
+GRID
 ========================= */
 
 .resumo-grid{
 flex:1;
-
 display:flex;
 gap:12px;
-
 overflow:hidden;
 }
 
 /* =========================
-ITENS (ESQUERDA)
+ITENS
 ========================= */
 
 .resumo-itens{
 flex:2;
-
 overflow-y:auto;
 
 display:flex;
 flex-direction:column;
 gap:8px;
+
+scroll-behavior:smooth;
 }
 
-/* scroll bonito */
 .resumo-itens::-webkit-scrollbar{
 width:4px;
 }
@@ -222,7 +246,7 @@ border-radius:10px;
 }
 
 /* =========================
-TOTAIS (DIREITA)
+TOTAIS
 ========================= */
 
 .resumo-totais{
@@ -230,72 +254,10 @@ flex:1;
 
 display:flex;
 flex-direction:column;
-justify-content:flex-start;
 gap:6px;
 
 font-size:14px;
 }
-
-/* =========================
-ITEM PEDIDO
-========================= */
-
-.item-resumo{
-background:#fafafa;
-padding:10px;
-
-border-radius:10px;
-border-left:3px solid #ff6b00;
-
-display:flex;
-flex-direction:column;
-gap:4px;
-
-font-size:13px;
-}
-
-/* linha principal */
-.linha-topo{
-display:flex;
-justify-content:space-between;
-align-items:flex-start;
-gap:8px;
-}
-
-/* info */
-.item-info{
-flex:1;
-min-width:0;
-}
-
-/* nome */
-.item-nome{
-font-weight:600;
-color:#222;
-}
-
-/* descrição */
-.item-desc{
-font-size:12px;
-color:#777;
-}
-
-/* qtd */
-.item-qtd{
-font-size:11px;
-color:#999;
-}
-
-/* preço */
-.item-preco{
-font-weight:700;
-color:#ff6b00;
-white-space:nowrap;
-}
-
-/* =========================
-TOTAIS
-========================= */
 
 .resumo-totais p{
 margin:0;
@@ -310,18 +272,67 @@ color:#ff6b00;
 text-align:right;
 margin-top:6px;
 }
-.modal-conteudo{
-animation: subir .3s ease;
+
+/* =========================
+ITEM
+========================= */
+
+.item-resumo{
+background:#fafafa;
+padding:10px;
+
+border-radius:10px;
+border-left:3px solid #ff6b00;
+
+display:flex;
+flex-direction:column;
+gap:4px;
 }
 
-@keyframes subir{
-from{
-transform:translateY(100%);
+.linha-topo{
+display:flex;
+justify-content:space-between;
+gap:8px;
 }
-to{
-transform:translateY(0);
+
+.item-info{
+flex:1;
+min-width:0;
 }
+
+.item-nome{
+font-weight:600;
 }
+
+.item-desc{
+font-size:12px;
+color:#777;
+}
+
+.item-qtd{
+font-size:11px;
+color:#999;
+}
+
+.item-preco{
+font-weight:700;
+color:#ff6b00;
+}
+
+/* =========================
+FOOTER FIXO (BOTÃO)
+========================= */
+
+.footer-modal{
+position:sticky;
+bottom:0;
+
+background:#fff;
+padding-top:10px;
+
+border-top:1px solid #eee;
+}
+
 /* =========================
 RESPONSIVO
 ========================= */
@@ -329,7 +340,7 @@ RESPONSIVO
 @media(max-width:768px){
 
 .modal-conteudo{
-height:90vh;
+height:92vh;
 }
 
 .resumo-grid{
