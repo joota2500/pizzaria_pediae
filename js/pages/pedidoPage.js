@@ -343,6 +343,9 @@ if(!validarCampos()) return
 ativarLoading()
 
 const feedback = document.getElementById("feedbackPedido") || null
+if(feedback){
+  feedback.classList.remove("hidden")
+}
 
 
 // ==========================
@@ -459,7 +462,7 @@ let i=0
 function animar(){
 if(feedback){
 feedback.innerHTML = `
-<div class="spinner-border text-danger mb-3"></div>
+<div class="spinner-border text-warning mb-3"></div>
 <h5>${mensagens[i]}</h5>
 `
 }
@@ -478,7 +481,7 @@ animar()
 // ==========================
 
 setTimeout(()=>{
-document.getElementById("modalPedido").classList.add("hidden")
+fecharModalPedido()
 const url=`https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(msg)}`
 
 window.location.href=url

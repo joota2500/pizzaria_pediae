@@ -1,0 +1,23 @@
+.feedback{
+position:absolute;
+top:0;
+left:0;
+width:100%;
+height:100%;
+
+background:rgba(255,255,255,0.95);
+
+display:flex;
+flex-direction:column;
+justify-content:center;
+align-items:center;
+
+z-index:999;
+
+text-align:center;
+}
+
+.feedback h5{
+margin-top:10px;
+font-weight:600;
+}
