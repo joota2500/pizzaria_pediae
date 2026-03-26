@@ -1,0 +1,154 @@
+.subtitulo{
+  color: #777;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+/* botão bonito */
+.btn-expandir{
+  width: 100%;
+  padding: 12px;
+  border: 2px solid #ff3d00;
+  border-radius: 10px;
+  background: transparent;
+  color: #ff3d00;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.btn-expandir:hover{
+  background: #ff3d00;
+  color: white;
+}
+
+/* lista escondida */
+.lista-adicionais{
+  max-height: 0;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  margin-top: 10px;
+  display: none;
+}
+
+/* lista aberta */
+.lista-adicionais.ativo{
+  max-height: 500px;
+  display: block;
+}
+
+/* itens mais elegantes */
+.item-adicional{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #eee;
+}
+.tag-adicional{
+  display: inline-block;
+  background: #fff3e0;
+  color: #ff3d00;
+  padding: 5px 10px;
+  border-radius: 20px;
+  margin: 3px;
+  font-size: 13px;
+}
+.item-adicional.ativo{
+  background: #fff8f5;
+  border-left: 4px solid #ff3d00;
+}
+.seletor-pizzas{
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  margin-bottom: 15px;
+}
+
+.pizza-tab{
+  padding: 8px 12px;
+  background: #f5f5f5;
+  border-radius: 20px;
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: 0.2s;
+}
+
+.pizza-tab.ativa{
+  background: #ff3d00;
+  color: white;
+}
+.badge-adicional{
+  background:#ff6b00;
+  color:#fff;
+  border-radius:50%;
+  padding:2px 6px;
+  font-size:10px;
+  margin-left:6px;
+}
+
+.footer-total{
+  position:fixed;
+  bottom:0;
+  left:0;
+  right:0;
+  background:#fff;
+  padding:12px 16px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  box-shadow:0 -2px 10px rgba(0,0,0,0.1);
+}
+
+.btn-finalizar{
+  background:#ff6b00;
+  color:#fff;
+  border:none;
+  padding:10px 20px;
+  border-radius:8px;
+  font-weight:bold;
+}
+.pizza-tab{
+  padding:8px 12px;
+  border-radius:20px;
+  background:#eee;
+  margin-right:6px;
+  transition:all 0.2s ease;
+  cursor:pointer;
+}
+
+.pizza-tab.ativa{
+  background:#ff6b00;
+  color:#fff;
+  transform:scale(1.05);
+}
+
+.toast-msg{
+  position:fixed;
+  bottom:100px;
+  left:50%;
+  transform:translateX(-50%) translateY(20px);
+
+  background:rgba(30,30,30,0.9);
+  color:#fff;
+
+  padding:12px 18px;
+  border-radius:12px;
+
+  font-size:14px;
+  font-weight:500;
+
+  box-shadow:0 4px 20px rgba(0,0,0,0.2);
+
+  opacity:0;
+  transition:all 0.3s ease;
+
+  backdrop-filter:blur(6px);
+
+  z-index:9999;
+}
+
+.toast-msg.show{
+  opacity:1;
+  transform:translateX(-50%) translateY(0);
+}

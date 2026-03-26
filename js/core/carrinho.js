@@ -275,17 +275,36 @@ atualizarCarrinhoLista()
 
 function irParaPedido(){
 
-if(carrinho.length===0){
-notificar("Carrinho vazio","danger")
-return
+if(carrinho.length === 0){
+  notificar("Carrinho vazio","danger")
+  return
 }
 
+// salva pedido
 localStorage.setItem("pedidoAtual", JSON.stringify({
-itens: carrinho
+  itens: carrinho
 }))
 
-carrinho = []
-window.location.href="html/confirmacao.html"
+// ================================
+// 🔥 REGRA INTELIGENTE
+// ================================
+
+const temPizza = carrinho.some(item =>
+  item.tipo && item.tipo.includes("pizza")
+)
+
+const temCombo = carrinho.some(item =>
+  item.tipo === "combo"
+)
+
+// 👉 SE TEM PIZZA → VAI PRA ADICIONAIS
+if(temPizza && !temCombo){
+  window.location.href = "html/adicionais.html"
+  return
+}
+
+// 👉 SE TEM COMBO → VAI DIRETO (como você pediu)
+window.location.href = "html/confirmacao.html"
 
 }
 
